@@ -1,0 +1,8 @@
+pandas
+numpy
+yfinance
+matplotlib
+requests
+urllib3
+jupyter
+xlrd

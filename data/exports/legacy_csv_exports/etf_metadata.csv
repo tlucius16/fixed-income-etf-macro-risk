@@ -1,0 +1,519 @@
+Inception,Symbol,Name,Assets,ETF Database Category,ER
+2002-07-22,LQD,iShares iBoxx $ Investment Grade Corporate Bond ETF,"$28,844,600,000",Corporate Bonds,0.14%
+2002-07-22,TLT,iShares 20+ Year Treasury Bond ETF,"$45,461,900,000",Government Bonds,0.15%
+2002-07-22,IEF,iShares 7-10 Year Treasury Bond ETF,"$46,703,200,000",Government Bonds,0.15%
+2002-07-22,SHY,iShares 1-3 Year Treasury Bond ETF,"$24,293,400,000",Government Bonds,0.15%
+2003-09-22,AGG,iShares Core U.S. Aggregate Bond ETF,"$138,303,000,000",Total Bond Market,0.03%
+2003-12-04,TIP,iShares TIPS Bond ETF,"$13,837,500,000",Inflation-Protected Bonds,0.18%
+2007-01-05,TLH,iShares 10-20 Year Treasury Bond ETF,"$12,426,600,000",Government Bonds,0.15%
+2007-01-05,USIG,iShares Broad USD Investment Grade Corporate Bond ETF,"$16,655,800,000",Corporate Bonds,0.04%
+2007-01-05,IEI,iShares 3-7 Year Treasury Bond ETF,"$17,690,100,000",Government Bonds,0.15%
+2007-01-05,IGIB,iShares 5-10 Year Investment Grade Corporate Bond ETF,"$17,558,900,000",Corporate Bonds,0.04%
+2007-01-05,SHV,iShares Trust iShares 0-1 Year Treasury Bond ETF,"$19,993,300,000",Government Bonds,0.15%
+2007-01-05,GVI,iShares Intermediate Government/Credit Bond ETF,"$3,890,360,000",Total Bond Market,0.20%
+2007-01-05,GBF,iShares Government/Credit Bond ETF,"$126,010,000",Total Bond Market,0.20%
+2007-01-05,IGSB,iShares 1-5 Year Investment Grade Corporate Bond ETF,"$21,702,200,000",Corporate Bonds,0.04%
+2007-03-13,MBB,iShares MBS ETF,"$39,440,400,000",Mortgage Backed Securities,0.04%
+2007-04-03,BND,Vanguard Total Bond Market ETF,"$149,697,000,000",Total Bond Market,0.03%
+2007-04-03,BLV,Vanguard Long-Term Bond ETF,"$5,980,730,000",Total Bond Market,0.03%
+2007-04-03,BSV,Vanguard Short-Term Bond ETF,"$43,268,100,000",Total Bond Market,0.03%
+2007-04-03,BIV,Vanguard Intermediate-Term Bond ETF,"$27,778,200,000",Total Bond Market,0.03%
+2007-04-04,HYG,iShares iBoxx $ High Yield Corporate Bond ETF,"$17,962,800,000",High Yield Bonds,0.49%
+2007-05-23,SPAB,State Street SPDR Portfolio Aggregate Bond ETF,"$9,081,650,000",Total Bond Market,0.03%
+2007-05-23,SPTI,State Street SPDR Portfolio Intermediate Term Treasury ETF,"$9,838,320,000",Government Bonds,0.03%
+2007-05-23,SPTL,State Street SPDR Portfolio Long Term Treasury ETF,"$10,720,000,000",Government Bonds,0.03%
+2007-05-25,SPIP,State Street SPDR Portfolio TIPS ETF,"$993,116,000",Inflation-Protected Bonds,0.12%
+2007-05-25,BIL,State Street SPDR Bloomberg 1-3 Month T-Bill ETF,"$42,401,400,000",Government Bonds,0.14%
+2007-09-07,MUB,iShares National Muni Bond ETF,"$42,170,700,000",National Munis,0.05%
+2007-09-11,TFI,State Street SPDR Nuveen ICE Municipal Bond ETF,"$3,033,690,000",National Munis,0.23%
+2007-10-02,BWX,SPDR Bloomberg International Treasury Bond ETF,"$1,310,350,000",International Government Bonds,0.35%
+2007-10-04,NYF,iShares New York Muni Bond ETF,"$1,149,890,000",New York Munis,0.09%
+2007-10-04,CMF,iShares California Muni Bond ETF,"$3,933,660,000",California Munis,0.08%
+2007-10-10,SHM,State Street SPDR Nuveen ICE Short Term Municipal Bond ETF,"$3,499,390,000",National Munis,0.20%
+2007-10-11,PZA,Invesco National AMT-Free Municipal Bond ETF,"$3,283,760,000",National Munis,0.28%
+2007-10-11,PZT,Invesco New York AMT-Free Municipal Bond ETF,"$131,535,000",New York Munis,0.28%
+2007-10-11,GOVI,Invesco Equal Weight 0-30 Year Treasury ETF,"$876,587,000",Government Bonds,0.15%
+2007-10-11,PWZ,Invesco California AMT-Free Municipal Bond ETF,"$1,094,490,000",California Munis,0.28%
+2007-10-11,PCY,Invesco Emerging Markets Sovereign Debt ETF,"$1,263,950,000",Emerging Markets Bonds,0.50%
+2007-11-15,PVI,Invesco Floating Rate Municipal Income ETF,"$30,998,800",National Munis,0.25%
+2007-11-15,PHB,Invesco Fundamental High Yield® Corporate Bond ETF,"$377,905,000",High Yield Bonds,0.50%
+2007-11-28,JNK,State Street SPDR Bloomberg High Yield Bond ETF,"$7,891,780,000",High Yield Bonds,0.40%
+2007-12-04,ITM,VanEck Intermediate Muni ETF,"$2,197,420,000",National Munis,0.18%
+2007-12-06,EDV,Vanguard Extended Duration Treasury ETF,"$3,918,660,000",Government Bonds,0.05%
+2007-12-17,EMB,iShares J.P. Morgan USD Emerging Markets Bond ETF,"$17,004,800,000",Emerging Markets Bonds,0.39%
+2008-01-02,MLN,VanEck Long Muni ETF,"$644,569,000",National Munis,0.24%
+2008-02-12,GSY,Invesco Ultra Short Duration ETF,"$3,280,280,000",Corporate Bonds,0.22%
+2008-02-22,SMB,VanEck Short Muni ETF,"$302,341,000",National Munis,0.07%
+2008-03-13,WIP,SPDR FTSE International Government Inflation-Protected Bond ETF,"$376,736,000",Inflation-Protected Bonds,0.50%
+2008-04-29,TBT,ProShares UltraShort 20+ Year Treasury,"$270,091,000",Inverse Bonds,0.93%
+2008-05-01,PST,ProShares UltraShort 7-10 Year Treasury,"$11,148,200",Inverse Bonds,0.95%
+2008-11-05,AGZ,iShares Agency Bond ETF,"$572,324,000",Total Bond Market,0.20%
+2008-11-05,SUB,iShares Short-Term National Muni Bond ETF,"$10,732,700,000",National Munis,0.07%
+2009-01-15,SPMB,State Street SPDR Portfolio Mortgage Backed Bond ETF,"$6,737,990,000",Mortgage Backed Securities,0.04%
+2009-01-15,BWZ,SPDR Bloomberg Short Term International Treasury Bond ETF,"$332,990,000",International Government Bonds,0.35%
+2009-01-21,IGOV,iShares International Treasury Bond ETF,"$1,070,970,000",International Government Bonds,0.35%
+2009-01-21,ISHG,iShares 1-3 Year International Treasury Bond ETF,"$696,283,000",International Government Bonds,0.35%
+2009-02-04,HYD,VanEck High Yield Muni ETF,"$4,230,920,000",National Munis,0.32%
+2009-02-10,SPIB,State Street SPDR Portfolio Intermediate Term Corporate Bond ETF,"$10,771,600,000",Corporate Bonds,0.04%
+2009-03-10,SPLB,State Street SPDR Portfolio Long Term Corporate Bond ETF,"$1,224,290,000",Corporate Bonds,0.04%
+2009-04-14,CWB,State Street SPDR Bloomberg Convertible Securities ETF,"$5,008,160,000",Preferred Stock/Convertible Bonds,0.40%
+2009-04-16,TYD,Direxion Daily 7-10 Year Treasury Bull 3x Shares,"$43,832,300",Leveraged Bonds,1.06%
+2009-04-16,TMF,Direxion Daily 20+ Year Treasury Bull 3X Shares,"$3,563,200,000",Leveraged Bonds,0.91%
+2009-04-16,TMV,Direxion Daily 20+ Year Treasury Bear 3x Shares,"$160,371,000",Inverse Bonds,0.95%
+2009-04-16,TYO,Direxion Daily 7-10 Year Treasury Bear 3x Shares,"$10,128,800",Inverse Bonds,1.00%
+2009-08-18,TBF,ProShares Short 20+ Year Treasury,"$68,726,400",Inverse Bonds,0.95%
+2009-08-20,STPZ,PIMCO 1-5 Year US TIPS Index Exchange-Traded Fund,"$431,396,000",Inflation-Protected Bonds,0.20%
+2009-09-03,TIPZ,PIMCO Broad U.S. TIPS Index ETF,"$91,984,100",Inflation-Protected Bonds,0.20%
+2009-09-03,LTPZ,PIMCO 15+ Year US TIPS Index Exchange-Traded Fund,"$680,555,000",Inflation-Protected Bonds,0.20%
+2009-10-30,ZROZ,PIMCO 25+ Year Zero Coupon US Treasury Index Exchange-Traded Fund,"$1,518,820,000",Government Bonds,0.15%
+2009-11-16,MINT,PIMCO Enhanced Short Maturity Active Exchange-Traded Fund,"$14,833,800,000",Total Bond Market,0.36%
+2009-11-17,BAB,Invesco Taxable Municipal Bond ETF,"$1,049,810,000",National Munis,0.28%
+2009-11-19,VMBS,Vanguard Mortgage-Backed Securities ETF,"$14,801,000,000",Mortgage Backed Securities,0.03%
+2009-11-19,VGSH,Vanguard Short-Term Treasury ETF,"$26,521,200,000",Government Bonds,0.03%
+2009-11-19,VCIT,Vanguard Intermediate-Term Corporate Bond ETF,"$63,144,100,000",Corporate Bonds,0.03%
+2009-11-19,VGIT,Vanguard Intermediate-Term Treasury ETF,"$38,913,100,000",Government Bonds,0.03%
+2009-11-19,VCLT,Vanguard Long-Term Corporate Bond ETF,"$7,823,210,000",Corporate Bonds,0.03%
+2009-11-19,VGLT,Vanguard Long-Term Treasury ETF,"$10,101,400,000",Government Bonds,0.03%
+2009-11-19,VCSH,Vanguard Short-Term Corporate Bond ETF,"$40,858,900,000",Corporate Bonds,0.03%
+2009-11-30,MUNI,PIMCO Intermediate Municipal Bond Active Exchange-Traded Fund,"$2,628,590,000",National Munis,0.35%
+2009-12-08,IGLB,iShares 10+ Year Investment Grade Corporate Bond ETF,"$2,800,450,000",Corporate Bonds,0.04%
+2009-12-08,ILTB,iShares Core 10+ Year USD Bond ETF,"$627,164,000",Total Bond Market,0.06%
+2009-12-16,SPSB,State Street SPDR Portfolio Short Term Corporate Bond ETF,"$8,636,000,000",Corporate Bonds,0.04%
+2010-01-19,UBT,ProShares Ultra 20+ Year Treasury,"$86,230,100",Leveraged Bonds,0.95%
+2010-01-19,UST,ProShares Ultra 7-10 Year Treasury,"$16,720,500",Leveraged Bonds,0.95%
+2010-02-01,SMMU,PIMCO Short Term Municipal Bond Active ETF,"$987,246,000",National Munis,0.35%
+2010-05-19,IBND,SPDR Bloomberg International Corporate Bond ETF,"$431,203,000",Corporate Bonds,0.50%
+2010-06-03,PICB,Invesco International Corporate Bond ETF,"$281,289,000",Corporate Bonds,0.50%
+2010-07-22,EMLC,VanEck J. P. Morgan EM Local Currency Bond ETF,"$4,691,600,000",Emerging Markets Bonds,0.30%
+2010-08-05,SCHR,Schwab Intermediate-Term U.S. Treasury ETF,"$12,490,000,000",Government Bonds,0.03%
+2010-08-05,SCHP,Schwab U.S. TIPS ETF,"$15,159,700,000",Inflation-Protected Bonds,0.03%
+2010-08-05,SCHO,Schwab Short-Term U.S. Treasury ETF,"$11,685,300,000",Government Bonds,0.03%
+2010-08-09,ELD,WisdomTree Emerging Markets Local Debt Fund,"$93,797,600",Emerging Markets Bonds,0.55%
+2010-09-20,CORP,PIMCO Investment Grade Corporate Bond Index ETF,"$1,467,470,000",Corporate Bonds,0.41%
+2010-12-01,STIP,iShares 0-5 Year TIPS Bond ETF,"$12,624,200,000",Inflation-Protected Bonds,0.03%
+2011-02-23,EBND,SPDR Bloomberg Emerging Markets Local Bond ETF,"$2,296,880,000",Emerging Markets Bonds,0.30%
+2011-03-03,BKLN,Invesco Senior Loan ETF,"$7,691,080,000",High Yield Bonds,0.65%
+2011-03-21,SJB,ProShares Short High Yield,"$43,409,800",Inverse Bonds,0.95%
+2011-04-04,TBX,ProShares Short 7-10 Year Treasury,"$12,584,800",Inverse Bonds,0.95%
+2011-04-06,SPBO,State Street SPDR Portfolio Corporate Bond ETF,"$1,837,990,000",Corporate Bonds,0.03%
+2011-04-13,HYMB,State Street SPDR Nuveen ICE High Yield Municipal Bond ETF,"$3,003,790,000",National Munis,0.35%
+2011-04-13,UJB,ProShares Ultra High Yield,"$11,173,200",Leveraged Bonds,0.95%
+2011-04-25,FLTR,VanEck IG Floating Rate ETF,"$2,558,230,000",Corporate Bonds,0.14%
+2011-06-14,FLOT,iShares Floating Rate Bond ETF,"$9,059,230,000",Corporate Bonds,0.15%
+2011-06-16,HYS,PIMCO 0-5 Year High Yield Corporate Bond Index Exchange-Traded Fund,"$1,644,270,000",High Yield Bonds,0.56%
+2011-07-12,XMPT,VanEck CEF Muni Income ETF,"$209,592,000",Total Bond Market,1.97%
+2011-07-14,SCHZ,Schwab U.S. Aggregate Bond ETF,"$9,709,390,000",Total Bond Market,0.03%
+2011-09-15,PFIG,Invesco Fundamental Investment Grade Corporate Bond ETF,"$105,383,000",Corporate Bonds,0.22%
+2011-09-19,TDTF,FlexShares iBoxx 5-Year Target Duration TIPS Index Fund,"$967,019,000",Inflation-Protected Bonds,0.18%
+2011-09-19,TDTT,FlexShares iBoxx 3-Year Target Duration TIPS Index Fund,"$2,512,070,000",Inflation-Protected Bonds,0.18%
+2011-10-18,LEMB,iShares J.P. Morgan EM Local Currency Bond ETF,"$781,980,000",Emerging Markets Bonds,0.30%
+2011-11-30,FLRN,State Street SPDR Bloomberg Investment Grade Floating Rate ETF,"$2,777,360,000",Corporate Bonds,0.15%
+2011-11-30,SPTS,State Street SPDR Portfolio Short Term Treasury ETF,"$6,127,850,000",Government Bonds,0.03%
+2012-02-14,GOVT,iShares U.S. Treasury Bond ETF,"$35,365,100,000",Government Bonds,0.05%
+2012-02-14,CMBS,iShares CMBS ETF,"$498,459,000",Mortgage Backed Securities,0.25%
+2012-02-14,GNMA,iShares GNMA Bond ETF,"$397,645,000",Mortgage Backed Securities,0.10%
+2012-02-14,QLTA,iShares Aaa - A Rated Corporate Bond ETF,"$1,729,620,000",Corporate Bonds,0.15%
+2012-02-29,BOND,PIMCO Active Bond Exchange-Traded Fund,"$7,215,950,000",Total Bond Market,0.45%
+2012-03-08,EMCB,WisdomTree Emerging Markets Corporate Bond Fund,"$93,685,200",Emerging Markets Bonds,0.61%
+2012-03-15,SJNK,State Street SPDR Bloomberg Short Term High Yield Bond ETF,"$5,345,070,000",High Yield Bonds,0.40%
+2012-03-27,TTT,ProShares UltraPro Short 20+ Year Treasury,"$19,337,700",Inverse Bonds,0.95%
+2012-04-02,IHY,VanEck International High Yield Bond ETF,"$51,388,200",High Yield Bonds,0.40%
+2012-04-03,GHYG,iShares US & Intl High Yield Corp Bond ETF,"$204,854,000",High Yield Bonds,0.40%
+2012-04-03,EMHY,iShares J.P. Morgan EM High Yield Bond ETF,"$569,010,000",Emerging Markets Bonds,0.50%
+2012-04-10,ANGL,VanEck Fallen Angel High Yield Bond ETF,"$3,127,100,000",High Yield Bonds,0.25%
+2012-04-17,CEMB,iShares J.P. Morgan EM Corporate Bond ETF,"$402,845,000",Corporate Bonds,0.50%
+2012-05-08,HYEM,VanEck Emerging Markets High Yield Bond ETF,"$441,184,000",High Yield Bonds,0.40%
+2012-06-18,SPHY,State Street SPDR Portfolio High Yield Bond ETF,"$10,519,700,000",High Yield Bonds,0.05%
+2012-10-09,RAVI,FlexShares Ultra-Short Income Fund,"$1,396,780,000",Total Bond Market,0.25%
+2012-10-12,VTIP,Vanguard Short-Term Inflation-Protected Securities ETF,"$17,244,700,000",Inflation-Protected Bonds,0.03%
+2012-10-18,ISTB,iShares Core 1-5 Year USD Bond ETF,"$4,762,360,000",Total Bond Market,0.06%
+2013-02-27,HYLS,First Trust Tactical High Yield ETF,"$1,798,230,000",High Yield Bonds,1.02%
+2013-04-03,SRLN,State Street Blackstone Senior Loan ETF,"$6,447,510,000",High Yield Bonds,0.70%
+2013-05-01,FTSL,First Trust Senior Loan Fund,"$2,343,510,000",High Yield Bonds,0.87%
+2013-05-21,HYHG,ProShares High Yield-Interest Rate Hedged ETF,"$159,099,000",High Yield Bonds,0.50%
+2013-05-29,TIPX,State Street SPDR Bloomberg 1-10 Year TIPS ETF,"$1,828,110,000",Inflation-Protected Bonds,0.15%
+2013-05-31,VWOB,Vanguard Emerging Markets Government Bond ETF,"$5,881,010,000",Emerging Markets Bonds,0.15%
+2013-06-04,BNDX,Vanguard Total International Bond ETF,"$75,258,300,000",Total Bond Market,0.07%
+2013-06-04,RVNU,Xtrackers Municipal Infrastructure Revenue Bond ETF,"$134,969,000",National Munis,0.15%
+2013-06-20,PGHY,Invesco Global ex-US High Yield Corporate Bond ETF,"$197,307,000",High Yield Bonds,0.35%
+2013-09-25,NEAR,iShares Short Duration Bond Active ETF,"$3,954,590,000",Total Bond Market,0.25%
+2013-10-07,RIGS,RiverFront Strategic Income Fund,"$70,607,500",High Yield Bonds,0.46%
+2013-10-09,ULST,State Street Ultra Short Term Bond ETF,"$598,965,000",Total Bond Market,0.20%
+2013-10-15,SLQD,iShares 0-5 Year Investment Grade Corporate Bond ETF,"$2,359,860,000",Corporate Bonds,0.06%
+2013-10-15,SHYG,iShares 0-5 Year High Yield Corporate Bond ETF,"$8,126,570,000",High Yield Bonds,0.30%
+2013-11-04,FTSD,Franklin Short Duration U.S. Government ETF,"$268,957,000",Mortgage Backed Securities,0.25%
+2013-11-05,IGHG,ProShares Investment Grade-Interest Rate Hedged,"$287,819,000",Corporate Bonds,0.30%
+2013-12-11,ICSH,iShares Ultra Short Duration Bond Active ETF,"$6,875,160,000",Corporate Bonds,0.08%
+2013-12-18,HYZD,WisdomTree Interest Rate Hedged High Yield Bond Fund,"$207,580,000",High Yield Bonds,0.43%
+2013-12-18,AGZD,WisdomTree Interest Rate Hedged U.S. Aggregate Bond Fund,"$94,794,000",Total Bond Market,0.23%
+2014-01-13,SHYD,VanEck Short High Yield Muni ETF,"$402,171,000",National Munis,0.32%
+2014-01-22,LDUR,PIMCO Enhanced Low Duration Active ETF,"$1,245,840,000",Total Bond Market,0.54%
+2014-02-03,TFLO,iShares Treasury Floating Rate Bond ETF,"$6,401,900,000",Government Bonds,0.15%
+2014-02-04,USFR,WisdomTree Floating Rate Treasury Fund,"$16,228,900,000",Government Bonds,0.15%
+2014-04-22,BYLD,iShares Yield Optimized Bond ETF,"$310,160,000",Total Bond Market,0.17%
+2014-05-13,FMB,First Trust Managed Municipal ETF,"$1,942,080,000",National Munis,0.65%
+2014-05-27,LQDH,iShares Interest Rate Hedged Corporate Bond ETF,"$517,800,000",Corporate Bonds,0.24%
+2014-05-27,HYGH,iShares Interest Rate Hedged High Yield Bond ETF,"$447,761,000",High Yield Bonds,0.52%
+2014-06-10,IUSB,iShares Core Total USD Bond Market ETF,"$35,096,600,000",Total Bond Market,0.06%
+2014-08-05,FTSM,First Trust Enhanced Short Maturity ETF,"$6,261,780,000",Total Bond Market,0.45%
+2014-08-13,HISF,First Trust High Income Strategic Focus ETF,"$85,918,100",Total Bond Market,0.87%
+2014-09-03,MBSD,FlexShares Disciplined Duration MBS Index Fund,"$91,634,000",Mortgage Backed Securities,0.20%
+2014-10-06,FLTB,Fidelity Limited Term Bond ETF,"$357,834,000",Corporate Bonds,0.25%
+2014-10-06,FCOR,Fidelity Corporate Bond ETF,"$323,642,000",Corporate Bonds,0.36%
+2014-10-06,FBND,Fidelity Total Bond ETF,"$24,117,500,000",Total Bond Market,0.36%
+2014-10-15,VBND,Vident U.S. Bond Strategy ETF,"$497,738,000",Total Bond Market,0.41%
+2014-11-04,FEMB,First Trust Emerging Markets Local Currency Bond ETF,"$339,394,000",Emerging Markets Bonds,0.85%
+2014-11-04,LMBS,First Trust Low Duration Opportunities ETF,"$5,808,250,000",Mortgage Backed Securities,0.64%
+2014-11-10,CBON,VanEck China Bond ETF,"$18,474,800",Emerging Markets Bonds,0.50%
+2014-11-12,SKOR,FlexShares Credit-Scored US Corporate Bond Index Fund,"$654,059,000",Corporate Bonds,0.15%
+2015-02-18,FLRT,Pacer Aristotle Pacific Floating Rate High Income ETF,"$617,889,000",High Yield Bonds,0.60%
+2015-02-23,TOTL,State Street DoubleLine Total Return Tactical ETF,"$4,103,860,000",Total Bond Market,0.55%
+2015-03-03,MEAR,iShares Short Maturity Municipal Bond Active ETF,"$1,367,240,000",National Munis,0.25%
+2015-06-02,ICVT,iShares Convertible Bond ETF,"$4,831,530,000",Preferred Stock/Convertible Bonds,0.20%
+2015-07-09,AGGY,WisdomTree Yield Enhanced U.S. Aggregate Bond Fund,"$883,978,000",Total Bond Market,0.12%
+2015-07-22,IGBH,iShares Interest Rate Hedged Long-Term Corporate Bond ETF,"$169,520,000",Corporate Bonds,0.14%
+2015-08-11,NFLT,Virtus Newfleet Multi-Sector Bond ETF,"$370,659,000",Total Bond Market,0.50%
+2015-08-21,VTEB,Vanguard Tax-Exempt Bond ETF,"$43,585,800,000",National Munis,0.03%
+2015-09-23,LKOR,FlexShares Credit-Scored US Long Corporate Bond Index Fund,"$36,363,000",Corporate Bonds,0.15%
+2015-11-03,FCVT,First Trust SSI Strategic Convertible Securities ETF,"$102,161,000",Preferred Stock/Convertible Bonds,0.95%
+2015-11-10,IAGG,iShares Core International Aggregate Bond ETF,"$11,518,300,000",Total Bond Market,0.07%
+2016-02-10,GTO,Invesco Total Return Bond ETF,"$2,046,000,000",Total Bond Market,0.35%
+2016-04-13,EMTL,State Street DoubleLine Emerging Markets Fixed Income ETF,"$107,547,000",Emerging Markets Bonds,0.65%
+2016-04-13,STOT,State Street DoubleLine Short Duration Total Return Tactical ETF,"$339,552,000",Total Bond Market,0.45%
+2016-06-12,RFCI,RiverFront Dynamic Core Income ETF,"$16,435,700",Total Bond Market,0.51%
+2016-06-14,HYXF,iShares ESG Advanced High Yield Corporate Bond ETF,"$196,597,000",High Yield Bonds,0.35%
+2016-06-14,FALN,iShares Fallen Angels USD Bond ETF,"$1,857,270,000",High Yield Bonds,0.25%
+2016-09-06,GBIL,ACCESS TREASURY 0-1 YEAR ETF,"$7,147,130,000",Government Bonds,0.12%
+2016-09-13,IBDR,iShares iBonds Dec 2026 Term Corporate ETF,"$3,812,990,000",Corporate Bonds,0.10%
+2016-09-14,BBHY,JPMorgan BetaBuilders USD High Yield Corporate Bond ETF,"$712,480,000",High Yield Bonds,0.07%
+2016-09-14,BSCQ,Invesco BulletShares 2026 Corporate Bond ETF,"$4,221,810,000",Corporate Bonds,0.10%
+2016-09-14,NUAG,Nuveen Enhanced Yield U.S. Aggregate Bond ETF,"$60,541,800",Total Bond Market,0.19%
+2016-09-22,VRIG,Invesco Variable Rate Investment Grade ETF,"$1,354,360,000",Total Bond Market,0.30%
+2016-10-03,FLCO,Franklin Investment Grade Corporate ETF,"$567,926,000",Corporate Bonds,0.35%
+2016-11-01,IMTB,iShares Core 5-10 Year USD Bond ETF,"$278,716,000",Total Bond Market,0.06%
+2016-11-16,VNLA,Janus Henderson Short Duration Income ETF,"$2,969,670,000",Total Bond Market,0.23%
+2016-11-18,BNDC,FlexShares Core Select Bond Fund Core Select Bond Fund,"$150,127,000",Total Bond Market,0.35%
+2016-12-05,VSHY,Virtus Newfleet Short Duration High Yield Bond ETF,"$31,240,800",High Yield Bonds,0.39%
+2016-12-07,HYLB,Xtrackers USD High Yield Corporate Bond ETF,"$3,552,820,000",High Yield Bonds,0.05%
+2017-01-12,TBLL,Invesco Short Term Treasury ETF,"$2,234,870,000",Government Bonds,0.08%
+2017-02-14,FIXD,First Trust Smith Opportunistic Fixed Income ETF,"$3,443,850,000",Total Bond Market,0.65%
+2017-03-03,GRNB,VanEck Green Bond ETF,"$168,227,000",Total Bond Market,0.20%
+2017-03-31,ARCM,Arrow Reserve Capital Management ETF,"$51,178,500",Money Market,0.50%
+2017-03-31,NUSA,Nuveen ESG 1-5 Year U.S. Aggregate Bond ETF,"$33,932,600",Total Bond Market,0.15%
+2017-04-05,JPIB,JPMorgan International Bond Opportunities ETF of Benef Interest,"$1,586,300,000",Total Bond Market,0.50%
+2017-05-17,JPST,JPMorgan Ultra-Short Income ETF,"$36,406,400,000",Corporate Bonds,0.18%
+2017-05-18,SHAG,WisdomTree Yield Enhanced U.S. Short-Term Aggregate Bond Fund,"$43,138,800",Total Bond Market,0.12%
+2017-06-06,GIGB,Goldman Sachs Access Investment Grade Corporate Bond ETF,"$836,100,000",Corporate Bonds,0.08%
+2017-06-20,FCAL,First Trust California Municipal High Income ETF,"$205,205,000",California Munis,0.65%
+2017-07-10,IBD,Inspire Corporate Bond ETF,"$473,982,000",Corporate Bonds,0.44%
+2017-07-11,HYDB,iShares High Yield Systematic Bond ETF,"$1,666,050,000",High Yield Bonds,0.35%
+2017-07-11,IGEB,iShares Investment Grade Systematic Bond ETF,"$1,469,820,000",Corporate Bonds,0.18%
+2017-07-11,SUSC,iShares ESG Aware USD Corporate Bond ETF,"$1,329,970,000",Corporate Bonds,0.18%
+2017-07-11,SUSB,iShares ESG Aware 1-5 Year USD Corporate Bond ETF,"$1,068,790,000",Corporate Bonds,0.12%
+2017-08-18,FFIU,UVA Unconstrained Medium-Term Fixed Income ETF,"$52,044,200",Corporate Bonds,0.54%
+2017-08-31,FLMB,Franklin Municipal Green Bond ETF,"$96,661,400",National Munis,0.30%
+2017-08-31,FLMI,Franklin Dynamic Municipal Bond ETF,"$1,639,450,000",National Munis,0.30%
+2017-09-05,GHYB,Goldman Sachs Access High Yield Corporate Bond ETF,"$116,229,000",High Yield Bonds,0.15%
+2017-09-12,IBDS,iShares iBonds Dec 2027 Term Corporate ETF,"$3,656,690,000",Corporate Bonds,0.10%
+2017-09-22,PBTP, Invesco 0-5 Yr US TIPS ETF,"$67,314,100",Inflation-Protected Bonds,0.07%
+2017-09-27,HTRB,Hartford Total Return Bond ETF,"$2,298,500,000",Total Bond Market,0.29%
+2017-09-27,BSCR,Invesco BulletShares 2027 Corporate Bond ETF,"$4,550,980,000",Corporate Bonds,0.10%
+2017-09-29,NUBD,Nuveen ESG U.S. Aggregate Bond ETF,"$474,483,000",Total Bond Market,0.15%
+2017-10-12,DIAL,Columbia Diversified Fixed Income Allocation ETF,"$445,568,000",Total Bond Market,0.29%
+2017-10-18,MMIT,NYLI MacKay Muni Intermediate ETF,"$1,367,190,000",National Munis,0.30%
+2017-10-18,MMIN,NYLI MacKay Muni Insured ETF,"$379,422,000",National Munis,0.30%
+2017-10-24,USTB,VictoryShares Short-Term Bond ETF,"$1,907,810,000",Total Bond Market,0.34%
+2017-10-24,UITB,VictoryShares Core Intermediate Bond ETF,"$2,741,370,000",Total Bond Market,0.38%
+2017-10-25,USHY,iShares Broad USD High Yield Corporate Bond ETF,"$25,587,300,000",High Yield Bonds,0.08%
+2017-11-01,FMHI,First Trust Municipal High Income ETF,"$904,159,000",National Munis,0.70%
+2017-11-07,XOVR,ERShares Private-Public Crossover ETF,"$1,598,710,000",High Yield Bonds,0.75%
+2017-11-07,VTC,Vanguard Total Corporate Bond ETF,"$1,598,750,000",Corporate Bonds,0.03%
+2017-12-13,HMOP,Hartford Municipal Opportunities ETF,"$688,968,000",National Munis,0.29%
+2018-01-10,SHYL,Xtrackers Short Duration High Yield Bond ETF,"$259,325,000",High Yield Bonds,0.20%
+2018-01-11,KORP,American Century Diversified Corporate Bond ETF,"$691,134,000",Corporate Bonds,0.29%
+2018-01-11,HYUP,Xtrackers High Beta High Yield Bond ETF,"$31,784,300",High Yield Bonds,0.20%
+2018-01-11,HYDW,Xtrackers Low Beta High Yield Bond ETF,"$70,929,100",High Yield Bonds,0.20%
+2018-01-29,JPMB,JPMorgan USD Emerging Markets Sovereign Bond ETF,"$68,578,000",Emerging Markets Bonds,0.39%
+2018-04-05,PULS,PGIM Ultra Short Bond ETF,"$13,732,800,000",Total Bond Market,0.15%
+2018-04-18,IG,Principal Investment Grade Corporate Active ETF,"$157,941,000",Corporate Bonds,0.19%
+2018-04-18,HTAB,Hartford Schroders Tax-Aware Bond ETF,"$314,885,000",Total Bond Market,0.39%
+2018-05-08,LQDI,iShares Inflation Hedged Corporate Bond ETF,"$70,659,600",Inflation-Protected Bonds,0.18%
+2018-05-30,FLBL,Franklin Senior Loan ETF Franklin Liberty Senior Loan Fund,"$958,901,000",High Yield Bonds,0.45%
+2018-05-30,FLHY,Franklin High Yield Corporate ETF,"$748,430,000",High Yield Bonds,0.40%
+2018-05-30,FLIA,Franklin International Aggregate Bond ETF,"$676,438,000",International Government Bonds,0.25%
+2018-06-04,UCON,First Trust Smith Unconstrained Bond ETF,"$3,202,610,000",Total Bond Market,0.86%
+2018-06-12,FLDR,Fidelity Low Duration Bond Factor ETF,"$1,292,270,000",Corporate Bonds,0.15%
+2018-06-12,FDHY,Fidelity Enhanced High Yield ETF,"$502,704,000",High Yield Bonds,0.35%
+2018-06-28,KHYB,KraneShares Asia Pacific High Income USD Bond ETF,"$17,409,500",High Yield Bonds,0.69%
+2018-07-10,OPER,ClearShares Ultra-Short Maturity ETF,"$115,322,000",Total Bond Market,0.20%
+2018-07-17,HYGV,FlexShares High Yield Value-Scored Bond Index Fund,"$1,182,250,000",High Yield Bonds,0.37%
+2018-07-25,IIGD,Invesco Investment Grade Defensive ETF,"$30,995,000",Corporate Bonds,0.13%
+2018-08-09,BSCS,Invesco BulletShares 2028 Corporate Bond ETF,"$3,318,870,000",Corporate Bonds,0.10%
+2018-08-09,BSJQ,Invesco BulletShares 2026 High Yield Corp Bond ETF,"$1,153,000,000",High Yield Bonds,0.43%
+2018-09-04,BNDW,Vanguard Total World Bond ETF,"$1,572,050,000",Total Bond Market,0.05%
+2018-09-10,TAXF,American Century Diversified Municipal Bond ETF,"$559,673,000",National Munis,0.27%
+2018-09-12,JMBS,Janus Henderson Mortgage-Backed Securities ETF,"$6,790,260,000",Mortgage Backed Securities,0.22%
+2018-09-18,IBDT,iShares iBonds Dec 2028 Term Corporate ETF,"$3,726,770,000",Corporate Bonds,0.10%
+2018-09-18,AFIF,Anfield Universal Fixed Income ETF,"$225,849,000",Total Bond Market,1.08%
+2018-09-24,PHYL,PGIM Active High Yield Bond ETF,"$1,194,950,000",High Yield Bonds,0.39%
+2018-10-02,GTIP,Goldman Sachs Access Inflation Protected USD Bond ETF,"$219,741,000",Inflation-Protected Bonds,0.12%
+2018-10-16,JMST,JPMorgan Ultra-Short Municipal Income ETF,"$6,110,690,000",Government Bonds,0.18%
+2018-10-18,EAGG,iShares ESG Aware US Aggregate Bond ETF,"$4,570,980,000",Total Bond Market,0.10%
+2018-10-29,JMUB,JPMorgan Municipal ETF,"$6,806,530,000",Government Bonds,0.18%
+2018-11-01,FUMB,First Trust Ultra Short Duration Municipal ETF,"$238,161,000",National Munis,0.45%
+2018-11-01,FSMB,First Trust Short Duration Managed Municipal ETF,"$537,381,000",National Munis,0.55%
+2018-11-13,BGRN,iShares Trust iShares USD Green Bond ETF,"$448,431,000",Total Bond Market,0.20%
+2018-12-12,BBCB,JPMorgan BetaBuilders USD Investment Grade Corporate Bond ETF,"$42,503,800",Corporate Bonds,0.04%
+2018-12-12,BBAG,JPMorgan BetaBuilders U.S. Aggregate Bond ETF,"$1,138,920,000",Total Bond Market,0.03%
+2019-01-03,LDSF,First Trust Low Duration Strategic Focus ETF,"$153,344,000",Total Bond Market,0.87%
+2019-01-22,LGOV,First Trust Long Duration Opportunities ETF,"$670,811,000",Mortgage Backed Securities,0.67%
+2019-01-28,JCPB,JPMorgan Core Plus Bond ETF,"$9,677,040,000",Total Bond Market,0.38%
+2019-04-02,IBMO,iShares iBonds Dec 2026 Term Muni Bond ETF,"$577,891,000",National Munis,0.18%
+2019-04-02,FISR,State Street Fixed Income Sector Rotation ETF,"$342,362,000",Total Bond Market,0.50%
+2019-04-09,IBMP,iShares iBonds Dec 2027 Term Muni Bond ETF,"$613,842,000",National Munis,0.18%
+2019-04-15,GSST,Goldman Sachs Ultra Short Bond ETF,"$1,367,010,000",Mortgage Backed Securities,0.16%
+2019-04-16,IBMQ,iShares iBonds Dec 2028 Term Muni Bond ETF,"$614,586,000",National Munis,0.18%
+2019-04-24,SEIX,Virtus Seix Senior Loan ETF,"$265,117,000",Total Bond Market,0.57%
+2019-05-13,IVOL,KraneShares Quadratic Interest Rate Volatility and Inflation Hedge ETF,"$478,561,000",Inflation-Protected Bonds,1.02%
+2019-09-12,BSJR,Invesco BulletShares 2027 High Yield Corporate Bond ETF,"$786,271,000",High Yield Bonds,0.42%
+2019-09-12,BSCT,Invesco BulletShares 2029 Corporate Bond ETF,"$2,728,680,000",Corporate Bonds,0.10%
+2019-09-17,FLCB,Franklin U.S. Core Bond ETF,"$2,838,340,000",Total Bond Market,0.15%
+2019-09-17,IBDU,iShares iBonds Dec 2029 Term Corporate ETF,"$3,568,690,000",Corporate Bonds,0.10%
+2019-09-25,BSMS,Invesco BulletShares 2028 Municipal Bond ETF,"$265,516,000",National Munis,0.18%
+2019-09-25,BSMR,Invesco BulletShares 2027 Municipal Bond ETF,"$310,051,000",National Munis,0.18%
+2019-09-25,NUHY,Nuveen ESG High Yield Corporate Bond ETF,"$116,163,000",High Yield Bonds,0.30%
+2019-09-25,BSMQ,Invesco BulletShares 2026 Municipal Bond ETF,"$304,750,000",National Munis,0.18%
+2019-09-25,BSMT,Invesco BulletShares 2029 Municipal Bond ETF,"$243,558,000",National Munis,0.18%
+2019-09-30,OVB,Overlay Shares Core Bond ETF,"$33,435,500",Total Bond Market,0.79%
+2019-09-30,OVM,Overlay Shares Municipal Bond ETF,"$33,745,800",National Munis,0.81%
+2019-10-10,SCHI,Schwab 5-10 Year Corporate Bond ETF,"$10,011,400,000",Corporate Bonds,0.03%
+2019-10-10,SCHQ,Schwab Long-Term U.S. Treasury ETF,"$908,010,000",Government Bonds,0.03%
+2019-10-10,SCHJ,Schwab 1-5 Year Corporate Bond ETF,"$708,296,000",Corporate Bonds,0.03%
+2019-10-22,PTBD,Pacer Trendpilot US Bond ETF,"$109,030,000",High Yield Bonds,0.60%
+2019-11-14,MTGP,WisdomTree Mortgage Plus Bond Fund,"$75,740,100",Mortgage Backed Securities,0.46%
+2019-12-10,EMNT,PIMCO Enhanced Short Maturity Active ESG Exchange-Traded Fund,"$211,603,000",Total Bond Market,0.24%
+2019-12-30,SPSK,SP Funds Dow Jones Global Sukuk ETF,"$462,056,000",Total Bond Market,0.50%
+2020-01-21,HYTR,Counterpoint High Yield Trend ETF,"$240,676,000",High Yield Bonds,0.79%
+2020-02-19,HCRB,Hartford Core Bond ETF,"$348,181,000",Total Bond Market,0.29%
+2020-02-25,IBTH,iShares iBonds Dec 2027 Term Treasury ETF,"$2,024,710,000",Government Bonds,0.07%
+2020-02-25,IBTG,iShares iBonds Dec 2026 Term Treasury ETF,"$2,366,250,000",Government Bonds,0.07%
+2020-02-25,IBTI,iShares iBonds Dec 2028 Term Treasury ETF,"$1,516,320,000",Government Bonds,0.07%
+2020-02-25,IBTJ,iShares iBonds Dec 2029 Term Treasury ETF,"$1,129,090,000",Government Bonds,0.07%
+2020-04-22,BKAG,BNY Mellon Core Bond ETF,"$2,211,080,000",Total Bond Market,0.00%
+2020-04-24,BKHY,BNY Mellon High Yield ETF,"$384,383,000",High Yield Bonds,0.22%
+2020-04-29,DEED,First Trust Securitized Plus ETF,"$84,123,000",Mortgage Backed Securities,0.76%
+2020-05-26,SGOV,iShares 0-3 Month Treasury Bond ETF,"$70,933,700,000",Government Bonds,0.09%
+2020-06-01,EMBD,Global X Emerging Markets Bond ETF,"$293,360,000",Emerging Markets Bonds,0.39%
+2020-06-09,FLGV,Franklin U.S. Treasury Bond ETF,"$1,092,200,000",Government Bonds,0.09%
+2020-06-23,IBDV,iShares iBonds Dec 2030 Term Corporate ETF,"$2,888,630,000",Corporate Bonds,0.10%
+2020-06-23,EUSB,iShares ESG Advanced Universal USD Bond ETF,"$712,013,000",Total Bond Market,0.12%
+2020-06-25,THY,Toews Agility Shares Dynamic Tactical Income ETF,"$71,724,000",High Yield Bonds,1.03%
+2020-07-07,GSIG,Goldman Sachs Access Investment Grade Corporate 1-5 Year Bond ETF,"$9,550,000",Corporate Bonds,0.08%
+2020-07-14,IBTK,iShares iBonds Dec 2030 Term Treasury ETF,"$777,472,000",Government Bonds,0.07%
+2020-07-14,FLUD,Franklin Ultra Short Bond ETF,"$185,363,000",Corporate Bonds,0.15%
+2020-08-17,ADFI,Anfield Dynamic Fixed Income ETF,"$50,407,500",Total Bond Market,1.68%
+2020-08-18,TBJL,Innovator 20+ Year Treasury Bond 9 Buffer ETF - July,"$22,946,800",Total Bond Market,0.79%
+2020-08-18,TFJL,Innovator 20+ Year Treasury Bond 5 Floor ETF - July,"$7,943,300",Total Bond Market,0.79%
+2020-09-08,GCOR,Goldman Sachs Access U.S. Aggregate Bond ETF,"$736,320,000",Total Bond Market,0.08%
+2020-09-09,AAA,Alternative Access First Priority CLO Bond ETF,"$42,609,200",Corporate Bonds,0.19%
+2020-09-16,BSCU,Invesco BulletShares 2030 Corporate Bond ETF,"$2,389,780,000",Corporate Bonds,0.10%
+2020-09-16,BSMU,Invesco BulletShares 2030 Municipal Bond ETF,"$236,310,000",National Munis,0.18%
+2020-09-16,BSJS,Invesco BulletShares 2028 High Yield Corporate Bond ETF,"$629,143,000",High Yield Bonds,0.42%
+2020-09-22,VCEB,Vanguard ESG U.S. Corporate Bond ETF,"$1,042,310,000",Corporate Bonds,0.12%
+2020-09-22,GOVZ,iShares 25+ Year Treasury STRIPS Bond ETF,"$317,883,000",Government Bonds,0.10%
+2020-09-23,BILS,State Street SPDR Bloomberg 3-12 Month T-Bill ETF,"$3,883,070,000",Government Bonds,0.14%
+2020-10-01,PIFI,ClearShares Piton Intermediate Fixed income ETF,"$104,329,000",Corporate Bonds,0.45%
+2020-10-06,HYBB,iShares BB Rated Corporate Bond ETF,"$543,971,000",High Yield Bonds,0.25%
+2020-10-13,AVSF,Avantis Short-Term Fixed Income ETF,"$669,544,000",Total Bond Market,0.15%
+2020-10-13,AVIG,Avantis Core Fixed Income ETF,"$1,580,780,000",Total Bond Market,0.15%
+2020-10-15,REC,Emles Real Estate Credit ETF,"$2,012,000",Real Estate,0.48%
+2020-10-16,JAAA, Janus Henderson AAA CLO ETF,"$26,105,900,000",Corporate Bonds,0.20%
+2020-10-21,RTAI,Rareview Tax Advantaged Income ETF,"$18,235,100",National Munis,4.72%
+2020-10-21,RDFI,Rareview Dynamic Fixed Income ETF,"$65,393,900",Total Bond Market,4.46%
+2020-11-10,IBHF,iShares iBonds 2026 Term High Yield and Income ETF,"$1,059,660,000",Corporate Bonds,0.35%
+2020-12-01,MBBB,VanEck Moody's Analytics BBB Corporate Bond ETF,"$8,685,800",Corporate Bonds,0.25%
+2020-12-01,MIG,VanEck Moody's Analytics IG Corporate Bond ETF,"$17,306,400",Corporate Bonds,0.20%
+2020-12-02,IHYF,Invesco High Yield Bond Factor ETF,"$151,176,000",High Yield Bonds,0.39%
+2020-12-08,AVMU,Avantis Core Municipal Fixed Income ETF,"$151,041,000",National Munis,0.15%
+2020-12-30,FXED,Sound Enhanced Fixed Income ETF,"$42,127,800",Total Bond Market,2.51%
+2021-01-14,OVT,Overlay Shares Short Term Bond ETF,"$51,714,000",Corporate Bonds,0.79%
+2021-02-03,MBND,State Street Nuveen Municipal Bond ETF,"$27,693,600",Government Bonds,0.40%
+2021-02-09,VABS,Virtus Newfleet ABS/MBS ETF,"$82,603,100",Total Bond Market,0.39%
+2021-03-01,JSCP,JPMorgan Short Duration Core Plus ETF,"$1,274,940,000",Total Bond Market,0.33%
+2021-03-02,FSEC,Fidelity Investment Grade Securitized ETF,"$4,369,840,000",Mortgage Backed Securities,0.36%
+2021-03-02,FIGB,Fidelity Investment Grade Bond ETF,"$351,429,000",Total Bond Market,0.36%
+2021-03-11,MINN,Mairs & Power Minnesota Municipal Bond ETF,"$36,867,000",National Munis,0.25%
+2021-03-16,INMU,iShares Intermediate Muni Income Active ETF,"$334,079,000",National Munis,0.30%
+2021-03-30,JHCB,John Hancock Corporate Bond ETF,"$103,481,000",Corporate Bonds,0.29%
+2021-04-05,VUSB,Vanguard Ultra-Short Bond ETF,"$7,326,630,000",Government Bonds,0.10%
+2021-04-06,EMHC,State Street SPDR Bloomberg Emerging Markets USD Bond ETF,"$239,811,000",Emerging Markets Bonds,0.23%
+2021-04-15,PAB,PGIM Active Aggregate Bond ETF,"$99,649,500",Total Bond Market,0.19%
+2021-05-12,FMNY,First Trust New York Municipal High Income ETF,"$29,447,100",New York Munis,0.65%
+2021-05-18,LQDB,iShares BBB Rated Corporate Bond ETF,"$48,075,200",Corporate Bonds,0.15%
+2021-06-15,FPFD,Fidelity Preferred Securities & Income ETF,"$78,035,500",Preferred Stock/Convertible Bonds,0.59%
+2021-06-22,IBDW,iShares iBonds Dec 2031 Term Corporate ETF,"$2,196,150,000",Corporate Bonds,0.10%
+2021-06-28,DYLD,LeaderShares Dynamic Yield ETF,"$41,736,000",Total Bond Market,0.75%
+2021-06-29,MUSI,American Century Multisector Income ETF,"$192,678,000",Total Bond Market,0.38%
+2021-07-07,IBHG,iShares iBonds 2027 Term High Yield and Income ETF,"$444,707,000",High Yield Bonds,0.35%
+2021-07-13,IBTL,iShares iBonds Dec 2031 Term Treasury ETF,"$513,856,000",Government Bonds,0.07%
+2021-07-15,JOJO,ATAC Credit Rotation ETF,"$5,889,600",High Yield Bonds,1.24%
+2021-07-26,OWNS,CCM Affordable Housing MBS ETF,"$114,029,000",Mortgage Backed Securities,0.30%
+2021-08-09,BKUI,BNY Mellon Ultra Short Income ETF,"$234,469,000",Total Bond Market,0.12%
+2021-08-19,JHMB,John Hancock Mortgage-Backed Securities ETF,"$204,532,000",Mortgage Backed Securities,0.39%
+2021-09-08,MINO,PIMCO Municipal Income Opportunities Active Exchange-Traded Fund,"$501,961,000",High Yield Bonds,0.39%
+2021-09-08,JLQD,Janus Henderson Corporate Bond ETF,"$25,290,000",Corporate Bonds,0.20%
+2021-09-13,SIFI,Harbor Scientific Alpha Income ETF,"$33,015,000",Total Bond Market,0.50%
+2021-09-13,SIHY,Harbor Scientific Alpha High-Yield ETF,"$179,758,000",High Yield Bonds,0.48%
+2021-09-15,BSCV,Invesco BulletShares 2031 Corporate Bond ETF,"$1,563,340,000",Corporate Bonds,0.10%
+2021-09-15,BSMV,Invesco BulletShares 2031 Municipal Bond ETF,"$167,504,000",National Munis,0.18%
+2021-09-15,BSJT,Invesco BulletShares 2029 High Yield Corporate Bond ETF,"$436,430,000",High Yield Bonds,0.42%
+2021-09-20,BNDD,Quadratic Deflation ETF,"$9,235,800",Government Bonds,1.02%
+2021-09-20,FEIG,FlexShares ESG & Climate Investment Grade Corporate Core Index Fund,"$39,383,900",Corporate Bonds,0.12%
+2021-09-21,SBND,Columbia Short Duration Bond ETF,"$140,082,000",Total Bond Market,0.25%
+2021-09-27,OBND,State Street Loomis Sayles Opportunistic Bond ETF,"$53,596,200",Total Bond Market,0.55%
+2021-09-27,TYA,Simplify Intermediate Term Treasury Futures Strategy ETF,"$62,519,400",Government Bonds,0.15%
+2021-09-28,TOTR,T. Rowe Price Total Return ETF,"$549,430,000",Total Bond Market,0.31%
+2021-09-28,TBUX,T. Rowe Price Ultra Short-Term Bond ETF,"$866,461,000",Total Bond Market,0.17%
+2021-09-28,TAGG,T. Rowe Price QM U.S. Bond ETF,"$1,783,530,000",Total Bond Market,0.08%
+2021-09-29,SSFI,Day Hagan / Ned Davis Research Smart Sector Fixed Income ETF,"$30,300,900",Total Bond Market,0.76%
+2021-09-30,RISR,FolioBeyond Alternative Income and Interest Rate Hedge ETF,"$195,037,000",Government Bonds,1.04%
+2021-10-05,UCRD, VictoryShares Corporate Bond ETF,"$152,234,000",Corporate Bonds,0.40%
+2021-10-05,UBND,VictoryShares Core Plus Intermediate Bond ETF,"$1,720,620,000",Total Bond Market,0.40%
+2021-10-28,JPIE,JPMorgan Income ETF,"$7,703,120,000",Total Bond Market,0.39%
+2021-11-15,DFIP,Dimensional Inflation-Protected Securities ETF,"$1,068,070,000",Government Bonds,0.11%
+2021-11-15,DFNM,Dimensional National Municipal Bond ETF,"$1,992,330,000",National Munis,0.17%
+2021-11-15,DFSD,Dimensional Short-Duration Fixed Income ETF,"$6,107,500,000",Corporate Bonds,0.16%
+2021-11-15,DFCF,Dimensional Core Fixed Income ETF,"$9,154,050,000",Total Bond Market,0.17%
+2021-11-16,AHYB,American Century  Select High Yield ETF,"$58,613,100",High Yield Bonds,0.45%
+2021-11-17,FSIG,First Trust Limited Duration Investment Grade Corporate ETF,"$1,452,620,000",Corporate Bonds,0.55%
+2021-12-08,PTRB,PGIM Total Return Bond ETF,"$809,472,000",Total Bond Market,0.49%
+2021-12-14,JHPI,John Hancock Preferred Income ETF,"$146,581,000",Preferred Stock/Convertible Bonds,0.54%
+2021-12-16,FHYS,Federated Hermes Short Duration High Yield ETF,"$51,419,300",High Yield Bonds,0.50%
+2021-12-16,FCSH,Federated Hermes Short Duration Corporate ETF,"$64,819,100",Corporate Bonds,0.30%
+2021-12-19,KDRN,Kingsbarn Tactical Bond ETF,"$2,334,000",Total Bond Market,0.57%
+2021-12-21,MMCA,NYLI MacKay California Muni Intermediate ETF,"$72,454,800",California Munis,0.36%
+2022-01-11,JBBB,Janus Henderson B-BBB CLO ETF,"$1,186,900,000",Corporate Bonds,0.48%
+2022-02-10,HYRM,Xtrackers Risk Managed USD High Yield Strategy ETF,"$48,704,400",High Yield Bonds,0.30%
+2022-02-14,AGGH,Simplify Aggregate Bond ETF,"$359,983,000",Total Bond Market,0.30%
+2022-02-14,CDX,Simplify High Yield ETF,"$486,582,000",Corporate Bonds,0.25%
+2022-02-15,XHYD,BondBloxx USD High Yield Bond Consumer Non-Cyclicals Sector ETF,"$22,177,900",High Yield Bonds,0.35%
+2022-02-15,XHYT,"BondBloxx USD High Yield Bond Telecom, Media & Technology Sector ETF","$52,087,200",High Yield Bonds,0.35%
+2022-02-15,XHYH,BondBloxx USD High Yield Bond Healthcare Sector ETF,"$22,419,600",High Yield Bonds,0.35%
+2022-02-15,XHYC,BondBloxx USD High Yield Bond Consumer Cyclicals Sector ETF,"$25,352,300",High Yield Bonds,0.35%
+2022-02-15,XHYF,BondBloxx USD High Yield Bond Financial & REIT Sector ETF,"$27,604,600",High Yield Bonds,0.35%
+2022-02-15,FSYD,Fidelity Sustainable High Yield ETF,"$101,494,000",High Yield Bonds,0.55%
+2022-02-15,XHYE,BondBloxx USD High Yield Bond Energy Sector ETF,"$10,844,600",High Yield Bonds,0.35%
+2022-02-15,GEMD,Goldman Sachs Access Emerging Markets USD Bond ETF,"$34,160,000",Emerging Markets Bonds,0.30%
+2022-02-15,XHYI,BondBloxx USD High Yield Bond Industrial Sector ETF,"$37,507,400",High Yield Bonds,0.35%
+2022-02-16,HYBL,State Street Blackstone High Income ETF,"$581,063,000",High Yield Bonds,0.70%
+2022-02-22,CGCP, Capital Group Core Plus Income ETF,"$6,806,860,000",Total Bond Market,0.34%
+2022-03-08,IBHH,iShares iBonds 2028 Term High Yield and Income ETF,"$436,957,000",High Yield Bonds,0.35%
+2022-03-08,IBHI,iShares iBonds 2029 Term High Yield and Income ETF,"$366,018,000",High Yield Bonds,0.35%
+2022-03-30,OACP,OneAscent Core Plus Bond ETF,"$223,779,000",Total Bond Market,0.74%
+2022-03-31,DBND,DoubleLine Opportunistic Core Bond ETF,"$635,482,000",Total Bond Market,0.50%
+2022-04-04,MBNE,State Street Nuveen Municipal Bond ESG ETF,"$11,784,300",National Munis,0.43%
+2022-04-08,JCPI,JPMorgan Inflation Managed Bond ETF,"$788,591,000",Corporate Bonds,0.25%
+2022-05-11,LQIG,State Street SPDR MarketAxess Investment Grade 400 Corporate Bond ETF,"$28,819,100",Corporate Bonds,0.09%
+2022-05-17,PFRL,PGIM Floating Rate Income ETF,"$110,761,000",Total Bond Market,0.72%
+2022-05-19,MNBD,ALPS Intermediate Municipal Bond ETF,"$42,363,800",National Munis,0.50%
+2022-05-26,XB,BondBloxx B-Rated USD High Yield Corporate Bond ETF,"$31,799,400",High Yield Bonds,0.30%
+2022-05-26,XBB,BondBloxx BB-Rated USD High Yield Corporate Bond ETF,"$382,554,000",High Yield Bonds,0.20%
+2022-05-26,XCCC,BondBloxx CCC-Rated USD High Yield Corporate Bond ETF,"$287,329,000",High Yield Bonds,0.40%
+2022-06-08,LONZ,PIMCO Senior Loan Active Exchange-Traded Fund,"$486,580,000",Corporate Bonds,0.52%
+2022-06-21,CLOI,VanEck CLO ETF,"$1,346,530,000",Corporate Bonds,0.36%
+2022-06-22,AGRH,iShares Interest Rate Hedged U.S. Aggregate Bond ETF,"$5,268,400",Total Bond Market,0.13%
+2022-06-28,IBDX,iShares iBonds Dec 2032 Term Corporate ETF,"$1,567,940,000",Corporate Bonds,0.10%
+2022-06-29,CPII,American Beacon Ionic Inflation Protection ETF,"$10,422,500",Government Bonds,0.70%
+2022-06-30,XEMD,BondBloxx JP Morgan USD Emerging Markets 1-10 Year Bond ETF,"$801,564,000",Emerging Markets Bonds,0.29%
+2022-07-05,IRVH,Global X Interest Rate Volatility & Inflation Hedge ETF,"$1,420,400",Inflation-Protected Bonds,0.45%
+2022-07-06,IBTM,iShares iBonds Dec 2032 Term Treasury ETF,"$517,749,000",Government Bonds,0.07%
+2022-07-21,SIO,Touchstone Strategic Income ETF,"$232,139,000",Total Bond Market,0.50%
+2022-08-04,TUSI,Touchstone Ultra Short Income ETF,"$337,922,000",Total Bond Market,0.25%
+2022-08-09,UTWO,US Treasury 2 Year Note ETF,"$403,779,000",Government Bonds,0.15%
+2022-08-09,TBIL,US Treasury 3 Month Bill ETF,"$6,304,920,000",Government Bonds,0.15%
+2022-08-09,UTEN,US Treasury 10 Year Note ETF,"$272,132,000",Government Bonds,0.15%
+2022-08-18,LQDW,iShares Investment Grade Corporate Bond BuyWrite Strategy ETF,"$275,944,000",Corporate Bonds,0.34%
+2022-08-18,HYGW,iShares High Yield Corporate Bond BuyWrite Strategy ETF,"$181,573,000",High Yield Bonds,0.69%
+2022-08-18,TLTW,iShares 20+ Year Treasury Bond BuyWrite Strategy ETF,"$1,722,040,000",Government Bonds,0.35%
+2022-08-30,BNDI,NEOS Enhanced Income Aggregate Bond ETF,"$140,050,000",Total Bond Market,0.58%
+2022-08-30,CSHI,NEOS Enhanced Income 1-3 Month T-Bill ETF,"$868,538,000",Government Bonds,0.39%
+2022-09-08,BSCW,Invesco BulletShares 2032 Corporate Bond ETF,"$1,349,850,000",Corporate Bonds,0.10%
+2022-09-08,BSJU,Invesco BulletShares 2030 High Yield Corporate Bond ETF,"$242,823,000",High Yield Bonds,0.42%
+2022-09-13,XTWO,BondBloxx Bloomberg Two Year Target Duration US Treasury ETF,"$168,793,000",Government Bonds,0.05%
+2022-09-13,XTRE,BondBloxx Bloomberg Three Year Target Duration US Treasury ETF,"$218,380,000",Government Bonds,0.05%
+2022-09-13,XTEN,BondBloxx Bloomberg Ten Year Target Duration US Treasury ETF,"$894,891,000",Government Bonds,0.08%
+2022-09-13,XONE,BondBloxx Bloomberg One Year Target Duration US Treasury ETF,"$718,049,000",Government Bonds,0.03%
+2022-09-13,XTWY,BondBloxx Bloomberg Twenty Year Target Duration US Treasury ETF,"$193,407,000",Government Bonds,0.13%
+2022-09-13,XSVN,BondBloxx Bloomberg Seven Year Target Duration US Treasury ETF,"$286,268,000",Government Bonds,0.05%
+2022-09-13,XHLF,BondBloxx Bloomberg Six Month Target Duration US Treasury ETF,"$1,971,750,000",Government Bonds,0.03%
+2022-09-13,XFIV,BondBloxx Bloomberg Five Year Target Duration US Treasury ETF,"$417,820,000",Government Bonds,0.05%
+2022-09-14,YEAR,AB Ultra Short Income ETF,"$1,457,040,000",High Yield Bonds,0.25%
+2022-09-14,TAFI,AB Tax-Aware Short Duration Municipal ETF,"$1,116,290,000",National Munis,0.27%
+2022-10-11,SDSI,American Century Short Duration Strategic Income ETF,"$170,664,000",Total Bond Market,0.32%
+2022-10-25,CGMU,Capital Group Municipal Income ETF,"$5,046,860,000",Government Bonds,0.27%
+2022-11-15,OBIL,US Treasury 12 Month Bill ETF,"$300,265,000",Government Bonds,0.15%
+2022-11-15,DFSB,Dimensional Global Sustainability Fixed Income ETF,"$618,408,000",Total Bond Market,0.24%
+2022-12-09,ICLO,Invesco AAA CLO Floating Rate Note ETF,"$406,388,000",,0.19%
+2022-12-09,HIYS,Invesco High Yield Select ETF,"$7,946,600",High Yield Bonds,0.48%
+2022-12-28,BOXX,Alpha Architect 1-3 Month Box ETF,"$9,819,000,000",Government Bonds,0.19%
+2023-01-10,CLOA,iShares AAA CLO Active ETF,"$1,455,530,000",Corporate Bonds,0.20%
+2023-01-24,CLOZ,Eldridge BBB-B CLO ETF,"$766,577,000",Corporate Bonds,0.50%
+2023-01-31,CVSB,Calvert Ultra-Short Investment Grade ETF,"$183,096,000",Total Bond Market,0.24%
+2023-03-07,XBIL,US Treasury 6 Month Bill ETF,"$758,243,000",Government Bonds,0.15%
+2023-03-07,GMUN,Goldman Sachs Access Municipal Bond ETF,"$10,194,000",National Munis,0.08%
+2023-03-07,VTES,Vanguard Short-Term Tax Exempt Bond ETF,"$1,646,850,000",,0.06%
+2023-03-28,UFIV,US Treasury 5 Year Note ETF,"$32,949,500",Government Bonds,0.15%
+2023-03-31,DCRE,DoubleLine Commercial Real Estate ETF,"$344,968,000",Real Estate,0.40%
+2023-04-19,BBLB,JPMorgan BetaBuilders U.S. Treasury Bond 20+ Year ETF,"$5,990,000",Government Bonds,0.04%
+2023-04-19,BBIB,JPMorgan BetaBuilders U.S. Treasury Bond 3-10 Year ETF,"$25,773,800",Government Bonds,0.04%
+2023-04-19,BBSB,JPMorgan BetaBuilders U.S. Treasury Bond 1-3 Year ETF,"$34,975,100",Government Bonds,0.04%
+2023-05-15,HYFI,AB High Yield ETF,"$312,350,000",High Yield Bonds,0.40%
+2023-05-19,BINC,iShares Flexible Income Active ETF,"$16,366,500,000",High Yield Bonds,0.40%
+2023-06-09,RMIF,LHA Risk-Managed Income ETF,"$28,120,800",Total Bond Market,1.68%
+2023-06-22,PYLD,PIMCO Multisector Bond Active Exchange-Traded Fund,"$11,560,500,000",Total Bond Market,0.64%
+2023-06-26,CRDT,Simplify Opportunistic Income ETF,"$39,806,400",Corporate Bonds,0.99%
+2023-07-11,SCYB,Schwab High Yield Bond ETF,"$2,231,590,000",High Yield Bonds,0.03%
+2023-07-19,CLOX,Eldridge AAA CLO ETF,"$290,418,000",Corporate Bonds,0.20%
+2023-08-01,VETZ,Academy Veteran Bond ETF,"$88,836,700",Mortgage Backed Securities,0.35%
+2023-09-18,HYSA,BondBloxx USD High Yield Bond Sector Rotation ETF,"$31,528,800",High Yield Bonds,0.55%
+2023-10-04,CVRT,Calamos Convertible Equity Alternative ETF,"$21,155,000",Preferred Stock/Convertible Bonds,0.69%
+2023-11-01,JHMU,John Hancock Dynamic Municipal Bond ETF,"$40,885,300",National Munis,0.39%
+2023-11-15,SOFR,Amplify Samsung SOFR ETF,"$380,464,000",Total Bond Market,0.20%
+2023-12-06,SMTH,ALPS | Smith Core Plus Bond ETF,"$2,455,460,000",Total Bond Market,0.59%
+2023-12-13,EYEG,AB Corporate Bond ETF,"$26,877,800",Corporate Bonds,0.30%
+2023-12-13,CPLS,AB Core Plus Bond ETF,"$197,513,000",Total Bond Market,0.30%
+2023-12-13,TAFM,AB Tax-Aware Intermediate Municipal ETF,"$471,886,000",National Munis,0.28%
+2023-12-13,TAFL,AB Tax-Aware Long Municipal ETF,"$50,106,600",National Munis,0.28%
+2024-01-10,ZTWO,F/M 2-Year Investment Grade Corporate Bond Etf,"$18,335,700",Corporate Bonds,0.15%
+2024-01-10,ZTEN,F/M 10-Year Investment Grade Corporate Bond Etf,"$28,767,600",Corporate Bonds,0.15%
+2024-01-25,BBBS,BondBloxx BBB Rated 1-5 Year Corporate Bond ETF,"$154,810,000",Corporate Bonds,0.19%
+2024-01-25,BBBI,BondBloxx BBB Rated 5-10 Year Corporate Bond ETF,"$133,012,000",Corporate Bonds,0.19%
+2024-01-25,BBBL,BondBloxx BBB Rated 10+ Year Corporate Bond ETF,"$4,881,500",Corporate Bonds,0.19%
+2024-06-10,SYFI,AB Short Duration High Yield ETF,"$875,605,000",High Yield Bonds,0.40%
+2024-06-10,SDFI,AB Short Duration Income ETF,"$155,436,000",Total Bond Market,0.30%
+2024-06-24,FLXR,TCW Flexible Income ETF,"$2,599,450,000",Total Bond Market,0.40%
+2024-06-25,CGHM,Capital Group Municipal High-Income ETF,"$2,618,440,000",National Munis,0.34%
+2024-09-24,MMKT,Texas Capital Government Money Market ETF,"$75,180,000",Money Market,0.20%
+2024-09-30,HYBI,NEOS Enhanced Income Credit Select ETF,"$200,533,000",Total Bond Market,0.68%
+2024-10-03,EDGF,3EDGE Dynamic Fixed Income ETF,"$300,898,000",Total Bond Market,0.79%
+2024-10-09,TRSY,Xtrackers US 0-1 Year Treasury ETF,"$20,502,700",Government Bonds,0.06%
+2024-10-29,TLTP,Amplify TLT U.S. Treasury 12% Option Income ETF,"$26,907,600",Government Bonds,0.38%
+2024-11-05,VSDM,Vanguard Short Duration Tax-Exempt Bond ETF,"$412,238,000",National Munis,0.12%
+2024-11-07,LDRI,iShares iBonds 1-5 Year TIPS Ladder ETF,"$12,126,500",Corporate Bonds,0.10%
+2024-11-21,VCRM,Vanguard Core Tax-Exempt Bond ETF,"$917,959,000",National Munis,0.12%
+2024-12-11,TLTI,NEOS Enhanced Income 20+ Year Treasury Bond ETF,"$10,615,400",Government Bonds,0.58%
+2025-01-15,BNDS,Infrastructure Capital Bond Income ETF,"$39,846,800",Total Bond Market,0.81%
+2025-02-07,HIMU,iShares High Yield Muni Active ETF,"$2,488,160,000",High Yield Bonds,0.42%
+2025-02-24,RBIL,F/m Ultrashort Treasury Inflation-Protected Security (TIPS) ETF,"$43,223,500",Inflation-Protected Bonds,0.17%
+2025-02-26,PRIV,SPDR SSGA IG Public & Private Credit ETF,"$100,632,000",Total Bond Market,0.70%
+2025-03-14,BMAX,REX Bitcoin Corporate Treasury Convertible Bond ETF,"$13,657,300",Corporate Bonds,1.14%
+2025-03-31,TAPR,Innovator Equity Defined Protection ETF - 2 Yr to April 2027,"$10,398,500",Inverse Bonds,0.79%
+2025-04-14,ZTOP,F/m High Yield 100 ETF,"$17,821,300",High Yield Bonds,0.39%
+2025-04-30,ACVT,Advent Convertible Bond ETF,"$28,428,500",Preferred Stock/Convertible Bonds,0.65%
+2025-06-24,JPHY,JPMorgan Active High Yield ETF,"$2,160,900,000",High Yield Bonds,0.45%
+2025-06-25,GGOV,iShares Global Government Bond USD Hedged Active ETF,"$42,862,500",International Government Bonds,0.39%
+2025-07-09,RAAA,Reckoner Yield Enhanced AAA CLO ETF,"$27,682,300",Leveraged Bonds,0.30%
+2025-08-13,HOLD,Harbor Alpha Layering ETF,"$7,312,500",Total Bond Market,0.73%
+2025-08-18,TIPD,Northern Trust 2055 Inflation-Linked Distributing Ladder ETF,"$3,031,500",Inverse Bonds,0.10%
+2025-10-03,CAM,AB California Intermediate Municipal ETF,"$1,122,160,000",California Munis,0.27%
+2025-10-22,RCLO,Reckoner BBB-B CLO ETF,"$27,733,900",Corporate Bonds,0.50%
