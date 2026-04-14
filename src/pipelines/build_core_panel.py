@@ -16,6 +16,10 @@ from src.data.prices import (
 )
 from src.data.risk_free import build_weekly_risk_free
 from src.data.universe import build_universe
+from src.features.category import assign_category_bucket
+from src.features.forward_outcomes import add_forward_outcomes
+from src.features.rolling_risk import add_rolling_risk_metrics
+from src.features.stress_index import add_stress_index
 from src.features.structural import add_structural_features
 
 
@@ -63,7 +67,11 @@ def build_core_panel(
     core_panel = core_panel.merge(metadata, on="Symbol", how="left")
     core_panel["RET_XS"] = core_panel["Return"] - core_panel["RF_w"]
     core_panel = add_structural_features(core_panel)
+    core_panel = assign_category_bucket(core_panel)
+    core_panel = add_stress_index(core_panel)
     core_panel = core_panel.sort_values(["Symbol", "Date"]).reset_index(drop=True)
+    core_panel = add_rolling_risk_metrics(core_panel)
+    core_panel = add_forward_outcomes(core_panel)
 
     returns_w_long.to_csv(output_path / "weekly_returns_long.csv", index=False)
     macro_factors.to_csv(output_path / "macro_factors_weekly.csv", index=False)
