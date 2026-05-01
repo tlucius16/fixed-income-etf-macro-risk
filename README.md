@@ -66,6 +66,10 @@ If you use FRED pulls, set a FRED API key:
 export FRED_API_KEY="your_key_here"
 ```
 
+'''
+$env:FRED_API_KEY = "your_key_here"
+'''
+
 ## Inputs
 
 The preferred ETFDB screener input location is:

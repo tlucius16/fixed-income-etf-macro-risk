@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python -c ':*)"
+      "Bash(python -c ':*)",
+      "Bash(py -3.12 scripts/restructure_notebook.py)",
+      "Bash(py -3.12 -c ' *)"
     ]
   }
 }

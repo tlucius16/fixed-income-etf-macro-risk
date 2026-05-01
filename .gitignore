@@ -14,3 +14,8 @@ env/
 ENV/
 .env
 .env.*
+.claude
+.venv-py314-broken/
+.venv311/
+.legacy/
+.scripts/
