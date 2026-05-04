@@ -12,9 +12,16 @@ The repo is built around the existing end-to-end prototype, but the active workf
 ├── requirements.txt
 ├── data
 │   ├── raw
+│   │   └── live
 │   ├── processed
+│   │   ├── offline
+│   │   └── live
 │   └── exports
-│       └── legacy_csv_exports
+│       ├── legacy_csv_exports
+│       └── tables
+├── docs
+│   ├── data_provenance.md
+│   └── methodology_review.md
 ├── legacy
 │   └── etf_data_legacy_reference.py
 ├── notebooks
@@ -84,7 +91,32 @@ If that file is absent, the pipeline falls back to the preserved legacy export:
 data/exports/legacy_csv_exports/database.csv
 ```
 
-## Run The Core Panel Build
+## Processed Panel Modes
+
+Processed CSVs are split into two panel slots:
+
+```text
+data/processed/offline/
+data/processed/live/
+```
+
+The offline panel is the stable, reproducible panel used by notebooks by default. The live panel is written by fresh yfinance/FRED/GPR pulls.
+
+In notebooks, switch the source near the top:
+
+```python
+PANEL_MODE = "offline"  # or "live"
+```
+
+The live macro build uses a hybrid ICE BofA credit-spread series:
+
+```text
+legacy baml_w.csv history + live FRED BAMLC0A0CM updates
+```
+
+FRED now exposes only a rolling three-year window for the ICE BofA series, so the legacy cache preserves historical coverage while FRED keeps recent observations current.
+
+## Run The Live Core Panel Build
 
 From the repo root:
 
@@ -92,20 +124,28 @@ From the repo root:
 python -m src.pipelines.build_core_panel
 ```
 
+By default this writes fresh-pull outputs to:
+
+```text
+data/processed/live/
+```
+
 Useful options:
 
 ```bash
 python -m src.pipelines.build_core_panel --min-years 5
 python -m src.pipelines.build_core_panel --screener-csv data/raw/etfdb_screener.csv
-python -m src.pipelines.build_core_panel --output-dir data/processed
+python -m src.pipelines.build_core_panel --panel-mode live
+python -m src.pipelines.build_core_panel --panel-mode offline
+python -m src.pipelines.build_core_panel --output-dir data/processed/custom
 ```
 
 The pipeline writes CSV outputs only:
 
 ```text
-data/processed/weekly_returns_long.csv
-data/processed/macro_factors_weekly.csv
-data/processed/core_panel.csv
+weekly_returns_long.csv
+macro_factors_weekly.csv
+core_panel.csv
 ```
 
 ## Notebooks
@@ -118,3 +158,41 @@ notebooks/02_rolling_risk_metrics.ipynb
 ```
 
 They import from `src/` and read processed CSVs. They should not duplicate the full ingestion pipeline.
+
+## Table Exports
+
+Notebook result tables should be exported to:
+
+```text
+data/exports/tables/<panel_mode>/
+```
+
+Use the helper from analysis notebooks:
+
+```python
+from src.reporting.tables import export_table, export_tables
+
+export_table(cat_summary, "category_summary", panel_mode=PANEL_MODE)
+export_tables(
+    {
+        "category_summary": cat_summary,
+        "decile_summary": decile_summary,
+    },
+    panel_mode=PANEL_MODE,
+    formats=("csv", "markdown"),
+)
+```
+
+## Research Notes
+
+Data source and construction notes are in:
+
+```text
+docs/data_provenance.md
+```
+
+Statistical and paper-methodology issues to handle are in:
+
+```text
+docs/methodology_review.md
+```

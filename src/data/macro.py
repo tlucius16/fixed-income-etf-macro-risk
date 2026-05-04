@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import time
+from os import PathLike
 
 import pandas as pd
 import requests
@@ -69,6 +70,47 @@ def pull_yahoo_macro_series(ticker: str, column_name: str, period: str = config.
     return out.rename(columns={"index": "Date"})[["Date", column_name]]
 
 
+def pull_fred_weekly_series(
+    series_id: str,
+    column_name: str,
+    api_key: str | None = config.FRED_API_KEY,
+    session: requests.Session | None = None,
+) -> pd.DataFrame:
+    df = fred_series(series_id, api_key=api_key, session=session)
+    return to_weekly_friday(df.rename(columns={series_id: column_name}), column_name)
+
+
+def load_legacy_baml_weekly(path: str | PathLike[str] = config.LEGACY_BAML_WEEKLY_CSV) -> pd.DataFrame:
+    legacy = pd.read_csv(path, parse_dates=["Date"])
+    legacy = legacy.rename(columns={"BAML_C0A0CM": "BAMLC0A0CM"})
+    missing = {"Date", "BAMLC0A0CM"} - set(legacy.columns)
+    if missing:
+        raise ValueError(f"Legacy BAML file is missing required columns: {sorted(missing)}")
+    return (
+        legacy[["Date", "BAMLC0A0CM"]]
+        .dropna(subset=["Date", "BAMLC0A0CM"])
+        .sort_values("Date")
+        .drop_duplicates(subset="Date", keep="last")
+        .reset_index(drop=True)
+    )
+
+
+def build_hybrid_baml_weekly(
+    api_key: str | None = config.FRED_API_KEY,
+    session: requests.Session | None = None,
+    legacy_path: str | PathLike[str] = config.LEGACY_BAML_WEEKLY_CSV,
+) -> pd.DataFrame:
+    legacy = load_legacy_baml_weekly(legacy_path)
+    live = pull_fred_weekly_series("BAMLC0A0CM", "BAMLC0A0CM", api_key=api_key, session=session)
+
+    return (
+        pd.concat([legacy, live], ignore_index=True)
+        .sort_values("Date")
+        .drop_duplicates(subset="Date", keep="last")
+        .reset_index(drop=True)
+    )
+
+
 def to_weekly_friday(df: pd.DataFrame, value_col: str, date_col: str = "Date") -> pd.DataFrame:
     out = df.copy()
     out[date_col] = pd.to_datetime(out[date_col], errors="coerce", utc=True).dt.tz_localize(None)
@@ -85,13 +127,18 @@ def add_weekly_changes(macro_levels: pd.DataFrame, factor_cols: list[str]) -> pd
     return out.dropna(subset=[f"d_{col}" for col in factor_cols]).reset_index(drop=True)
 
 
-def build_weekly_macro_panel(api_key: str | None = config.FRED_API_KEY) -> pd.DataFrame:
+def build_weekly_macro_panel(
+    api_key: str | None = config.FRED_API_KEY,
+    use_hybrid_baml: bool = True,
+) -> pd.DataFrame:
     session = make_fred_session()
     weekly_frames: list[pd.DataFrame] = []
 
     for name, series_id in config.MACRO_SERIES_IDS.items():
-        df = fred_series(series_id, api_key=api_key, session=session)
-        weekly_frames.append(to_weekly_friday(df.rename(columns={series_id: name}), name))
+        if name == "BAMLC0A0CM" and use_hybrid_baml:
+            weekly_frames.append(build_hybrid_baml_weekly(api_key=api_key, session=session))
+            continue
+        weekly_frames.append(pull_fred_weekly_series(series_id, name, api_key=api_key, session=session))
 
     vix = pull_yahoo_macro_series("^VIX", "VIX")
     move = pull_yahoo_macro_series("^MOVE", "MOVE")

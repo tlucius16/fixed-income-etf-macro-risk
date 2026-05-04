@@ -10,13 +10,43 @@ RAW_DIR = DATA_DIR / "raw"
 PROCESSED_DIR = DATA_DIR / "processed"
 EXPORTS_DIR = DATA_DIR / "exports"
 LEGACY_EXPORTS_DIR = EXPORTS_DIR / "legacy_csv_exports"
+TABLES_EXPORT_DIR = EXPORTS_DIR / "tables"
+RAW_LIVE_DIR = RAW_DIR / "live"
+PROCESSED_OFFLINE_DIR = PROCESSED_DIR / "offline"
+PROCESSED_LIVE_DIR = PROCESSED_DIR / "live"
 
 ETFDB_SCREENER_CSV = RAW_DIR / "etfdb_screener.csv"
 LEGACY_DATABASE_CSV = LEGACY_EXPORTS_DIR / "database.csv"
+LEGACY_BAML_WEEKLY_CSV = LEGACY_EXPORTS_DIR / "baml_w.csv"
 
-WEEKLY_RETURNS_LONG_CSV = PROCESSED_DIR / "weekly_returns_long.csv"
-MACRO_FACTORS_WEEKLY_CSV = PROCESSED_DIR / "macro_factors_weekly.csv"
-CORE_PANEL_CSV = PROCESSED_DIR / "core_panel.csv"
+PANEL_MODES = {"offline", "live"}
+DEFAULT_PANEL_MODE = os.getenv("PANEL_MODE", "offline")
+
+
+def processed_dir_for_mode(mode: str = DEFAULT_PANEL_MODE) -> Path:
+    normalized = mode.lower()
+    if normalized == "offline":
+        return PROCESSED_OFFLINE_DIR
+    if normalized == "live":
+        return PROCESSED_LIVE_DIR
+    raise ValueError(f"Unknown panel mode {mode!r}. Expected one of {sorted(PANEL_MODES)}.")
+
+
+def weekly_returns_long_csv(mode: str = DEFAULT_PANEL_MODE) -> Path:
+    return processed_dir_for_mode(mode) / "weekly_returns_long.csv"
+
+
+def macro_factors_weekly_csv(mode: str = DEFAULT_PANEL_MODE) -> Path:
+    return processed_dir_for_mode(mode) / "macro_factors_weekly.csv"
+
+
+def core_panel_csv(mode: str = DEFAULT_PANEL_MODE) -> Path:
+    return processed_dir_for_mode(mode) / "core_panel.csv"
+
+
+WEEKLY_RETURNS_LONG_CSV = weekly_returns_long_csv()
+MACRO_FACTORS_WEEKLY_CSV = macro_factors_weekly_csv()
+CORE_PANEL_CSV = core_panel_csv()
 
 DEFAULT_MIN_HISTORY_YEARS = 5
 DEFAULT_PRICE_PERIOD = "max"

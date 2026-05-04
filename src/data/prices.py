@@ -50,8 +50,7 @@ def build_weekly_close_matrix(raw_prices: pd.DataFrame) -> pd.DataFrame:
 
 
 def build_weekly_returns(weekly_prices: pd.DataFrame) -> pd.DataFrame:
-    return weekly_prices.pct_change().dropna(how="all")
-
+    return weekly_prices.pct_change(fill_method=None).dropna(how="all")
 
 def reshape_weekly_returns_long(returns_w: pd.DataFrame) -> pd.DataFrame:
     returns_w_long = (

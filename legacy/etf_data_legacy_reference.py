@@ -149,7 +149,7 @@ import time
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-FRED_API_KEY = "513356fae3c33350e96139f547834d8e"
+FRED_API_KEY = "your_FRED_API_key_here"  # replace with your actual FRED API key
 
 def make_fred_session():
     session = requests.Session()
