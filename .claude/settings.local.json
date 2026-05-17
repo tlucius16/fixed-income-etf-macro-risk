@@ -3,7 +3,9 @@
     "allow": [
       "Bash(python -c ':*)",
       "Bash(py -3.12 scripts/restructure_notebook.py)",
-      "Bash(py -3.12 -c ' *)"
+      "Bash(py -3.12 -c ' *)",
+      "Bash(.venv/Scripts/jupyter nbconvert *)",
+      "Bash(gh api *)"
     ]
   }
 }

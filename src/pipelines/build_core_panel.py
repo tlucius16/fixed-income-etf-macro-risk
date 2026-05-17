@@ -45,8 +45,7 @@ def _date_range_text(df: pd.DataFrame, date_col: str = "Date") -> str:
     if date_col not in df.columns or df.empty:
         return "n/a"
 
-    dates = pd.to_datetime(df[date_col], errors="coerce")
-    dates = dates.dropna()
+    dates = pd.to_datetime(df[date_col], errors="coerce").dropna()
     if dates.empty:
         return "n/a"
     return f"{dates.min().date()} to {dates.max().date()} ({dates.nunique():,} dates)"
@@ -62,9 +61,9 @@ def _print_panel_diagnostic(label: str, df: pd.DataFrame, symbol_col: str | None
 def build_core_panel(
     screener_csv: str | Path | None = None,
     output_dir: str | Path | None = None,
-    panel_mode: str = "live",
     min_years: int = config.DEFAULT_MIN_HISTORY_YEARS,
     fred_api_key: str | None = config.FRED_API_KEY,
+    panel_mode: str = "live",
 ) -> pd.DataFrame:
     screener_path = resolve_screener_csv(screener_csv)
     output_path = Path(output_dir) if output_dir is not None else config.processed_dir_for_mode(panel_mode)

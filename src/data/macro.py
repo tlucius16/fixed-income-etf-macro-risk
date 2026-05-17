@@ -80,6 +80,22 @@ def pull_fred_weekly_series(
     return to_weekly_friday(df.rename(columns={series_id: column_name}), column_name)
 
 
+def to_weekly_friday(df: pd.DataFrame, value_col: str, date_col: str = "Date") -> pd.DataFrame:
+    out = df.copy()
+    out[date_col] = pd.to_datetime(out[date_col], errors="coerce", utc=True).dt.tz_localize(None)
+    out = out.dropna(subset=[date_col]).set_index(date_col).sort_index()
+    out = out[[value_col]].resample("W-FRI").last().dropna().reset_index()
+    out = out.rename(columns={date_col: "Date"})
+    return out.drop_duplicates(subset="Date", keep="last").reset_index(drop=True)
+
+
+def add_weekly_changes(macro_levels: pd.DataFrame, factor_cols: list[str]) -> pd.DataFrame:
+    out = macro_levels.sort_values("Date").copy()
+    for col in factor_cols:
+        out[f"d_{col}"] = out[col].diff()
+    return out.dropna(subset=[f"d_{col}" for col in factor_cols]).reset_index(drop=True)
+
+
 def load_legacy_baml_weekly(path: str | PathLike[str] = config.LEGACY_BAML_WEEKLY_CSV) -> pd.DataFrame:
     legacy = pd.read_csv(path, parse_dates=["Date"])
     legacy = legacy.rename(columns={"BAML_C0A0CM": "BAMLC0A0CM"})
@@ -102,29 +118,12 @@ def build_hybrid_baml_weekly(
 ) -> pd.DataFrame:
     legacy = load_legacy_baml_weekly(legacy_path)
     live = pull_fred_weekly_series("BAMLC0A0CM", "BAMLC0A0CM", api_key=api_key, session=session)
-
     return (
         pd.concat([legacy, live], ignore_index=True)
         .sort_values("Date")
         .drop_duplicates(subset="Date", keep="last")
         .reset_index(drop=True)
     )
-
-
-def to_weekly_friday(df: pd.DataFrame, value_col: str, date_col: str = "Date") -> pd.DataFrame:
-    out = df.copy()
-    out[date_col] = pd.to_datetime(out[date_col], errors="coerce", utc=True).dt.tz_localize(None)
-    out = out.dropna(subset=[date_col]).set_index(date_col).sort_index()
-    out = out[[value_col]].resample("W-FRI").last().dropna().reset_index()
-    out = out.rename(columns={date_col: "Date"})
-    return out.drop_duplicates(subset="Date", keep="last").reset_index(drop=True)
-
-
-def add_weekly_changes(macro_levels: pd.DataFrame, factor_cols: list[str]) -> pd.DataFrame:
-    out = macro_levels.sort_values("Date").copy()
-    for col in factor_cols:
-        out[f"d_{col}"] = out[col].diff()
-    return out.dropna(subset=[f"d_{col}" for col in factor_cols]).reset_index(drop=True)
 
 
 def build_weekly_macro_panel(

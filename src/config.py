@@ -18,6 +18,7 @@ PROCESSED_LIVE_DIR = PROCESSED_DIR / "live"
 ETFDB_SCREENER_CSV = RAW_DIR / "etfdb_screener.csv"
 LEGACY_DATABASE_CSV = LEGACY_EXPORTS_DIR / "database.csv"
 LEGACY_BAML_WEEKLY_CSV = LEGACY_EXPORTS_DIR / "baml_w.csv"
+LEGACY_MACRO_FACTORS_CSV = LEGACY_EXPORTS_DIR / "macro_factors.csv"
 
 PANEL_MODES = {"offline", "live"}
 DEFAULT_PANEL_MODE = os.getenv("PANEL_MODE", "offline")

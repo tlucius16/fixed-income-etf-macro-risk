@@ -17,6 +17,45 @@ _COMPONENTS = ["d_ANFCI", "d_BAMLC0A0CM", "d_MOVE", "d_VIX"]
 _HIGH_STRESS_THRESHOLD = 1.0
 
 
+def add_expanding_stress_index(
+    panel: pd.DataFrame,
+    min_periods: int = 52,
+) -> pd.DataFrame:
+    """Add *stress_index_exp* and *high_stress_exp* using an expanding-window z-score.
+
+    Unlike :func:`add_stress_index`, standardisation at each week t uses only
+    the mean and std of weeks strictly before t (via a one-period shift).  This
+    eliminates the lookahead bias present in the full-sample version and makes
+    the signal valid for predictive framing.
+
+    The flag is undefined (NaN / 0) for the first *min_periods* weeks while the
+    expanding window accumulates enough history.
+
+    Columns added
+    -------------
+    stress_index_exp : expanding-window z-score composite
+    high_stress_exp  : 1 if stress_index_exp > 1.0, else 0
+    """
+    macro_weekly = (
+        panel[["Date"] + _COMPONENTS]
+        .drop_duplicates("Date")
+        .set_index("Date")
+        .sort_index()
+    )
+
+    # Expanding mean and std through t-1 (shift(1) removes current-period lookahead)
+    exp_mean = macro_weekly[_COMPONENTS].expanding(min_periods=min_periods).mean().shift(1)
+    exp_std  = macro_weekly[_COMPONENTS].expanding(min_periods=min_periods).std(ddof=1).shift(1)
+
+    z_exp = (macro_weekly[_COMPONENTS] - exp_mean) / exp_std
+    z_exp["stress_index_exp"] = z_exp[_COMPONENTS].mean(axis=1)
+    z_exp["high_stress_exp"] = (z_exp["stress_index_exp"] > _HIGH_STRESS_THRESHOLD).astype(int)
+
+    stress_exp = z_exp[["stress_index_exp", "high_stress_exp"]].reset_index()
+
+    return panel.merge(stress_exp, on="Date", how="left")
+
+
 def add_stress_index(panel: pd.DataFrame) -> pd.DataFrame:
     """Add *stress_index* and *high_stress* columns to *panel*.
 
