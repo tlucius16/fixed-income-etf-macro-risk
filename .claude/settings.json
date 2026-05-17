@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(python -c \"import pandas as pd; df = pd.read_csv\\('c:/Users/yerr/Desktop/fixed-income-etf-macro-risk/data/processed/core_panel.csv', usecols=['ETF Database Category']\\); cats = sorted\\(df['ETF Database Category'].dropna\\(\\).unique\\(\\)\\); [print\\(repr\\(c\\)\\) for c in cats]; print\\(f'\\\\nTotal: {len\\(cats\\)}'\\)\")",
-      "Bash(del \"c:/Users/yerr/Desktop/fixed-income-etf-macro-risk/notebooks/patch_nb.py\")"
-    ]
-  }
-}

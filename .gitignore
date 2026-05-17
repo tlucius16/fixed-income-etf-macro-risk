@@ -17,4 +17,4 @@ ENV/
 .claude/
 .venv-py314-broken/
 .venv311/
-.scripts/
+.scripts/.claude/
