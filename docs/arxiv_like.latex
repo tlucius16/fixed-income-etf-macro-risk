@@ -1,0 +1,73 @@
+\documentclass[11pt,letterpaper,twocolumn]{article}
+
+\usepackage[margin=0.7in]{geometry}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp}
+  \usepackage{lmodern}
+\else
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+  \setmainfont{Times New Roman}
+  \setsansfont{Arial}
+  \setmonofont{Menlo}
+  \setmathfont{STIX Two Math}
+\fi
+
+\IfFileExists{microtype.sty}{\usepackage[]{microtype}\UseMicrotypeSet[protrusion]{basicmath}}{}
+\usepackage{amsmath}
+\ifPDFTeX
+  \usepackage{amssymb}
+\fi
+\usepackage{booktabs,array,longtable}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\definecolor{ArXivLink}{HTML}{0B3D91}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=ArXivLink,
+  urlcolor=ArXivLink,
+  pdftitle={$title$},
+  pdfauthor={$for(author)$$author$$sep$, $endfor$}
+}
+\usepackage{titlesec}
+\usepackage{enumitem}
+
+\setlength{\parindent}{0.5em}
+\setlength{\parskip}{0.2em}
+\setlength{\columnsep}{0.25in}
+\raggedbottom
+
+\titleformat{\section}{\large\bfseries}{}{0em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{}{0em}{}
+\titlespacing*{\section}{0pt}{0.9em}{0.35em}
+\titlespacing*{\subsection}{0pt}{0.7em}{0.25em}
+\setlist{nosep,leftmargin=*}
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\title{\LARGE\bfseries $title$}
+\author{$for(author)$$author$$sep$\\$endfor$}
+\date{$date$}
+
+\begin{document}
+
+\twocolumn[
+\begin{@twocolumnfalse}
+\maketitle
+\begin{abstract}
+\small
+$abstract$
+\end{abstract}
+\vspace{0.8em}
+\end{@twocolumnfalse}
+]
+
+$body$
+
+\end{document}
