@@ -1,6 +1,6 @@
 \documentclass[11pt,letterpaper,twocolumn]{article}
 
-\usepackage[margin=0.7in]{geometry}
+\usepackage[margin=0.6in]{geometry}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
@@ -21,7 +21,7 @@
 \ifPDFTeX
   \usepackage{amssymb}
 \fi
-\usepackage{booktabs,array,longtable}
+\usepackage{booktabs,array,longtable,tabularx,float}
 \usepackage{graphicx}
 \usepackage{xcolor}
 \definecolor{ArXivLink}{HTML}{0B3D91}
