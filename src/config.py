@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 import os
 from pathlib import Path
 
@@ -19,9 +20,44 @@ ETFDB_SCREENER_CSV = RAW_DIR / "etfdb_screener.csv"
 LEGACY_DATABASE_CSV = LEGACY_EXPORTS_DIR / "database.csv"
 LEGACY_BAML_WEEKLY_CSV = LEGACY_EXPORTS_DIR / "baml_w.csv"
 LEGACY_MACRO_FACTORS_CSV = LEGACY_EXPORTS_DIR / "macro_factors.csv"
+LEGACY_RAW_PRICES_CSV = LEGACY_EXPORTS_DIR / "raw_prices.csv"
+RAW_PRICES_CSV = RAW_DIR / "prices.csv"
 
 PANEL_MODES = {"offline", "live"}
 DEFAULT_PANEL_MODE = os.getenv("PANEL_MODE", "offline")
+
+# ── Options screen paths ──────────────────────────────────────────────────────
+OPTIONS_SCREEN_RAW_DIR = RAW_DIR / "options_screen"
+OPTIONS_SCREEN_DIR     = PROCESSED_DIR / "options_screen"
+OPTIONS_PANEL_CSV      = OPTIONS_SCREEN_DIR / "options_panel.csv"
+IV_PANEL_CSV           = OPTIONS_SCREEN_DIR / "iv_panel_full.csv"
+CALL_PUT_IV_CSV        = OPTIONS_SCREEN_DIR / "call_put_iv_diagnostic.csv"
+TICKER_SUMMARY_CSV     = OPTIONS_SCREEN_DIR / "ticker_summary.csv"
+CHAINS_CSV             = OPTIONS_SCREEN_DIR / "chains.csv"
+SCREEN_SUMMARY_CSV     = OPTIONS_SCREEN_DIR / "summary.csv"
+
+PAPER_DIR   = PROJECT_ROOT / "docs" / "options_paper"
+FIGURES_DIR = PAPER_DIR / "figures"
+TABLES_DIR  = PAPER_DIR / "tables"
+
+# ── Shared numeric constants ──────────────────────────────────────────────────
+WEEKS_PER_YEAR   = 52.0
+ANNUALISE_FACTOR = math.sqrt(WEEKS_PER_YEAR)   # weekly vol → annualized
+
+# ── Options quality-filter thresholds (held constant across sample) ───────────
+MAX_REL_SPREAD   = 0.35    # (ask-bid)/mid ≤ this
+DTE_MIN          = 14      # calendar days to expiry lower bound
+DTE_MAX          = 90      # calendar days to expiry upper bound
+DELTA_LO         = 0.10    # |delta| lower bound
+DELTA_HI         = 0.90    # |delta| upper bound
+MIN_DOLLAR_DELTA = 5.0     # dollar directional exposure per share
+MIN_DOLLAR_GAMMA = 0.001   # dollar convexity per share
+MIN_DOLLAR_VEGA  = 0.01    # dollar vega per share
+
+
+def ensure_options_dirs() -> None:
+    for d in (OPTIONS_SCREEN_RAW_DIR, OPTIONS_SCREEN_DIR, FIGURES_DIR, TABLES_DIR):
+        d.mkdir(parents=True, exist_ok=True)
 
 
 def processed_dir_for_mode(mode: str = DEFAULT_PANEL_MODE) -> Path:
