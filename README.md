@@ -1,16 +1,12 @@
 # Fixed-Income ETF Macro-Risk Research
 
-**Macro Stress, Liquidity, and the Cross-Section of Bond ETF Fragility**
+Two related working papers built on a shared weekly fixed-income ETF panel:
 
-This repository supports the empirical analysis underlying the working paper. The core question: do fixed-income ETF fragility signals (rolling volatility, downside vol, max drawdown) predict forward tail outcomes, and is that risk compensated in expected returns?
+1. **Macro Stress, Liquidity, and the Cross-Section of Bond ETF Fragility** — do backward-looking fragility signals (rolling volatility, downside vol, max drawdown) predict forward tail outcomes, and is that risk compensated in expected returns?
+2. **Hedge Capacity and Rate-Duration Risk in Fixed-Income ETF Options Markets** — how much listed-option depth exists relative to each ETF's rate exposure (DV01-scaled hedge capacity), where does it concentrate, and does it relate to forward drawdowns?
 
-Four hypotheses drive the analysis:
-- **H1** — Macro shocks generate heterogeneous cross-sectional ETF return responses
-- **H2** — Structural characteristics (size, cost, age) explain return variation beyond category membership
-- **H3** — Backward-looking fragility predicts forward drawdowns but not forward returns (mispricing)
-- **H4** — The fragility-to-drawdown relationship amplifies during high macro stress regimes
-
-Panel: **347 ETFs · 521 weeks · April 2016 – April 2026 · 156,588 ETF-week observations**
+Fragility panel: **347 ETFs · 521 weeks · April 2016 – April 2026 · 156,588 ETF-week observations**
+Options panel: **36-ticker options universe · quarterly chain snapshots 2020 Q1 – 2025 Q2 · weekly ATM IV 2020 → present**
 
 ---
 
@@ -19,38 +15,55 @@ Panel: **347 ETFs · 521 weeks · April 2016 – April 2026 · 156,588 ETF-week 
 ```text
 .
 ├── data/
-│   ├── raw/                              # etfdb_screener.csv (optional fresh pull)
+│   ├── raw/
+│   │   ├── prices.csv                    # unadjusted EOD closes (scripts/01)
+│   │   ├── options_screen/               # ThetaData chain + IV caches (gitignored)
 │   │   └── live/                         # live raw intermediates
 │   ├── processed/
-│   │   ├── offline/                      # paper's fixed snapshot (default)
-│   │   └── live/                         # fresh-pull outputs
+│   │   ├── offline/                      # fragility paper's fixed snapshot (default)
+│   │   ├── live/                         # fresh-pull outputs
+│   │   └── options_screen/               # chains.csv, options_panel.csv, iv_panel_full.csv (gitignored)
 │   └── exports/
 │       ├── legacy_csv_exports/           # cached raw outputs from original prototype
 │       └── tables/                       # exported result tables
 ├── notebooks/
-│   ├── 02_rolling_risk_metrics.ipynb     # motivating fragility figures (paper figures)
-│   └── 03_analysis.ipynb                 # full H1–H4 analysis
+│   ├── 02_rolling_risk_metrics.ipynb     # fragility paper: motivating figures
+│   ├── 03_analysis.ipynb                 # fragility paper: full H1–H4 analysis
+│   ├── 05_options_analysis.ipynb         # options paper: 10-section analysis
+│   └── archive/                          # retired notebooks
 ├── docs/
-│   ├── draft.md                          # working paper draft
-│   ├── data_provenance.md                # data source and construction notes
-│   └── methodology_review.md             # outstanding statistical issues
+│   ├── draft.md                          # fragility paper draft
+│   ├── options_paper/                    # options paper: methodology, provenance
+│   │   ├── figures/                      # generated (gitignored)
+│   │   └── tables/                       # generated (gitignored)
+│   ├── data_provenance.md
+│   └── methodology_review.md
 ├── scripts/
-│   └── rebuild_panel_from_legacy.py      # panel rebuild from cached files (no API needed)
-└── src/
-    ├── config.py
-    ├── data/
-    │   ├── macro.py                      # FRED + Yahoo macro series → weekly panel
-    │   ├── prices.py                     # Yahoo Finance ETF prices → weekly returns
-    │   ├── risk_free.py                  # FRED DTB3 → weekly RF rate
-    │   └── universe.py                   # ETFDB screener → ticker list
-    ├── features/
-    │   ├── category.py                   # ETFDB category → research bucket mapping
-    │   ├── forward_outcomes.py           # fwd_ret_4w, fwd_maxdd_12w, fwd_vol_12w
-    │   ├── rolling_risk.py               # vol_12w, downside_vol_12w, maxdd_12w, VaR, ES
-    │   ├── stress_index.py               # composite macro stress index + high_stress flag
-    │   └── structural.py                 # log_assets, ER_clean, age_years
-    └── pipelines/
-        └── build_core_panel.py           # end-to-end pipeline (requires FRED API key)
+│   ├── 01_download_prices.py             # batch EOD close download (yfinance)
+│   ├── 03_build_iv_panel.py              # weekly ATM call/put IV panel (ThetaData)
+│   ├── 04_build_options_panel.py         # chain repull + hedge-capacity panel build
+│   ├── 05_build_call_put_iv_diagnostic.py# quarterly call/put IV gap table
+│   └── rebuild_panel_from_legacy.py      # fragility panel rebuild (no API needed)
+├── src/
+│   ├── config.py                         # paths + options quality thresholds (single source of truth)
+│   ├── analysis/
+│   │   └── regression_utils.py           # CGM (2011) two-way cluster SEs
+│   ├── data/
+│   │   ├── macro.py, prices.py, risk_free.py, universe.py   # fragility panel inputs
+│   │   ├── options.py                    # ThetaData chains, IV series, liquidity screen
+│   │   ├── options_panel.py              # build_options_panel() steps 2–7
+│   │   └── options_universe.py           # 36-ticker universe, buckets, ETF metadata
+│   ├── features/
+│   │   ├── category.py, forward_outcomes.py, rolling_risk.py,
+│   │   ├── stress_index.py, structural.py                    # fragility features
+│   │   ├── rate_space.py                 # dollar-Greeks → rate-space (D_i bridge, DV01)
+│   │   ├── hedge_capacity.py             # OI-weighted chain capacity by side (C/P/total)
+│   │   ├── call_put_iv.py                # quarterly call/put IV diagnostic
+│   │   ├── options_features.py           # empirical duration, hedgeability scores
+│   │   └── vrp.py                        # IVRVG appendix diagnostics
+│   └── pipelines/
+│       └── build_core_panel.py           # fragility panel end-to-end (FRED key required)
+└── tests/                                # pytest suite (146 tests)
 ```
 
 ---
@@ -63,95 +76,116 @@ source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
+### Credentials
+
+All keys are read from the environment — nothing is hardcoded. Put them in a `.env`
+in the repo root (gitignored) or export them in your shell:
+
+```bash
+FRED_API_KEY=...        # fragility macro series + risk-free rate (free: fred.stlouisfed.org)
+THETA_USERNAME=...      # options data only (ThetaData subscription)
+THETA_PASSWORD=...
+```
+
+The fragility paper needs only `FRED_API_KEY` (or no key at all with the legacy rebuild).
+The options pipeline needs all three.
+
 ---
 
-## Panel Modes
+## Paper 1 — Fragility (notebooks 02–03)
 
-Processed CSVs live in two separate slots:
+### Panel modes
 
 | Mode | Path | Purpose |
 |------|------|---------|
 | `offline` | `data/processed/offline/` | Paper's fixed 2016–2026 snapshot — never changes |
 | `live` | `data/processed/live/` | Fresh pulls from FRED / Yahoo Finance |
 
-Notebooks default to `offline`. To switch, change one line near the top of the notebook and rerun — no kernel restart needed:
+Notebooks default to `offline`. To switch, change one line near the top of the notebook and rerun:
 
 ```python
 PANEL_MODE = 'offline'  # change to 'live' after running the live pipeline
 panel = pd.read_csv(config.core_panel_csv(PANEL_MODE), ...)
 ```
 
-> **BAML credit spread note:** FRED now exposes only a rolling 3-year window for `BAMLC0A0CM`. The live pipeline automatically merges the legacy cached `baml_w.csv` (covering 1997–2026) with the fresh FRED pull, so the live panel retains full history.
-
----
-
-## Generating the Core Panel
-
-There are two ways to build the panel.
+> **BAML credit spread note:** FRED now exposes only a rolling 3-year window for `BAMLC0A0CM`. The live pipeline automatically merges the legacy cached `baml_w.csv` (1997–2026) with the fresh FRED pull.
 
 ### Option 1 — Rebuild from cached legacy files (no API key required)
-
-Uses the pre-downloaded CSVs in `data/exports/legacy_csv_exports/` to reconstruct the full 2016–2026 panel. Writes to `data/processed/offline/`.
 
 ```bash
 python scripts/rebuild_panel_from_legacy.py
 ```
 
-| File | Coverage | Contents |
-|------|----------|----------|
-| `legacy_csv_exports/macro_factors.csv` | 2016–2026 | ANFCI, BAML CS, DGS10, T10Y2Y, T5YIE, MOVE, VIX, GPR + weekly changes |
-| `legacy_csv_exports/returns_w_long.csv` | 2002–2026 | Weekly returns for 347 ETFs |
-| `legacy_csv_exports/rf_w.csv` | 1954–2026 | Weekly risk-free rate (DTB3) |
-| `legacy_csv_exports/database.csv` | — | ETF metadata (name, AUM, ER, inception, category) |
+Output: `data/processed/offline/core_panel.csv` — 156,588 rows, 347 ETFs.
 
-Output: `data/processed/offline/core_panel.csv` — 156,588 rows, 347 ETFs, April 2016 – April 2026.
-
-### Option 2 — Full pipeline rebuild (requires FRED API key + internet)
-
-Downloads fresh data from Yahoo Finance and FRED, then rebuilds the panel from scratch. Writes to `data/processed/live/` by default.
+### Option 2 — Full pipeline rebuild (FRED key + internet)
 
 ```bash
-export FRED_API_KEY="your_key_here"  # Windows: $env:FRED_API_KEY = "your_key_here"
-python -m src.pipelines.build_core_panel
+python -m src.pipelines.build_core_panel                       # writes to live/
+python -m src.pipelines.build_core_panel --panel-mode offline  # overwrite the snapshot
 ```
 
-Optional arguments:
+### Run the analysis
+
 ```bash
-python -m src.pipelines.build_core_panel --panel-mode live        # default
-python -m src.pipelines.build_core_panel --panel-mode offline     # overwrite the paper snapshot
-python -m src.pipelines.build_core_panel --min-years 5
-python -m src.pipelines.build_core_panel --screener-csv data/raw/etfdb_screener.csv
-python -m src.pipelines.build_core_panel --output-dir data/processed/custom
+.venv/bin/python -m nbconvert --to notebook --execute --inplace notebooks/02_rolling_risk_metrics.ipynb
+.venv/bin/python -m nbconvert --to notebook --execute --inplace notebooks/03_analysis.ipynb
 ```
-
-The pipeline writes three CSVs to the mode directory:
-```
-data/processed/<mode>/weekly_returns_long.csv
-data/processed/<mode>/macro_factors_weekly.csv
-data/processed/<mode>/core_panel.csv
-```
-
-> **Note:** If `data/raw/etfdb_screener.csv` is absent, the pipeline falls back to `data/exports/legacy_csv_exports/database.csv` for ETF metadata.
 
 ---
 
-## Running the Analysis
+## Paper 2 — Options / Hedge Capacity (notebook 05)
 
-With `core_panel.csv` built, execute the notebooks in order:
+Build order (each step is cache-backed and resumable):
 
 ```bash
-# Motivating figures (fragility time series, stress episodes, scatter)
-.venv/Scripts/python.exe -m nbconvert --to notebook --execute --inplace notebooks/02_rolling_risk_metrics.ipynb
+# 1. Unadjusted EOD closes for the universe (underlying prices for IV/screens)
+python scripts/01_download_prices.py
 
-# Full H1–H4 regression analysis
-.venv/Scripts/python.exe -m nbconvert --to notebook --execute --inplace notebooks/03_analysis.ipynb
+# 2. Quarterly option chains (calls+puts with OI) + hedge-capacity panel.
+#    --repull hits ThetaData; without it, rebuilds from the cached chains.csv.
+python scripts/04_build_options_panel.py --repull
+
+# 3. Weekly ATM 30-day IV panel (combined call/put method; --call-only for legacy series)
+python scripts/03_build_iv_panel.py
+
+# 4. Quarterly call/put IV gap diagnostic
+python scripts/05_build_call_put_iv_diagnostic.py
 ```
 
-Or open them interactively in VS Code / JupyterLab.
+Then run `notebooks/05_options_analysis.ipynb` top to bottom. The screen cell is
+cache-backed (fast when chains are already pulled) and the panel-build cell is
+behind a `REBUILD_PANEL = False` flag — flip it after a chain repull.
+
+Key design points (details in `docs/options_paper/methodology.md`):
+
+- **ThetaData is strictly serial** — one session per account; concurrent requests are
+  rejected with `RESOURCE_EXHAUSTED`. All API calls go through a retry wrapper; do not
+  parallelize fetches.
+- **Hedge capacity** = chain-level rate DV01 (option OI × per-contract DV01) / fund DV01.
+  By the D_i cancellation identity this reduces to `100·S·Σ(|Δ|·OI)/AUM`, so it survives
+  noisy empirical-duration estimates.
+- **Quality thresholds** live in `src/config.py` (`MAX_REL_SPREAD`, `DTE_MIN/MAX`,
+  delta band, dollar-Greek floors) and are held constant across the sample.
+- Chain and IV caches live under `data/raw/options_screen/{ticker}/` — delete a
+  ticker's files to force a repull.
 
 ---
 
-## Key Variables
+## Tests
+
+```bash
+.venv/bin/python -m pytest tests/ -q
+```
+
+146 tests cover BSM pricing/IV inversion, screen filters, cache behavior, rate-space
+identities, hedge-capacity known values, panel construction, and the CGM regression
+utilities. `tests/test_theta_chain.py` is a live ThetaData diagnostic that exits
+unless credentials are set.
+
+---
+
+## Key Variables (fragility panel)
 
 | Variable | Description |
 |----------|-------------|
@@ -160,13 +194,25 @@ Or open them interactively in VS Code / JupyterLab.
 | `maxdd_12w` | Worst peak-to-trough drawdown over trailing 12 weeks |
 | `stress_index` | Equal-weighted z-score composite of Δ ANFCI, Δ CS, Δ MOVE, Δ VIX |
 | `high_stress` | Binary: 1 if `stress_index > 1.0` (~top 4% of weeks in sample) |
-| `fwd_maxdd_12w` | Forward 12-week maximum drawdown (outcome variable, H3/H4) |
+| `fwd_maxdd_12w` | Forward 12-week maximum drawdown (outcome variable) |
 | `fwd_vol_12w` | Forward 12-week return volatility |
 | `fwd_ret_4w` | Forward 4-week compound return |
 | `RET_XS` | Weekly excess return over 3-month T-bill (DTB3) |
 | `log_assets` | Log AUM in USD millions |
 | `ER_clean` | Expense ratio as decimal |
 | `age_years` | Fund age since inception in years |
+
+## Key Variables (options panel)
+
+| Variable | Description |
+|----------|-------------|
+| `hedge_capacity_ratio` | Chain rate-DV01 (OI-weighted) / fund DV01 — primary measure |
+| `convexity_capacity_ratio` | Chain rate convexity / fund dollar convexity (scales with D_i²) |
+| `median_rate_carry` | Median daily theta cost per unit of rate DV01 (hedge running cost) |
+| `realized_rate_duration` | −100 × 52-week rolling beta of returns on `d_DGS10` |
+| `iv_30d` | Near-30-day ATM IV — median of quality-filtered call/put sides |
+| `call_put_iv_gap` | Put IV − call IV at the common near-ATM strike |
+| `H`, `H_dur` | Hedgeability score (z-sum of pass rate, $vega, $gamma) and duration-normalized variant |
 
 ---
 

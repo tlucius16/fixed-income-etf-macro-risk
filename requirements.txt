@@ -10,3 +10,4 @@ statsmodels
 scipy
 thetadata>=1.0.7
 seaborn
+pytest
