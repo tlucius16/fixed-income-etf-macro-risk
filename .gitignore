@@ -18,3 +18,22 @@ ENV/
 .venv-py314-broken/
 .venv311/
 .scripts/.claude/
+
+# Local tools and editor settings
+/.vscode/
+/ThetaTerminal.jar
+
+# Downloaded and generated datasets
+/data/raw/options/
+/data/raw/options_screen/
+/data/raw/prices.csv
+/data/processed/options_screen/
+
+# Generated paper artifacts
+/arxiv_submission/
+/docs/figures/
+/docs/options_paper/figures/
+/docs/options_paper/tables/
+
+# One-off notebook migration helpers
+/scripts/add_analyses_nb05.py

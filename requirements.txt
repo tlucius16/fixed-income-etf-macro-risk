@@ -7,3 +7,6 @@ urllib3
 jupyter
 xlrd
 statsmodels
+scipy
+thetadata>=1.0.7
+seaborn
