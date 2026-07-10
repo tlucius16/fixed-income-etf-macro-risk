@@ -81,7 +81,12 @@ DURATION_BUCKET: dict[str, str] = {
 # Ordered for display (short → long → credit)
 BUCKET_ORDER = ["short", "intermediate", "long", "credit", "other"]
 
-LIQUIDITY_PASS_RATE_MIN = 0.25
+# Liquidity gate: median composite liquidity score across snap dates,
+#   liq_score = √(quality OI premium notional) × (1 − median spread) × book balance.
+# Monotone increasing in √notional by construction; units are √$ damped by two
+# factors in (0, 1]. Calibrated on the 2020-2025 quarterly chains (provisional —
+# see the per-ticker distribution before finalizing).
+LIQUIDITY_SCORE_MIN = 100.0
 
 
 def ticker_bucket(ticker: str) -> str:

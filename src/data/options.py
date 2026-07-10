@@ -48,7 +48,7 @@ from scipy.optimize import brentq
 from scipy.stats import norm
 
 from src import config
-from src.data.options_universe import LIQUIDITY_PASS_RATE_MIN
+from src.data.options_universe import LIQUIDITY_SCORE_MIN
 
 logger = logging.getLogger(__name__)
 
@@ -1131,10 +1131,46 @@ def screen_chain(
         .rename(columns={c: f"median_{c}" for c in available})
     )
 
+    # ── Liquidity screeners: each of the form √N × g(quality), g ∈ (0, 1] ────
+    # N = quality OI premium notional. Every screener is therefore monotone
+    # increasing in √N; g encodes a depth-free quality dimension.
+    if "open_interest" in passing.columns:
+        oi = passing["open_interest"].fillna(0).clip(lower=0)
+    else:
+        oi = pd.Series(0.0, index=passing.index)
+    passing["oi_premium_notional"] = oi * 100.0 * passing["mid"]
+
+    notional      = passing.groupby(group_keys)["oi_premium_notional"].sum()
+    side_notional = (
+        passing.groupby(group_keys + ["right"])["oi_premium_notional"].sum()
+        .unstack("right")
+        .reindex(columns=["C", "P"])
+        .fillna(0.0)
+    )
+    both  = side_notional["C"] + side_notional["P"]
+    balance = (2.0 * side_notional[["C", "P"]].min(axis=1)
+               / both.replace(0.0, float("nan"))).fillna(0.0)
+    spread_med = passing.groupby(group_keys)["rel_spread"].median()
+
+    liq = pd.DataFrame({
+        "quality_oi_notional": notional,
+        "sqrt_oi_notional":    notional.pow(0.5),
+        "book_balance":        balance,
+        "median_quality_spread": spread_med,
+    })
+    liq["cost_adj_depth"] = liq["sqrt_oi_notional"] * (1.0 - liq["median_quality_spread"]).clip(lower=0.0)
+    liq["balanced_depth"] = liq["sqrt_oi_notional"] * liq["book_balance"]
+    liq["liq_score"] = (
+        liq["sqrt_oi_notional"]
+        * (1.0 - liq["median_quality_spread"]).clip(lower=0.0)
+        * liq["book_balance"]
+    )
+
     summary = (
         pd.concat([total, n_pass], axis=1)
         .fillna({"passing_contracts": 0})
         .join(greek_medians, how="left")
+        .join(liq, how="left")
         .reset_index()
     )
     summary["pass_rate"] = (
@@ -1180,7 +1216,7 @@ def run_screen(
     Returns
     -------
     dict with keys ``"chains"``, ``"passing"``, ``"summary"``, ``"ticker_summary"``.
-    ``"ticker_summary"`` has a ``liquid`` flag (``mean_pass_rate >= LIQUIDITY_PASS_RATE_MIN``).
+    ``"ticker_summary"`` has a ``liquid`` flag (``median_liq_score >= LIQUIDITY_SCORE_MIN``).
     """
     username = theta_username or _THETA_USERNAME
     password = theta_password or _THETA_PASSWORD
@@ -1267,21 +1303,7 @@ def run_screen(
     )
 
     summary = screen["summary"]
-    if not summary.empty:
-        agg_cols: dict = {
-            "dates_screened":      ("snap_date",           "count"),
-            "mean_pass_rate":      ("pass_rate",           "mean"),
-            "median_iv":           ("median_iv",           "median"),
-        }
-        for mc in ("median_dollar_vega", "median_dollar_gamma", "median_dollar_delta"):
-            if mc in summary.columns:
-                agg_cols[mc] = (mc, "median")
-        ticker_summary = (
-            summary.groupby("ticker").agg(**agg_cols).reset_index()
-        )
-        ticker_summary["liquid"] = ticker_summary["mean_pass_rate"] >= LIQUIDITY_PASS_RATE_MIN
-    else:
-        ticker_summary = pd.DataFrame()
+    ticker_summary = _build_ticker_summary(summary)
 
     return {
         "chains":         chains_df,
@@ -1289,6 +1311,38 @@ def run_screen(
         "summary":        summary,
         "ticker_summary": ticker_summary,
     }
+
+
+def _build_ticker_summary(summary: pd.DataFrame) -> pd.DataFrame:
+    """Aggregate the per-(ticker, snap) screen summary to one row per ticker.
+
+    The ``liquid`` gate thresholds the median composite liquidity score
+    (``liq_score`` = √N × (1 − spread) × book balance, N = quality OI premium
+    notional) — monotone increasing in √N by construction.
+    """
+    if summary.empty:
+        return pd.DataFrame()
+
+    agg_cols: dict = {
+        "dates_screened": ("snap_date", "count"),
+        "mean_pass_rate": ("pass_rate", "mean"),
+        "median_iv":      ("median_iv", "median"),
+    }
+    for mc in ("median_dollar_vega", "median_dollar_gamma", "median_dollar_delta"):
+        if mc in summary.columns:
+            agg_cols[mc] = (mc, "median")
+    for lc in ("sqrt_oi_notional", "cost_adj_depth", "balanced_depth", "liq_score"):
+        if lc in summary.columns:
+            agg_cols[f"median_{lc}"] = (lc, "median")
+
+    ticker_summary = summary.groupby("ticker").agg(**agg_cols).reset_index()
+    if "median_liq_score" in ticker_summary.columns:
+        ticker_summary["liquid"] = (
+            ticker_summary["median_liq_score"].fillna(0.0) >= LIQUIDITY_SCORE_MIN
+        )
+    else:
+        ticker_summary["liquid"] = False
+    return ticker_summary
 
 
 # ---------------------------------------------------------------------------
@@ -1352,22 +1406,7 @@ def concat_results(
         min_dollar_vega=min_dollar_vega,
     )
     summary = screen["summary"]
-
-    if not summary.empty:
-        agg_cols: dict = {
-            "dates_screened":  ("snap_date",   "count"),
-            "mean_pass_rate":  ("pass_rate",   "mean"),
-            "median_iv":       ("median_iv",   "median"),
-        }
-        for mc in ("median_dollar_vega", "median_dollar_gamma", "median_dollar_delta"):
-            if mc in summary.columns:
-                agg_cols[mc] = (mc, "median")
-        ticker_summary = (
-            summary.groupby("ticker").agg(**agg_cols).reset_index()
-        )
-        ticker_summary["liquid"] = ticker_summary["mean_pass_rate"] >= LIQUIDITY_PASS_RATE_MIN
-    else:
-        ticker_summary = pd.DataFrame()
+    ticker_summary = _build_ticker_summary(summary)
 
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
