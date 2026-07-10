@@ -5,7 +5,13 @@ version = "0.1.0"
 [deps]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+FixedEffectModels = "9d5cd8c9-2029-5cab-9928-427838db53e3"
 ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
 Roots = "f2b01f46-fcfa-551c-844a-d8ac1e96c665"
 SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
+WildBootTests = "65c2e505-86ba-4c19-93f1-95506c1443d5"
+
+[compat]
+FixedEffectModels = "1.13.2"
+WildBootTests = "1.0.2"
