@@ -2,9 +2,12 @@
 
 ## 1. Universe and Duration Buckets
 
-The analysis universe comprises 36 fixed-income ETFs that passed the liquidity screen
-(`mean_pass_rate >= 0.50` across quarterly snap dates 2020–2025). Each ticker is
-assigned to a duration bucket:
+The analysis begins with a predetermined universe of 36 fixed-income ETFs spanning
+Treasury, aggregate, investment-grade credit, high-yield, inflation-linked, and
+short-duration funds. The universe is not defined by passing the option-liquidity
+screen. Instead, the screen separately flags a ticker as liquid when its mean
+contract pass rate is at least 0.25 across available quarterly snapshots from
+2020 through 2025. Each ticker is assigned to a duration bucket:
 
 | Bucket | Approximate Effective Duration | Example Tickers |
 |---|---|---|
@@ -85,11 +88,12 @@ fund_dv01_i  = D_i · AUM_i · 0.0001
 hedge_capacity_ratio_it = chain_rate_dv01_it / fund_dv01_it
 ```
 
-**D_i cancellation identity.** Expanding `chain_rate_dv01` with `w_c = 1`:
+**D_i cancellation identity.** Expanding `chain_rate_dv01`:
 
 ```
-hedge_capacity_ratio = (D_i · S · Σ|delta_c| · 0.0001 · 100) / (D_i · AUM · 0.0001)
-                     = (100 · S · Σ|delta_c|) / AUM
+hedge_capacity_ratio = (D_i · S · Σ[|delta_c|w_c] · 0.0001 · 100)
+                       / (D_i · AUM · 0.0001)
+                     = (100 · S · Σ[|delta_c|w_c]) / AUM
 ```
 
 D_i cancels exactly. The ratio reduces to the OI-weighted delta-adjusted notional
@@ -106,6 +110,15 @@ should be treated as robustness checks.
 
 **Quality gate.** A ticker × snap_date × side row is retained only when at least
 5 quality contracts (passing the tradeability filter) contribute to the aggregate.
+
+**Capacity is an upper bound, not executable depth.** Open interest is an
+outstanding-position stock, not a quote for immediate execution. The ratio treats
+all qualifying OI as potentially available, ignores price impact, and sums absolute
+delta. The `total` side also combines calls and puts even though they hedge opposite
+directions depending on position sign. Accordingly, the measure describes the scale
+and composition of listed option exposure relative to fund AUM; it does not establish
+that the full amount can be traded as a hedge. Side-specific call and put measures
+are required for economic interpretation.
 
 **Convexity capacity ratio.** Analogous to hedge_capacity_ratio but using
 `rate_conv` in the numerator and `fund_conv_dollar` (from `eff_convexity` or
@@ -132,7 +145,7 @@ theta_bp_per_duration = 10000 · |theta_daily| / |dollar_duration|
 
 Quality-filtered versions require `duration_r2 ≥ 0.20` and
 `|realized_rate_duration| ≥ 1.0`. These are computed from `chains.csv` using
-`add_duration_exposure_features` in `src/options_paper/features.py`.
+`add_duration_exposure_features` in `src/features/options_features.py`.
 
 ## 6. Hedgeability Score (H)
 
@@ -178,8 +191,12 @@ short-duration ETFs (thin options markets, higher per-unit carry cost).
 IVRVG_it = IV²_it − RV_trailing²_it
 ```
 
-where `IV_it` is the annualized 30-day ATM implied volatility and `RV_trailing_it` is
-`vol_12w_annualized` (12-week rolling weekly return standard deviation × √52).
+where `IV_it` is the annualized near-30-day ATM implied volatility and
+`RV_trailing_it` is `vol_12w_annualized` (12-week rolling weekly return standard
+deviation × √52). The IV series computes call and put IV at a common near-ATM
+strike, takes their median when both quotes pass the spread filter, and falls back
+to a single valid side. Side count, call-put gap, relative spreads, and source are
+retained as diagnostics.
 
 Both legs are in variance units (annualized squared return). This variable is an
 ex-ante IV-realized variance gap, not a fully ex-post variance risk premium, because
@@ -210,34 +227,69 @@ vrp_x_duration = IVRVG · realized_rate_duration
 The quality-filtered versions apply the same duration `R²` and absolute-duration
 guards described above.
 
-## 10. Predictive Regressions
+## 10. Baseline Association and Robustness Design
 
-**Primary specification:**
+The initial pooled baseline is:
+
 ```
 fwd_maxdd_12w_it = α_t + β · hedge_capacity_ratio_it + ε_it
 ```
 
 `hedge_capacity_ratio` is merged onto the weekly panel via `merge_asof` backward,
-attaching the nearest prior quarterly snap's capacity estimate. Date fixed effects
-`α_t` absorb common shocks. A positive `β` means higher hedge capacity is
-associated with less severe forward drawdowns (fwd_maxdd is negative when
-drawdowns occur).
+attaching the nearest prior quarterly snapshot. Date fixed effects absorb common
+shocks. Because `fwd_maxdd` is negative during drawdowns, a protective relation
+would require `β > 0`. The pooled estimate is instead negative (`β = −0.268`,
+`p = 0.004`). This is treated as a descriptive baseline, not a causal effect.
 
-**Additional specifications (null checks / robustness):**
-- Outcomes: `fwd_ret_4w`, `fwd_vol_12w_annualized`, `fwd_maxdd_12w`
-- Predictors: `vrp`, `realized_rate_duration`, `H`, `H_dur`, `vega_per_dur`,
-  `convexity_capacity_ratio`, `median_rate_carry`
-- Fixed effects: ticker FEs for time-varying predictors; date FEs for
-  time-invariant cross-sectional regressors (`duration_long`, `H`, `H_dur`)
-- Standard errors: CGM (2011) two-way cluster on ticker × date throughout
+The identification analysis applies ticker fixed effects, ticker-plus-date fixed
+effects, duration-bucket-plus-date fixed effects, and a Mundlak decomposition into
+ticker-mean capacity (`between`) and deviations from that mean (`within`). Further
+checks exclude dominant funds and duration groups, transform and winsorize capacity,
+control for observation age, restrict the sample to fresh or snapshot-week
+observations, and split capacity into call and put sides.
 
-**CGM two-way SE formula:**
+The negative pooled coefficient does not survive ticker fixed effects
+(`β = −0.009`, `p = 0.97`) or bucket fixed effects. The Mundlak estimates isolate
+the association in the between-fund component (`β_between = −0.436`,
+`p = 0.0007`); the within-fund component is positive but insignificant
+(`β_within = 0.065`, `p = 0.32`). Fresh-only and snapshot-week estimates are
+also insignificant.
+
+In the joint call/put specification, call capacity is negative and significant
+(`β_call = −0.308`, `p = 0.0001`), while put capacity is small and insignificant
+(`β_put = −0.053`, `p = 0.795`). The evidence therefore does not show that
+increases in usable hedge supply protect a fund from subsequent drawdowns. It
+shows that option depth is concentrated cross-sectionally in funds carrying
+substantial rate risk, with the pooled relation driven by call-side open interest
+consistent with covered-call or yield-enhancement activity.
+
+Additional IVRVG, duration, composite hedgeability, and duration-normalized Greek
+specifications are retained as secondary diagnostics. Standard errors use CGM
+(2011) two-way clustering on ticker and date:
+
 ```
 V_CGM = V(cluster_ticker) + V(cluster_date) − V(HC1)
 ```
-followed by eigenvalue projection to the PSD cone (Cameron, Gelbach & Miller 2011).
 
-Implemented in `src/options_paper/analysis/regression_utils.py::twoway_cluster_se`.
+The covariance matrix is projected to the PSD cone. The implementation is in
+`src/analysis/regression_utils.py::twoway_cluster_se`.
+
+## 11. Tradeability and Economic Scale
+
+The ratio-to-AUM analysis is complemented by side-specific absolute DV01. At the
+2025-04-01 snapshot, quality-screened TLT puts provide approximately $2.93 million
+of aggregate DV01 per basis point. The associated put OI is equivalent to roughly
+a $1.9 billion delta-adjusted position; a realistic 5–10% participation assumption
+implies approximately $100–200 million of hedgeable notional. TLT is the only
+clear institutional-scale ETF-option venue in the sample.
+
+IEF and TIP are closer to retail or small-account scale (approximately $27
+thousand and $13 thousand of put-side DV01 per basis point). LQD has no
+quality-screened put-side DV01 at that snapshot despite roughly $25 million per
+basis point of fund DV01, while AGG, BND, and EMB are also near zero. TLT call
+capacity is approximately 2.6 times put capacity, and MBB is overwhelmingly
+call-dominated. These magnitudes distinguish observed option activity from
+economically available downside insurance.
 
 ## References
 
