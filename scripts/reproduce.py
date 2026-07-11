@@ -87,11 +87,11 @@ def _checkpoints() -> None:
     ts = pd.read_csv(cfg.TICKER_SUMMARY_CSV)
     check("liquid tickers", int(ts["liquid"].sum()), 8)
     panel = pd.read_csv(cfg.OPTIONS_PANEL_CSV)
-    check("options_panel.csv rows", len(panel), 18058)
+    check("options_panel.csv rows", len(panel), 18074)
     ladder = pd.read_csv(cfg.TABLES_DIR / "robustness_spec0.csv")
     s0 = ladder.loc[(ladder["spec"] == "S0 baseline (date FE)")
                     & (ladder["var"] == "hedge_capacity_ratio"), "coef"].iloc[0]
-    check("Spec 0 coefficient (4dp)", round(float(s0), 4), -0.2682)
+    check("Spec 0 coefficient (4dp)", round(float(s0), 4), -0.2689)
     boot = cfg.TABLES_DIR / "robustness_boot.csv"
     print(f"  {'OK  ' if boot.exists() else 'note'} robustness_boot.csv "
           f"{'present' if boot.exists() else 'absent (julia stages skipped?)'}")

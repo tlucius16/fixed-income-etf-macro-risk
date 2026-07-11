@@ -65,9 +65,23 @@ Every artifact has exactly one canonical producer, listed above.
 |---|---|
 | chains.csv rows | 80,521 |
 | liquid tickers (√-notional gate) | 8 — TLT, LQD, IEF, EMB, TIP, EDV, ZROZ, VCLT |
-| options_panel.csv rows | 18,058 |
-| Spec 0 baseline coefficient | −0.2682 (CGM p 0.0036; wild-bootstrap p 0.25) |
+| options_panel.csv rows | 18,074 |
+| Spec 0 baseline coefficient | −0.2689 (CGM p 0.0042; wild-bootstrap ~0.25) |
 | jl-parity | `PARITY OK` (Greeks ≤1e-13, IV ≤6e-7 vs Python) |
+
+### Reproducibility philosophy: pinned inputs, not pinned pull dates
+
+Reproduction means *the committed/cached inputs plus the code yield identical
+outputs* — it does not mean a fresh API pull today returns the same data
+(FRED revises series such as ANFCI; Yahoo lookback windows depend on the run
+date; FRED's BAMLC0A0CM now exposes only a rolling 3-year window, which is
+why the repo carries a full-history hybrid). The fixed inputs are: the legacy
+CSV exports (`data/exports/legacy_csv_exports/`), the cached S&P daily closes
+(`data/raw/spx_daily.csv`), and the ThetaData chain/IV caches. The fragility
+core panel is built from these by `scripts/rebuild_panel_from_legacy.py` —
+that output (156,588 rows, 2016-04-15 → 2026-04-03) is the canonical offline
+snapshot. The live pipeline (`src/pipelines/build_core_panel.py`) exists for
+fresh pulls and will legitimately differ (data vintage, window boundaries).
 
 ## Repulling raw data (authors / subscribers only)
 

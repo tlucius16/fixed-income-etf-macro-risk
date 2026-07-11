@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import time
 from os import PathLike
+from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import requests
 import yfinance as yf
@@ -126,6 +128,84 @@ def build_hybrid_baml_weekly(
     )
 
 
+def build_spx_realized_vol(
+    cache_csv: str | PathLike[str] = config.SPX_DAILY_CSV,
+    start: str = "2015-01-01",
+) -> pd.DataFrame:
+    """Weekly (Friday) S&P 500 realized volatility, annualised.
+
+    Columns
+    -------
+    SPX_RV_21d   : rolling 21-trading-day std of daily log returns × √252
+                   (matches the ~1-month horizon of VIX, but realised)
+    SPX_RV_12w   : rolling 12-week std of weekly Friday log returns × √52
+                   (matches the panel's vol_12w convention)
+    d_SPX_RV_21d, d_SPX_RV_12w : weekly first differences
+
+    Daily ^GSPC closes are cached to *cache_csv* on first fetch so offline
+    panel rebuilds are deterministic and internet-free.
+    """
+    cache = Path(cache_csv)
+    if cache.exists():
+        daily = pd.read_csv(cache, parse_dates=["Date"]).set_index("Date")["Close"]
+    else:
+        hist = yf.Ticker("^GSPC").history(start=start, interval="1d", auto_adjust=True)
+        if hist.empty:
+            raise RuntimeError("^GSPC download returned no data.")
+        hist.index = pd.to_datetime(hist.index, utc=True).tz_convert(None)
+        daily = hist["Close"]
+        cache.parent.mkdir(parents=True, exist_ok=True)
+        daily.rename_axis("Date").reset_index().to_csv(cache, index=False)
+
+    log_ret = np.log(daily / daily.shift(1))
+    rv_21d = (log_ret.rolling(21).std(ddof=1) * np.sqrt(252)).resample("W-FRI").last()
+
+    weekly_px = daily.resample("W-FRI").last()
+    weekly_lr = np.log(weekly_px / weekly_px.shift(1))
+    rv_12w = weekly_lr.rolling(12).std(ddof=1) * np.sqrt(52)
+
+    out = pd.DataFrame({
+        "Date":       rv_21d.index,
+        "SPX_RV_21d": rv_21d.values,
+        "SPX_RV_12w": rv_12w.reindex(rv_21d.index).values,
+    })
+    out["d_SPX_RV_21d"] = out["SPX_RV_21d"].diff()
+    out["d_SPX_RV_12w"] = out["SPX_RV_12w"].diff()
+    return out.dropna(subset=["d_SPX_RV_21d", "d_SPX_RV_12w"]).reset_index(drop=True)
+
+
+def build_dxy_weekly(
+    cache_csv: str | PathLike[str] = config.DXY_DAILY_CSV,
+    start: str = "2015-01-01",
+) -> pd.DataFrame:
+    """Weekly (Friday) US Dollar Index level and change.
+
+    DXY   : Friday close of the ICE dollar index (Yahoo ``DX-Y.NYB``)
+    d_DXY : weekly first difference (dollar appreciation = global
+            dollar-funding stress; same higher-is-stress sign convention
+            as the other composite components)
+
+    Daily closes are cached to *cache_csv* on first fetch so offline panel
+    rebuilds are deterministic and internet-free.
+    """
+    cache = Path(cache_csv)
+    if cache.exists():
+        daily = pd.read_csv(cache, parse_dates=["Date"]).set_index("Date")["Close"]
+    else:
+        hist = yf.Ticker("DX-Y.NYB").history(start=start, interval="1d", auto_adjust=True)
+        if hist.empty:
+            raise RuntimeError("DX-Y.NYB download returned no data.")
+        hist.index = pd.to_datetime(hist.index, utc=True).tz_convert(None)
+        daily = hist["Close"]
+        cache.parent.mkdir(parents=True, exist_ok=True)
+        daily.rename_axis("Date").reset_index().to_csv(cache, index=False)
+
+    weekly = daily.resample("W-FRI").last()
+    out = pd.DataFrame({"Date": weekly.index, "DXY": weekly.values})
+    out["d_DXY"] = out["DXY"].diff()
+    return out.dropna(subset=["d_DXY"]).reset_index(drop=True)
+
+
 def build_weekly_macro_panel(
     api_key: str | None = config.FRED_API_KEY,
     use_hybrid_baml: bool = True,
@@ -156,4 +236,10 @@ def build_weekly_macro_panel(
         macro_levels = pd.merge(macro_levels, right, on="Date", how="inner")
 
     factor_cols = ["ANFCI", "BAMLC0A0CM", "DGS10", "T10Y2Y", "T5YIE", "VIX", "MOVE", "GPR"]
-    return add_weekly_changes(macro_levels, factor_cols)
+    macro_weekly = add_weekly_changes(macro_levels, factor_cols)
+
+    # S&P realized vol and DXY: merged after the dropna in add_weekly_changes
+    # so their warmup/diff NaNs can't truncate the panel start (left merges,
+    # own diffs).
+    macro_weekly = macro_weekly.merge(build_spx_realized_vol(), on="Date", how="left")
+    return macro_weekly.merge(build_dxy_weekly(), on="Date", how="left")

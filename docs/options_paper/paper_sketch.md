@@ -322,7 +322,7 @@ duration-scaled). [Condensed table, specs 1–7 from the notebook.]
 
 Capacity, within fund: changes in hedge capacity over time within a fund carry
 no predictive content for forward outcomes (the within component of the
-decomposition in Section 7: +0.065, CGM p=0.32, bootstrap p=0.72).
+decomposition in Section 7: +0.063, CGM p=0.34, bootstrap p=0.73).
 Fresh-capacity-only (snapshot age ≤ 30 days) and snapshot-week-only subsamples
 are likewise null.
 
@@ -340,16 +340,16 @@ detectable signal," not proof of zero.
 
 A researcher who regressed forward drawdowns on hedge capacity with date fixed
 effects — the natural first specification — would find a significant negative
-coefficient (−0.268, CGM SE 0.092, p=0.0036) and might conclude that
+coefficient (−0.269, CGM SE 0.094, p=0.0042) and might conclude that
 option-market depth is associated with — perhaps protects against, perhaps
 signals — future drawdowns. We document why that conclusion fails, twice, in
 the spirit of making both failure modes reusable knowledge.
 
 **Act one: identification.** The association is entirely between funds. Adding
-ticker fixed effects eliminates it (−0.009, p=0.97); two-way FE flips the sign
-(ns); even coarse duration-bucket fixed effects kill it (−0.032, p=0.77). The
-Mundlak decomposition is dispositive: the between-fund component is −0.436
-(CGM p=0.0007) while the within-fund component is +0.065 (p=0.32). The
+ticker fixed effects eliminates it (−0.012, p=0.96); two-way FE flips the sign
+(ns); even coarse duration-bucket fixed effects kill it (−0.033, p=0.76). The
+Mundlak decomposition is dispositive: the between-fund component is −0.437
+(CGM p=0.0009) while the within-fund component is +0.063 (p=0.34). The
 gradient is not an outlier artifact — it survives 1/99 winsorization and log
 transformation — and it is not universe-wide: dropping TLT, LQD, and IEF
 renders it insignificant, so three liquid funds carry the precision. The
@@ -361,15 +361,15 @@ composition as a capacity effect.
 **Act two: inference.** Even the between-fund association, taken on its own
 terms as a cross-sectional fact, does not survive inference that respects the
 effective sample size. The regressor of interest is constant (or slow-moving)
-within fund, so the informative sample is not 8,611 fund-weeks but 32 funds —
+within fund, so the informative sample is not 8,515 fund-weeks but 32 funds —
 of which roughly eight have economically meaningful capacity. Wild-cluster
 bootstrap p-values (Rademacher, 9,999 replications, clustered by ticker) rise
-from 0.0036 to 0.25 for the pooled coefficient and from 0.0007 to 0.24 for the
+from 0.0042 to 0.25 for the pooled coefficient and from 0.0009 to 0.25 for the
 Mundlak between-fund component. The asymptotic CGM stars were an artifact of
-treating a 32-cluster problem as an 8,611-observation one.
+treating a 32-cluster problem as an 8,515-observation one.
 
 One coefficient survives both acts: call-side capacity in the call/put horse
-race (−0.308; CGM p=0.0001, bootstrap p=0.029), while put-side capacity is
+race (−0.313; CGM p=0.0001, bootstrap p=0.030), while put-side capacity is
 null under every treatment (bootstrap p=0.84). This is the final tell, and it
 closes the loop with Section 5: a genuine hedging channel would run through
 puts; the channel that actually survives runs through the covered-call side of
@@ -434,9 +434,11 @@ Julia replication layer in `julia/` (RateSpace.jl: AD Greeks with
 machine-precision parity to the Python reference on all 80,521 contracts;
 wild-cluster bootstrap; CRR American repricing) — file-exchange only, repo
 reproducible without it. Sample: chains.csv 80,521 rows; options_panel.csv
-18,058 ticker-weeks; capacity non-null on 8,611 regression obs / 32 tickers;
-liquid set under the √-notional gate: 8 funds. State as of commit `a14170a`;
-tests 152 passed / 4 skipped (Julia and live-API tests opt-in).
+18,074 ticker-weeks; capacity non-null on 8,515 regression obs / 32 tickers;
+liquid set under the √-notional gate: 8 funds. State as of 2026-07-11 (canonical offline core panel: 156,588 rows built by
+scripts/rebuild_panel_from_legacy.py from pinned inputs; stress index now
+includes S&P realized vol as a fifth component); tests 155 passed / 4
+skipped (Julia and live-API tests opt-in). Full pipeline: scripts/reproduce.py.
 
 Before submission: refresh `ETF_METADATA` AUM/durations from current fact
 sheets (the capacity accounting table inherits their precision) and rotate the

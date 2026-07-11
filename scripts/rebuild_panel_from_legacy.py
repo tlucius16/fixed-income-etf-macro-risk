@@ -25,7 +25,7 @@ LEGACY = ROOT / "data" / "exports" / "legacy_csv_exports"
 
 # ── 1. Macro panel ─────────────────────────────────────────────────────────
 print("Loading legacy macro factors...")
-macro = pd.read_csv(LEGACY / "macro_factors.csv", parse_dates=["Date"])
+macro = pd.read_csv(LEGACY / "macro_factors.csv", parse_dates=["Date"], index_col=0)
 macro = macro.sort_values("Date").reset_index(drop=True)
 
 # Normalise column names to match current pipeline expectations
@@ -36,6 +36,18 @@ macro = macro.rename(columns={
 # The current pipeline also expects 'd_T5YIE'; legacy has it already.
 print(f"  Macro: {macro.Date.min().date()} to {macro.Date.max().date()}  "
       f"| {len(macro)} weeks  | cols: {list(macro.columns)}")
+
+# S&P realized vol + DXY (cached daily closes → deterministic offline rebuild)
+print("Adding S&P realized volatility and DXY...")
+from src.data.macro import build_dxy_weekly, build_spx_realized_vol
+spx_rv = build_spx_realized_vol()
+macro = macro.merge(spx_rv, on="Date", how="left")
+dxy = build_dxy_weekly()
+macro = macro.merge(dxy, on="Date", how="left")
+print(f"  SPX RV: {spx_rv.Date.min().date()} to {spx_rv.Date.max().date()}"
+      f"  | {macro['d_SPX_RV_21d'].isna().sum()} panel weeks without RV")
+print(f"  DXY:    {dxy.Date.min().date()} to {dxy.Date.max().date()}"
+      f"  | {macro['d_DXY'].isna().sum()} panel weeks without DXY")
 
 # ── 2. Risk-free rate ──────────────────────────────────────────────────────
 print("Loading risk-free rate...")

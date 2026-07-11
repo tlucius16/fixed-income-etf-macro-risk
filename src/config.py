@@ -22,6 +22,8 @@ LEGACY_BAML_WEEKLY_CSV = LEGACY_EXPORTS_DIR / "baml_w.csv"
 LEGACY_MACRO_FACTORS_CSV = LEGACY_EXPORTS_DIR / "macro_factors.csv"
 LEGACY_RAW_PRICES_CSV = LEGACY_EXPORTS_DIR / "raw_prices.csv"
 RAW_PRICES_CSV = RAW_DIR / "prices.csv"
+SPX_DAILY_CSV = RAW_DIR / "spx_daily.csv"
+DXY_DAILY_CSV = RAW_DIR / "dxy_daily.csv"
 
 PANEL_MODES = {"offline", "live"}
 DEFAULT_PANEL_MODE = os.getenv("PANEL_MODE", "offline")
