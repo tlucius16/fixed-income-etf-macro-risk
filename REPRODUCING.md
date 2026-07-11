@@ -48,9 +48,11 @@ fetched, so refetched inputs are not bit-identical).
 | panel | `scripts/04_build_options_panel.py` | options_panel.csv |
 | ladder | `scripts/06_robustness_ladder.py` | robustness_spec0.csv, side_capacity.csv |
 | artifacts | `scripts/07_paper_artifacts.py` | capacity accounting, call/put ratio, duration validation, universe tables; figures 24–26 |
+| h4-ref | `scripts/08_fragility_h4.py` | fragility H4 reference (Symbol/Date/CGM SEs) |
 | jl-parity | `julia --project=julia julia/scripts/parity_check.jl` | gate: Julia vs Python quant layer on all 80,521 contracts |
 | jl-boot | `julia .../robustness_boot.jl` | robustness_boot.csv (wild-cluster bootstrap, seeded) |
 | jl-amer | `julia -t auto .../american_bias.jl` | american_bias.csv (CRR American repricing) |
+| jl-h4boot | `julia .../fragility_boot.jl` | fragility_boot.csv (H4 wild bootstrap by Date/Symbol) |
 | notebook | `jupyter nbconvert --execute notebooks/05_options_analysis.ipynb` | remaining figures/tables; **credential-free** — the notebook only reads prepared data |
 | tests | `pytest tests/ -q` | 152 passed (Julia/live-API tests opt-in via `RUN_JULIA_*`, `RUN_THETA_*`) |
 
