@@ -39,11 +39,16 @@ Options panel: **36-ticker options universe · quarterly chain snapshots 2020 Q1
 │   ├── data_provenance.md
 │   └── methodology_review.md
 ├── scripts/
+│   ├── reproduce.py                      # ★ one-command pipeline (see REPRODUCING.md)
 │   ├── 01_download_prices.py             # batch EOD close download (yfinance)
+│   ├── 02_concat_screen.py               # screen CSVs from the chain cache
 │   ├── 03_build_iv_panel.py              # weekly ATM call/put IV panel (ThetaData)
 │   ├── 04_build_options_panel.py         # chain repull + hedge-capacity panel build
 │   ├── 05_build_call_put_iv_diagnostic.py# quarterly call/put IV gap table
+│   ├── 06_robustness_ladder.py           # Spec 0 CGM robustness ladder
+│   ├── 07_paper_artifacts.py             # paper tables + figures 24-26
 │   └── rebuild_panel_from_legacy.py      # fragility panel rebuild (no API needed)
+├── julia/                                # RateSpace.jl: AD Greeks, bootstrap, American pricer
 ├── src/
 │   ├── config.py                         # paths + options quality thresholds (single source of truth)
 │   ├── analysis/
@@ -134,28 +139,23 @@ python -m src.pipelines.build_core_panel --panel-mode offline  # overwrite the s
 
 ---
 
-## Paper 2 — Options / Hedge Capacity (notebook 05)
+## Paper 2 — Options / Hedge Capacity
 
-Build order (each step is cache-backed and resumable):
+One command reproduces every derived artifact from the raw ThetaData caches:
 
 ```bash
-# 1. Unadjusted EOD closes for the universe (underlying prices for IV/screens)
-python scripts/01_download_prices.py
-
-# 2. Quarterly option chains (calls+puts with OI) + hedge-capacity panel.
-#    --repull hits ThetaData; without it, rebuilds from the cached chains.csv.
-python scripts/04_build_options_panel.py --repull
-
-# 3. Weekly ATM 30-day IV panel (combined call/put method; --call-only for legacy series)
-python scripts/03_build_iv_panel.py
-
-# 4. Quarterly call/put IV gap diagnostic
-python scripts/05_build_call_put_iv_diagnostic.py
+python scripts/reproduce.py        # ~15-30 min; see REPRODUCING.md for stages,
+                                   # requirements, and the checkpoint table
 ```
 
-Then run `notebooks/05_options_analysis.ipynb` top to bottom. The screen cell is
-cache-backed (fast when chains are already pulled) and the panel-build cell is
-behind a `REBUILD_PANEL = False` flag — flip it after a chain repull.
+**See [REPRODUCING.md](REPRODUCING.md)** — it documents the three data layers
+(raw caches → derived CSVs → paper artifacts), which stages need credentials
+(only the IV stage needs `FRED_API_KEY`; ThetaData credentials are only for
+repulling raw data), and what a successful run looks like.
+
+`notebooks/05_options_analysis.ipynb` is illustrative/analysis only: it reads
+prepared data and renders results, requires no credentials, and never fetches
+or builds anything. Every artifact has exactly one canonical producer script.
 
 Key design points (details in `docs/options_paper/methodology.md`):
 
