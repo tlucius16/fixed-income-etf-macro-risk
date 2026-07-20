@@ -79,6 +79,10 @@ def macro_factors_weekly_csv(mode: str = DEFAULT_PANEL_MODE) -> Path:
     return processed_dir_for_mode(mode) / "macro_factors_weekly.csv"
 
 
+def macro_snapshot_csv(mode: str = DEFAULT_PANEL_MODE) -> Path:
+    return processed_dir_for_mode(mode) / "macro_snapshot.csv"
+
+
 def core_panel_csv(mode: str = DEFAULT_PANEL_MODE) -> Path:
     return processed_dir_for_mode(mode) / "core_panel.csv"
 

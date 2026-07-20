@@ -6,7 +6,7 @@ from pathlib import Path
 import pandas as pd
 
 from src import config
-from src.data.macro import build_weekly_macro_panel
+from src.data.macro import build_macro_snapshot, build_weekly_macro_panel
 from src.data.prices import (
     build_daily_price_matrix,
     build_weekly_close_matrix,
@@ -80,6 +80,7 @@ def build_core_panel(
     _print_panel_diagnostic("weekly_returns_long", returns_w_long, symbol_col="Symbol")
 
     macro_factors = build_weekly_macro_panel(api_key=fred_api_key)
+    macro_snapshot = build_macro_snapshot(api_key=fred_api_key)
     rf_w = build_weekly_risk_free(api_key=fred_api_key)
     _print_panel_diagnostic("macro_factors_weekly", macro_factors)
     _print_panel_diagnostic("risk_free_weekly", rf_w)
@@ -101,6 +102,7 @@ def build_core_panel(
 
     returns_w_long.to_csv(output_path / "weekly_returns_long.csv", index=False)
     macro_factors.to_csv(output_path / "macro_factors_weekly.csv", index=False)
+    macro_snapshot.to_csv(output_path / "macro_snapshot.csv", index=False)
     core_panel.to_csv(output_path / "core_panel.csv", index=False)
 
     return core_panel

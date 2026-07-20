@@ -58,3 +58,47 @@ def test_macro_panel_keeps_long_history_with_hybrid_baml(monkeypatch):
     assert out["Date"].max() == pd.Timestamp("2020-01-24")
     assert len(out) == 3
     assert np.allclose(out["d_BAMLC0A0CM"], [0.1, 0.1, 0.1])
+
+
+def test_macro_snapshot_preserves_each_series_observation_date(monkeypatch):
+    def frame(column: str, dates: list[str], values: list[float]) -> pd.DataFrame:
+        return pd.DataFrame({"Date": pd.to_datetime(dates), column: values})
+
+    def fake_fred(series_id, **kwargs):
+        dates = ["2026-07-10", "2026-07-17"] if series_id == "ANFCI" else ["2026-07-16", "2026-07-17"]
+        return frame(series_id, dates, [1.0, 1.25])
+
+    monkeypatch.setattr(macro, "fred_series", fake_fred)
+    monkeypatch.setattr(
+        macro,
+        "pull_yahoo_macro_series",
+        lambda ticker, column_name: frame(
+            column_name, ["2026-07-16", "2026-07-17"], [20.0, 21.5]
+        ),
+    )
+    monkeypatch.setattr(
+        macro,
+        "pull_gpr_daily",
+        lambda: frame("GPR", ["2026-07-15", "2026-07-16"], [100.0, 102.0]),
+    )
+
+    out = macro.build_macro_snapshot(api_key="test-key").set_index("series")
+
+    assert set(out.index) == {
+        "ANFCI",
+        "BAMLC0A0CM",
+        "DGS2",
+        "DGS10",
+        "DGS30",
+        "T10Y2Y",
+        "T5YIE",
+        "VIX",
+        "MOVE",
+        "DXY",
+        "GPR",
+    }
+    assert out.loc["ANFCI", "frequency"] == "weekly"
+    assert out.loc["ANFCI", "observation_date"] == "2026-07-17"
+    assert out.loc["VIX", "frequency"] == "daily"
+    assert out.loc["VIX", "change"] == 1.5
+    assert out.loc["GPR", "observation_date"] == "2026-07-16"

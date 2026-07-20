@@ -243,3 +243,59 @@ def build_weekly_macro_panel(
     # own diffs).
     macro_weekly = macro_weekly.merge(build_spx_realized_vol(), on="Date", how="left")
     return macro_weekly.merge(build_dxy_weekly(), on="Date", how="left")
+
+
+def build_macro_snapshot(api_key: str | None = config.FRED_API_KEY) -> pd.DataFrame:
+    """Build latest observations without forcing mixed-frequency series onto Fridays."""
+
+    session = make_fred_session()
+    rows: list[dict[str, object]] = []
+
+    fred_inputs = {
+        "ANFCI": ("ANFCI", "weekly", "index"),
+        "BAMLC0A0CM": ("BAMLC0A0CM", "daily", "percent"),
+        "DGS2": ("DGS2", "daily", "percent"),
+        "DGS10": ("DGS10", "daily", "percent"),
+        "DGS30": ("DGS30", "daily", "percent"),
+        "T10Y2Y": ("T10Y2Y", "daily", "percentage_points"),
+        "T5YIE": ("T5YIE", "daily", "percent"),
+    }
+    for name, (series_id, frequency, unit) in fred_inputs.items():
+        frame = fred_series(series_id, api_key=api_key, session=session)
+        rows.append(_latest_snapshot_row(frame, name, frequency, unit, "fred"))
+
+    for ticker, name in (("^VIX", "VIX"), ("^MOVE", "MOVE"), ("DX-Y.NYB", "DXY")):
+        frame = pull_yahoo_macro_series(ticker, name)
+        rows.append(_latest_snapshot_row(frame, name, "daily", "index_points", "yfinance"))
+
+    rows.append(
+        _latest_snapshot_row(pull_gpr_daily(), "GPR", "daily", "index_points", "gpr")
+    )
+    return pd.DataFrame(rows).sort_values("series").reset_index(drop=True)
+
+
+def _latest_snapshot_row(
+    frame: pd.DataFrame,
+    series: str,
+    frequency: str,
+    unit: str,
+    source: str,
+) -> dict[str, object]:
+    clean = frame[["Date", series]].copy()
+    clean["Date"] = pd.to_datetime(clean["Date"], errors="coerce", utc=True).dt.tz_localize(None)
+    clean[series] = pd.to_numeric(clean[series], errors="coerce")
+    clean = clean.dropna().sort_values("Date").drop_duplicates("Date", keep="last")
+    if len(clean) < 2:
+        raise ValueError(f"{series} requires at least two valid observations")
+    previous = clean.iloc[-2]
+    latest = clean.iloc[-1]
+    return {
+        "series": series,
+        "observation_date": latest["Date"].date().isoformat(),
+        "previous_observation_date": previous["Date"].date().isoformat(),
+        "value": latest[series],
+        "change": latest[series] - previous[series],
+        "frequency": frequency,
+        "unit": unit,
+        "source": source,
+    }
