@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from src.data import macro
 
@@ -30,6 +31,28 @@ def test_hybrid_baml_keeps_legacy_history_and_prefers_live_overlap(tmp_path, mon
         ["2020-01-03", "2020-01-10", "2020-01-17", "2020-01-24"]
     ).tolist()
     assert out["BAMLC0A0CM"].tolist() == [1.0, 2.1, 1.2, 2.4]
+
+
+def test_hybrid_baml_uses_live_when_legacy_file_is_lfs_pointer(tmp_path, monkeypatch):
+    legacy_path = tmp_path / "baml_w.csv"
+    legacy_path.write_text(
+        "version https://git-lfs.github.com/spec/v1\n"
+        "oid sha256:abc\n"
+        "size 123\n",
+        encoding="utf-8",
+    )
+    live = pd.DataFrame(
+        {
+            "Date": pd.to_datetime(["2020-01-10", "2020-01-17"]),
+            "BAMLC0A0CM": [2.1, 2.4],
+        }
+    )
+    monkeypatch.setattr(macro, "pull_fred_weekly_series", lambda *args, **kwargs: live)
+
+    with pytest.warns(RuntimeWarning, match="FRED-only"):
+        out = macro.build_hybrid_baml_weekly(api_key="test-key", legacy_path=legacy_path)
+
+    pd.testing.assert_frame_equal(out, live)
 
 
 def test_macro_panel_keeps_long_history_with_hybrid_baml(monkeypatch):

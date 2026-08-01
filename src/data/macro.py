@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import time
+import warnings
 from os import PathLike
 from pathlib import Path
 
@@ -12,6 +13,7 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from src import config
+from src.data.universe import DataFileUnavailableError, is_lfs_pointer
 
 
 def make_fred_session() -> requests.Session:
@@ -99,6 +101,9 @@ def add_weekly_changes(macro_levels: pd.DataFrame, factor_cols: list[str]) -> pd
 
 
 def load_legacy_baml_weekly(path: str | PathLike[str] = config.LEGACY_BAML_WEEKLY_CSV) -> pd.DataFrame:
+    if is_lfs_pointer(path):
+        raise DataFileUnavailableError(f"{path} is a Git LFS pointer, not a hydrated CSV.")
+
     legacy = pd.read_csv(path, parse_dates=["Date"])
     legacy = legacy.rename(columns={"BAML_C0A0CM": "BAMLC0A0CM"})
     missing = {"Date", "BAMLC0A0CM"} - set(legacy.columns)
@@ -118,8 +123,17 @@ def build_hybrid_baml_weekly(
     session: requests.Session | None = None,
     legacy_path: str | PathLike[str] = config.LEGACY_BAML_WEEKLY_CSV,
 ) -> pd.DataFrame:
-    legacy = load_legacy_baml_weekly(legacy_path)
     live = pull_fred_weekly_series("BAMLC0A0CM", "BAMLC0A0CM", api_key=api_key, session=session)
+    try:
+        legacy = load_legacy_baml_weekly(legacy_path)
+    except DataFileUnavailableError as exc:
+        warnings.warn(
+            f"{exc} Falling back to FRED-only BAMLC0A0CM history.",
+            RuntimeWarning,
+            stacklevel=2,
+        )
+        return live
+
     return (
         pd.concat([legacy, live], ignore_index=True)
         .sort_values("Date")
@@ -146,7 +160,7 @@ def build_spx_realized_vol(
     panel rebuilds are deterministic and internet-free.
     """
     cache = Path(cache_csv)
-    if cache.exists():
+    if cache.exists() and not is_lfs_pointer(cache):
         daily = pd.read_csv(cache, parse_dates=["Date"]).set_index("Date")["Close"]
     else:
         hist = yf.Ticker("^GSPC").history(start=start, interval="1d", auto_adjust=True)
@@ -189,7 +203,7 @@ def build_dxy_weekly(
     rebuilds are deterministic and internet-free.
     """
     cache = Path(cache_csv)
-    if cache.exists():
+    if cache.exists() and not is_lfs_pointer(cache):
         daily = pd.read_csv(cache, parse_dates=["Date"]).set_index("Date")["Close"]
     else:
         hist = yf.Ticker("DX-Y.NYB").history(start=start, interval="1d", auto_adjust=True)

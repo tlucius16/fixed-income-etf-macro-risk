@@ -1,0 +1,13 @@
+{
+  "include": ["src", "scripts", "tests"],
+  "exclude": [
+    "**/.venv",
+    "**/.venv311",
+    "**/.venv-py314-broken",
+    "**/.mypy_cache",
+    "**/__pycache__",
+    "notebooks"
+  ],
+  "typeCheckingMode": "basic",
+  "reportMissingTypeStubs": "none"
+}

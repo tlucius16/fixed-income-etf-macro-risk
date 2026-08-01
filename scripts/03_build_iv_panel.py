@@ -16,13 +16,9 @@ Usage
 from __future__ import annotations
 
 import argparse
-import os
 import sys
 from datetime import date
 from pathlib import Path
-
-if not os.environ.get("FRED_API_KEY"):
-    sys.exit("FRED_API_KEY not set. Export it in your environment first.")
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -61,6 +57,9 @@ def main() -> None:
         help="Restrict the fetch to tickers passing the liquidity screen.",
     )
     args = p.parse_args()
+
+    if not config.FRED_API_KEY:
+        sys.exit("FRED_API_KEY not set. Add it to .env or export it in your environment first.")
 
     if args.liquid_only:
         ts_path = Path(args.ticker_summary)

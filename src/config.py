@@ -25,6 +25,21 @@ RAW_PRICES_CSV = RAW_DIR / "prices.csv"
 SPX_DAILY_CSV = RAW_DIR / "spx_daily.csv"
 DXY_DAILY_CSV = RAW_DIR / "dxy_daily.csv"
 
+
+def _load_dotenv(path: Path = PROJECT_ROOT / ".env") -> None:
+    if not path.exists():
+        return
+
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        os.environ.setdefault(key.strip(), value.strip().strip("\"'"))
+
+
+_load_dotenv()
+
 PANEL_MODES = {"offline", "live"}
 DEFAULT_PANEL_MODE = os.getenv("PANEL_MODE", "offline")
 

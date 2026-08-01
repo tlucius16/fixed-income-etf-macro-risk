@@ -3,7 +3,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-import pandas as pd
+import pandas as pd  # type: ignore[import-untyped]
 
 from src import config
 from src.data.macro import build_macro_snapshot, build_weekly_macro_panel
@@ -15,7 +15,7 @@ from src.data.prices import (
     reshape_weekly_returns_long,
 )
 from src.data.risk_free import build_weekly_risk_free
-from src.data.universe import build_universe
+from src.data.universe import build_universe, is_lfs_pointer
 from src.features.category import assign_category_bucket
 from src.features.forward_outcomes import add_forward_outcomes
 from src.features.rolling_risk import add_rolling_risk_metrics
@@ -30,10 +30,17 @@ def resolve_screener_csv(path: str | Path | None) -> Path:
             return candidate
         raise FileNotFoundError(f"ETFDB screener CSV not found: {candidate}")
 
-    if config.ETFDB_SCREENER_CSV.exists():
-        return config.ETFDB_SCREENER_CSV
-    if config.LEGACY_DATABASE_CSV.exists():
-        return config.LEGACY_DATABASE_CSV
+    existing_placeholders: list[Path] = []
+    for candidate in (config.ETFDB_SCREENER_CSV, config.LEGACY_DATABASE_CSV):
+        if not candidate.exists():
+            continue
+        if is_lfs_pointer(candidate):
+            existing_placeholders.append(candidate)
+            continue
+        return candidate
+
+    if existing_placeholders:
+        return existing_placeholders[0]
 
     raise FileNotFoundError(
         "No ETFDB screener CSV found. Place one at data/raw/etfdb_screener.csv "
@@ -69,7 +76,16 @@ def build_core_panel(
     output_path = Path(output_dir) if output_dir is not None else config.processed_dir_for_mode(panel_mode)
     output_path.mkdir(parents=True, exist_ok=True)
 
-    metadata, tickers = build_universe(screener_path, min_years=min_years, filter_history=True)
+    fallback_panel_paths = [
+        config.core_panel_csv(panel_mode),
+        config.core_panel_csv("offline" if panel_mode == "live" else "live"),
+    ]
+    metadata, tickers = build_universe(
+        screener_path,
+        min_years=min_years,
+        filter_history=True,
+        metadata_fallback_paths=fallback_panel_paths,
+    )
     print(f"[diagnostic] universe: metadata_rows={len(metadata):,} | tickers={len(tickers):,}")
 
     etf_prices_data = download_price_history(tickers)
