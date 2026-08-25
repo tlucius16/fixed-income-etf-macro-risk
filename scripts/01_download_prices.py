@@ -63,7 +63,7 @@ def download_raw_prices(
         is_multi = isinstance(hist.columns, pd.MultiIndex)
         for t in batch:
             try:
-                # yfinance group_by="ticker" → MultiIndex order is (ticker, price_type)
+                # yfinance group_by="ticker" -> MultiIndex order is (ticker, price_type)
                 col = hist[t]["Close"].dropna() if is_multi else hist["Close"].dropna()
                 col.name = t
                 all_frames.append(col)
@@ -85,7 +85,7 @@ def download_raw_prices(
     out = Path(out)
     out.parent.mkdir(parents=True, exist_ok=True)
     prices.to_csv(out)
-    print(f"Saved {prices.shape[1]} tickers × {len(prices)} dates → {out}")
+    print(f"Saved {prices.shape[1]} tickers × {len(prices)} dates -> {out}")
     return prices
 
 

@@ -35,10 +35,10 @@ if _JDK_BIN.is_dir():
     os.environ["PATH"] = str(_JDK_BIN) + os.pathsep + os.environ.get("PATH", "")
     os.environ["JAVA_HOME"] = str(_JDK_BIN.parent)
 
-THETA_USERNAME = os.getenv("THETA_USERNAME")
-THETA_PASSWORD = os.getenv("THETA_PASSWORD")
-if not THETA_USERNAME or not THETA_PASSWORD:
-    print("[SKIP] THETA_USERNAME / THETA_PASSWORD not set.")
+THETADATA_USERNAME = os.getenv("THETADATA_USERNAME")
+THETADATA_PASSWORD = os.getenv("THETADATA_PASSWORD")
+if not THETADATA_USERNAME or not THETADATA_PASSWORD:
+    print("[SKIP] THETADATA_USERNAME / THETADATA_PASSWORD not set.")
     sys.exit(0)
 
 TICKER = "HYG"
@@ -51,9 +51,9 @@ except ImportError as exc:
     print(f"[FAIL] thetadata not importable: {exc}")
     sys.exit(1)
 
-print(f"[step 0] Connecting to ThetaData Terminal as {THETA_USERNAME!r} ...")
+print(f"[step 0] Connecting to ThetaData Terminal as {THETADATA_USERNAME!r} ...")
 client = ThetaClient(
-    username=THETA_USERNAME, passwd=THETA_PASSWORD,
+    username=THETADATA_USERNAME, passwd=THETADATA_PASSWORD,
     timeout=120, auto_update=False, launch=True,
 )
 time.sleep(8)  # Wait for terminal to start on macOS

@@ -10,7 +10,7 @@ from src.features.stress_index import _COMPONENTS, add_stress_index
 
 def test_stress_components_include_spx_rv_and_dxy():
     assert _COMPONENTS == ["d_ANFCI", "d_BAMLC0A0CM", "d_MOVE", "d_VIX",
-                           "d_SPX_RV_21d", "d_DXY"]
+                           "d_SPX_RV_21d", "d_DXY", "d_KCPRU"]
 
 
 def test_stress_index_is_mean_of_component_zscores():

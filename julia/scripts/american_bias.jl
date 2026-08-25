@@ -1,7 +1,7 @@
 # American-exercise repricing bias for the fixed-income ETF option chains.
 #
 # File-exchange only: reads data/processed/options_screen/chains.csv and writes
-# docs/options_paper/tables/american_bias.csv.  The output is a summary by
+# docs/hedge_capacity/tables/american_bias.csv.  The output is a summary by
 # ticker × right × |delta| moneyness bucket.
 #
 # Usage:
@@ -17,7 +17,7 @@ using RateSpace
 
 const REPO = normpath(joinpath(@__DIR__, "..", ".."))
 const CHAINS = joinpath(REPO, "data", "processed", "options_screen", "chains.csv")
-const DEFAULT_OUT = joinpath(REPO, "docs", "options_paper", "tables", "american_bias.csv")
+const DEFAULT_OUT = joinpath(REPO, "docs", "hedge_capacity", "tables", "american_bias.csv")
 
 const MIN_OPTION_PRICE = 0.01
 const IV_LO = 1e-4
@@ -280,10 +280,10 @@ function row_bias(r; steps::Int)
     target = Float64(r.option_price)
     rf = Float64(r.rf_annual)
     q = Float64(r.div_yield)
-    eur_iv = Float64(r.iv)
     delta = Float64(r.delta)
 
     T = dte / 365.0
+    eur_iv = implied_vol(target, S, K, dte, rf, q; right)
     euro_price = bs_price(S, K, T, rf, eur_iv, q; right)
 
     american_price = NaN

@@ -21,8 +21,9 @@ using WildBootTests
 const REPO = normpath(joinpath(@__DIR__, "..", ".."))
 const OPTIONS_PANEL = joinpath(REPO, "data", "processed", "options_screen", "options_panel.csv")
 const CHAINS = joinpath(REPO, "data", "processed", "options_screen", "chains.csv")
-const REFERENCE_ROBUSTNESS = joinpath(REPO, "docs", "options_paper", "tables", "robustness_spec0.csv")
-const DEFAULT_OUT = joinpath(REPO, "docs", "options_paper", "tables", "robustness_boot.csv")
+const SIDE_CAPACITY = joinpath(REPO, "data", "processed", "options_screen", "side_capacity.csv")
+const REFERENCE_ROBUSTNESS = joinpath(REPO, "docs", "hedge_capacity", "tables", "robustness_spec0.csv")
+const DEFAULT_OUT = joinpath(REPO, "docs", "hedge_capacity", "tables", "robustness_boot.csv")
 
 # Mirrors src/data/options_universe.py::ETF_METADATA AUM values.  The side-specific
 # capacity identity is duration-invariant:
@@ -271,7 +272,7 @@ function check_reference(rows)
     se_tol = 5e-5
     p_tol = 5e-5
     ok = true
-    println("\nPoint-estimate parity against docs/options_paper/tables/robustness_spec0.csv:")
+    println("\nPoint-estimate parity against docs/hedge_capacity/tables/robustness_spec0.csv:")
     for r in rows
         key = (r.spec, r.var)
         if !haskey(ref, key)
@@ -327,33 +328,17 @@ function passes_screen(r)
 end
 
 function build_side_capacity()
-    chains = CSV.read(CHAINS, DataFrame)
-    sums = Dict{Tuple{String,Date,String},Float64}()
-    counts = Dict{Tuple{String,Date,String},Int}()
-
-    for r in eachrow(chains)
-        passes_screen(r) || continue
-        ticker = String(r.ticker)
-        snap = Date(string(r.snap_date))
-        right = String(r.right) == "P" ? "put" : "call"
-        key = (ticker, snap, right)
-        counts[key] = get(counts, key, 0) + 1
-
-        if isvalidnum(r.underlying) && isvalidnum(r.delta) && isvalidnum(r.open_interest)
-            contrib = Float64(r.underlying) * abs(Float64(r.delta)) * Float64(r.open_interest)
-            sums[key] = get(sums, key, 0.0) + contrib
-        end
-    end
-
-    rows = NamedTuple[]
-    for (key, n) in counts
-        n >= MIN_QUALITY_CONTRACTS || continue
-        ticker, snap, side = key
-        haskey(ETF_AUM, ticker) || continue
-        hcap = 100.0 * get(sums, key, 0.0) / ETF_AUM[ticker]
-        push!(rows, (ticker = ticker, cap_date = snap, side = side, hedge_capacity_ratio = hcap))
-    end
-    return DataFrame(rows)
+    isfile(SIDE_CAPACITY) || error(
+        "side_capacity.csv not found; run scripts/07_robustness_ladder.py first."
+    )
+    side_cap = CSV.read(SIDE_CAPACITY, DataFrame)
+    side_cap = side_cap[in.(String.(side_cap.side), Ref(["call", "put"])), :]
+    return DataFrame(
+        ticker = String.(side_cap.ticker),
+        cap_date = Date.(string.(side_cap.snap_date)),
+        side = String.(side_cap.side),
+        hedge_capacity_ratio = Float64.(side_cap.hedge_capacity_ratio),
+    )
 end
 
 function merge_side_capacity(base::DataFrame, side_cap::DataFrame, side::String, col::Symbol)

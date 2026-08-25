@@ -1,4 +1,8 @@
-# Paper Sketch — The Missing Hedge Market
+# Hedge-Capacity Extension Notes
+
+These notes preserve the full market-structure analysis supporting Section 6 of
+the unified paper, *Observable Fragility, Limited Hedge Capacity, and Tail Risk
+in Bond ETFs*. They are not a separate paper draft.
 
 Revision of 2026-07-10. Supersedes the chat-circulated draft: incorporates the
 wild-cluster bootstrap results (Section 7 second act, abstract), corrects the
@@ -8,7 +12,7 @@ repricing robustness note.
 
 ---
 
-## Title
+## Former Standalone Title (retired)
 
 *The Missing Hedge Market: Listed Option Capacity in Fixed-Income ETFs*
 
@@ -17,12 +21,12 @@ Fixed-Income ETFs*
 
 ---
 
-## Abstract
+## Source Summary for Unified Section 6
 
 Listed options on fixed-income ETFs are the only exchange-traded instrument
 offering limited-loss, basis-specific protection against bond ETF price risk.
-We ask whether this market can actually perform that function. Using quarterly
-option chain snapshots for 36 bond ETFs (2020–2025, calls and puts with open
+We ask whether this market can actually perform that function. Using monthly
+option chain snapshots for 36 bond ETFs (2016–2026, calls and puts with open
 interest), we translate option Greeks into rate-space exposures and construct a
 hedge capacity ratio: the fraction of each fund's aggregate rate DV01 that the
 quality-screened option book could offset. The answer is that the hedge market
@@ -44,9 +48,9 @@ decomposition shows it is entirely between-fund composition — deep option
 markets sit on long-duration funds that drew down hardest in the 2022 rate
 cycle — and it vanishes under ticker or even duration-bucket fixed effects.
 And even the between-fund association does not survive inference that respects
-the small number of funds: wild-cluster bootstrap p-values (32 ticker
-clusters) rise to approximately 0.25 for both the pooled and between-fund
-coefficients. The only estimate robust to both decomposition and few-cluster
+the small number of funds: wild-cluster bootstrap p-values (33 ticker
+clusters) rise to 0.095 for the pooled coefficient and 0.116 for the between-fund
+coefficient. The only estimate robust to both decomposition and few-cluster
 inference is the call-side capacity channel (bootstrap p ≈ 0.03) — the
 signature of yield-enhancement flow, not protection. The listed bond ETF
 options market is best understood not as a risk-transfer mechanism awaiting
@@ -109,7 +113,7 @@ association, but we dissect it in Section 7 and it fails on two independent
 grounds: identification (a Mundlak decomposition shows it is entirely
 between-fund composition, and it disappears under ticker or even coarse
 duration-bucket fixed effects) and inference (wild-cluster bootstrap p-values,
-which respect the fact that there are only 32 funds, eliminate both the pooled
+which respect the fact that there are only 33 funds, eliminate both the pooled
 and the between-fund significance). The single coefficient that survives both
 is call-side capacity — corroborating the anatomy, not the hedging
 hypothesis. We report this autopsy in full because the naive specification is
@@ -134,13 +138,13 @@ the between-fund association. Section 8 concludes.
 
 ### 2.1 Sample
 
-Quarterly option chain snapshots for 36 fixed-income ETFs, 2020-Q1 through
-2025-Q2 (22 snapshot dates), calls and puts with per-contract open interest,
-from ThetaData. A weekly ATM 30-day IV panel (2020–present) supports the
+Monthly option chain snapshots for 36 fixed-income ETFs, 2016-02 through
+2026-08 (114 observed snapshot dates), calls and puts with per-contract open
+interest, from ThetaData. A weekly ATM 30-day IV panel (2016–2026) supports the
 informational tests, constructed with a combined call/put method validated on
-231 matched quarterly call/put pairs (median absolute IV gap 0.0086, p90
-0.0233). Underlying returns, forward outcomes (fwd_maxdd_12w, fwd_ret_4w,
-fwd_vol_12w), and macro controls come from the companion 347-ETF bond
+784 matched monthly call/put pairs (median absolute IV gap 0.0078, p90
+0.0247). Underlying returns, forward outcomes (fwd_maxdd_12w, fwd_ret_4w,
+fwd_vol_12w), and macro controls come from the companion 352-ETF bond
 fragility panel (read-only join).
 
 The universe spans long/intermediate/short Treasury, investment-grade
@@ -153,25 +157,26 @@ A contract enters the analysis only if it is plausibly tradeable and
 economically meaningful: relative bid-ask spread ≤ 0.35, DTE in [14, 90], |Δ|
 in [0.10, 0.90], and dollar-Greek floors on dollar delta, dollar gamma, and
 dollar vega. Thresholds are held constant across the sample. The screened
-chain file contains 80,521 contract-rows. All capacity results are therefore
+chain file contains 339,220 contract-rows. All capacity results are therefore
 upper bounds with respect to tradeability in a specific sense: every quality
 contract's full open interest is treated as usable, with no price impact —
 the true hedgeable amount is smaller.
 
 Ticker-level liquidity classification (used to scope the IV panel and the
-hedgeability scores; the capacity accounting always covers all 36 funds) uses
+hedgeability scores; the capacity accounting attempts all 36 funds and is
+measurable for 33) uses
 a family of screeners each of the form √N × g, where N is quality
 open-interest premium notional and g ∈ (0, 1] is a depth-free quality
 multiplier: pure depth √N; cost-adjusted depth √N × (1 − median spread); and
 balance-adjusted depth √N × 2·min(putN, callN)/(putN + callN). Every screener
 is monotone increasing in √N — deeper standing books never classify as less
 liquid — while the composite gate (all three multipliers) prevents large but
-stale, wide, or one-sided books from qualifying. Eight funds pass: TLT, LQD,
-IEF, EMB, TIP, EDV, ZROZ, VCLT.
+stale, wide, or one-sided books from qualifying. Six funds pass: EDV, EMB,
+IEF, LQD, TLT, and ZROZ.
 
 Robustness note (American exercise): all IVs and Greeks are computed under
 European BSM although ETF options are American-style with 3–5% dividend-yield
-underlyings. Repricing all 80,521 contracts on a 751-step CRR tree shows the
+underlyings. Repricing all 339,220 contracts on a 751-step CRR tree shows the
 median European-assumption IV bias is approximately zero across ticker × right
 × moneyness buckets; the apparent tail cases trace to stale deep-ITM quotes
 below the American early-exercise bound rather than systematic model bias
@@ -182,8 +187,8 @@ below the American early-exercise bound rather than systematic model bias
 For each ticker, weekly returns are regressed on weekly changes in the 10-year
 Treasury yield; D_i is the negated slope, positive for long-duration funds. A
 quality gate (regression R² ≥ 0.20 and |D_i| ≥ 1.0) governs the absolute
-exposure measures; 104 of 521 ticker-snapshot pairs fail and receive NaN in
-the absolute DV01/convexity/carry fields. The capacity ratio is unaffected by
+exposure measures; failing ticker-snapshot estimates receive NaN in the
+absolute DV01/convexity/carry fields. The capacity ratio is unaffected by
 gate failures via the cancellation identity below. Estimated durations
 validate against published effective durations with correlation 0.98
 [`figures/26_duration_validation.png`].
@@ -281,7 +286,7 @@ yield-enhancement writing by ETF holders — supply of upside, not demand for
 downside.
 
 The composition is also unstable where it matters most for the hedging
-interpretation. LQD classifies as liquid on the 2020–2025 median — its option
+interpretation. LQD classifies as liquid on the full-sample median — its option
 market was genuinely active mid-sample — yet carries zero quality put-side
 depth at the 2025-04-01 snapshot: the one credit fund with a real options
 market saw its put side evaporate within the sample. Depth that exists on
@@ -313,7 +318,7 @@ Two families of option-derived variables, two clean nulls, presented
 compactly. Inference throughout uses CGM (2011) two-way clustered errors
 (ticker × date); the headline specifications additionally report wild-cluster
 bootstrap p-values (Rademacher weights, 9,999 replications, ticker clusters),
-which are the appropriate inference with 32 funds.
+which are the appropriate inference with 33 funds.
 
 Prices: the implied–realized variance gap (IVRVG) predicts neither forward
 12-week maximum drawdown, forward 4-week returns, nor forward realized
@@ -322,7 +327,7 @@ duration-scaled). [Condensed table, specs 1–7 from the notebook.]
 
 Capacity, within fund: changes in hedge capacity over time within a fund carry
 no predictive content for forward outcomes (the within component of the
-decomposition in Section 7: +0.063, CGM p=0.34, bootstrap p=0.73).
+decomposition in Section 7: −0.046, CGM p=0.39, bootstrap p=0.37).
 Fresh-capacity-only (snapshot age ≤ 30 days) and snapshot-week-only subsamples
 are likewise null.
 
@@ -331,7 +336,7 @@ market of this scale and composition has neither the depth to aggregate
 dispersed risk information nor a participant base positioned to trade on it.
 The absence of signal is what the anatomy predicts.
 
-Caveat: 22 quarterly snapshots limit within-fund power. The within-null is "no
+Caveat: 114 monthly snapshots still provide uneven within-fund coverage. The within-null is "no
 detectable signal," not proof of zero.
 
 ---
@@ -340,16 +345,16 @@ detectable signal," not proof of zero.
 
 A researcher who regressed forward drawdowns on hedge capacity with date fixed
 effects — the natural first specification — would find a significant negative
-coefficient (−0.269, CGM SE 0.094, p=0.0042) and might conclude that
+coefficient (−0.338, CGM SE 0.096, p=0.0004) and might conclude that
 option-market depth is associated with — perhaps protects against, perhaps
 signals — future drawdowns. We document why that conclusion fails, twice, in
 the spirit of making both failure modes reusable knowledge.
 
 **Act one: identification.** The association is entirely between funds. Adding
-ticker fixed effects eliminates it (−0.012, p=0.96); two-way FE flips the sign
-(ns); even coarse duration-bucket fixed effects kill it (−0.033, p=0.76). The
-Mundlak decomposition is dispositive: the between-fund component is −0.437
-(CGM p=0.0009) while the within-fund component is +0.063 (p=0.34). The
+ticker-plus-date fixed effects eliminates it (−0.022, p=0.65); even coarse
+duration-bucket fixed effects kill it (−0.073, p=0.47). The Mundlak
+decomposition is dispositive: the between-fund component is −0.507
+(CGM p<0.0001) while the within-fund component is −0.046 (p=0.39). The
 gradient is not an outlier artifact — it survives 1/99 winsorization and log
 transformation — and it is not universe-wide: dropping TLT, LQD, and IEF
 renders it insignificant, so three liquid funds carry the precision. The
@@ -360,17 +365,17 @@ composition as a capacity effect.
 
 **Act two: inference.** Even the between-fund association, taken on its own
 terms as a cross-sectional fact, does not survive inference that respects the
-effective sample size. The regressor of interest is constant (or slow-moving)
-within fund, so the informative sample is not 8,515 fund-weeks but 32 funds —
-of which roughly eight have economically meaningful capacity. Wild-cluster
+effective sample size. The regressor of interest is slow-moving within fund,
+so the informative sample is not 12,203 fund-weeks but 33 funds — of which six
+pass the liquidity gate. Wild-cluster
 bootstrap p-values (Rademacher, 9,999 replications, clustered by ticker) rise
-from 0.0042 to 0.25 for the pooled coefficient and from 0.0009 to 0.25 for the
-Mundlak between-fund component. The asymptotic CGM stars were an artifact of
-treating a 32-cluster problem as an 8,515-observation one.
+from 0.0004 to 0.095 for the pooled coefficient and from less than 0.0001 to
+0.116 for the Mundlak between-fund component. The asymptotic CGM stars were
+an artifact of treating a 33-cluster problem as a 12,203-observation one.
 
 One coefficient survives both acts: call-side capacity in the call/put horse
-race (−0.313; CGM p=0.0001, bootstrap p=0.030), while put-side capacity is
-null under every treatment (bootstrap p=0.84). This is the final tell, and it
+race (−0.487; CGM p<0.0001, bootstrap p=0.030), while put-side capacity is
+null under every treatment (bootstrap p=0.786). This is the final tell, and it
 closes the loop with Section 5: a genuine hedging channel would run through
 puts; the channel that actually survives runs through the covered-call side of
 the book. The regression evidence, once honestly decomposed and honestly
@@ -396,7 +401,7 @@ within the sample. Option prices and capacity dynamics carry no
 forward-looking information, which is what the anatomy predicts. The one
 significant regression a naive researcher would find fails on identification
 (it is between-fund composition) and then fails again on inference (it does
-not survive wild-cluster bootstrap with 32 funds); the only surviving
+not survive wild-cluster bootstrap with 33 funds); the only surviving
 coefficient is the call-side channel — the market's yield-enhancement
 signature, not its hedging function.
 
@@ -413,8 +418,8 @@ should be decomposed before interpretation, and inferenced at the level of the
 cross-sectional unit; ours vanished within fund, and then vanished again at
 the fund level under bootstrap.
 
-Limitations: one rate cycle (2020–2025); 22 quarterly snapshots (limited
-within-fund power); EOD quotes; OI as stock not flow; capacity as optimistic
+Limitations: one sustained hiking cycle; 114 monthly snapshots with uneven
+within-fund coverage; EOD quotes; OI as stock not flow; capacity as optimistic
 upper bound. Future work: flow-based composition using signed volume; intraday
 tradeability; whether the 2022 stress episode *created* option-market
 development with a lag; and the OTC side — whether dealer-intermediated bond
@@ -426,19 +431,17 @@ ETF options fill the gap the listed market leaves.
 
 All regression numbers from `notebooks/05_options_analysis.ipynb` (Section 10
 = robustness ladder + bootstrap join; Section 11 generates the paper tables
-and figures). Tables regenerate to `docs/options_paper/tables/`: capacity
+and figures). Tables regenerate to `docs/hedge_capacity/tables/`: capacity
 accounting, call/put ratio, duration validation, universe, robustness ladder
 (`robustness_spec0.csv`), wild bootstrap (`robustness_boot.csv`), American
-bias (`american_bias.csv`). Figures 24–26 in `docs/options_paper/figures/`.
-Julia replication layer in `julia/` (RateSpace.jl: AD Greeks with
-machine-precision parity to the Python reference on all 80,521 contracts;
-wild-cluster bootstrap; CRR American repricing) — file-exchange only, repo
-reproducible without it. Sample: chains.csv 80,521 rows; options_panel.csv
-18,074 ticker-weeks; capacity non-null on 8,515 regression obs / 32 tickers;
-liquid set under the √-notional gate: 8 funds. State as of 2026-07-11 (canonical offline core panel: 156,588 rows built by
-scripts/rebuild_panel_from_legacy.py from pinned inputs; stress index now
-includes S&P realized vol as a fifth component); tests 155 passed / 4
-skipped (Julia and live-API tests opt-in). Full pipeline: scripts/reproduce.py.
+bias (`american_bias.csv`). Figures 24–26 in `docs/hedge_capacity/figures/`.
+Julia replication layer in `julia/` provides the wild-cluster bootstrap and
+CRR American repricing through file exchange; the Python pipeline remains
+usable without it. Sample: chains.csv 339,220 rows; options_panel.csv 18,056
+ticker-weeks; capacity non-null on 12,599 rows / 33 tickers; liquid set under
+the √-notional gate: 6 funds. State as of 2026-08-14 (canonical offline core
+panel: 159,216 rows / 352 ETFs; the stress index has seven components). Full
+pipeline: scripts/reproduce.py.
 
 Before submission: refresh `ETF_METADATA` AUM/durations from current fact
 sheets (the capacity accounting table inherits their precision) and rotate the

@@ -1,13 +1,13 @@
-# Methodology — Options Paper
+# Methodology — Hedge-Capacity Extension
 
 ## 1. Universe and Duration Buckets
 
 The analysis begins with a predetermined universe of 36 fixed-income ETFs spanning
 Treasury, aggregate, investment-grade credit, high-yield, inflation-linked, and
 short-duration funds. The universe is not defined by passing the option-liquidity
-screen. Instead, the screen separately flags a ticker as liquid when its mean
-contract pass rate is at least 0.25 across available quarterly snapshots from
-2020 through 2025. Each ticker is assigned to a duration bucket:
+screen. Instead, the screen separately flags a ticker as liquid when its median
+composite liquidity score exceeds the fixed threshold across available monthly
+business-start snapshots from 2016 onward. Each ticker is assigned to a duration bucket:
 
 | Bucket | Approximate Effective Duration | Example Tickers |
 |---|---|---|
@@ -236,10 +236,10 @@ fwd_maxdd_12w_it = α_t + β · hedge_capacity_ratio_it + ε_it
 ```
 
 `hedge_capacity_ratio` is merged onto the weekly panel via `merge_asof` backward,
-attaching the nearest prior quarterly snapshot. Date fixed effects absorb common
+attaching the nearest prior monthly snapshot. Date fixed effects absorb common
 shocks. Because `fwd_maxdd` is negative during drawdowns, a protective relation
-would require `β > 0`. The pooled estimate is instead negative (`β = −0.268`,
-`p = 0.004`). This is treated as a descriptive baseline, not a causal effect.
+would require `β > 0`. The pooled estimate is instead negative (`β = −0.338`,
+`p = 0.0004`). This is treated as a descriptive baseline, not a causal effect.
 
 The identification analysis applies ticker fixed effects, ticker-plus-date fixed
 effects, duration-bucket-plus-date fixed effects, and a Mundlak decomposition into
@@ -248,11 +248,11 @@ checks exclude dominant funds and duration groups, transform and winsorize capac
 control for observation age, restrict the sample to fresh or snapshot-week
 observations, and split capacity into call and put sides.
 
-The negative pooled coefficient does not survive ticker fixed effects
-(`β = −0.009`, `p = 0.97`) or bucket fixed effects. The Mundlak estimates isolate
-the association in the between-fund component (`β_between = −0.436`,
-`p = 0.0007`); the within-fund component is positive but insignificant
-(`β_within = 0.065`, `p = 0.32`). Fresh-only and snapshot-week estimates are
+The negative pooled coefficient does not survive ticker-plus-date fixed effects
+(`β = −0.022`, `p = 0.65`) or bucket fixed effects. The Mundlak estimates isolate
+the association in the between-fund component (`β_between = −0.507`,
+`p < 0.0001`); the within-fund component is negative but insignificant
+(`β_within = −0.046`, `p = 0.39`). Fresh-only and snapshot-week estimates are
 also insignificant.
 
 In the joint call/put specification, call capacity is negative and significant

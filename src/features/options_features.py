@@ -1,4 +1,4 @@
-"""Feature construction for the options paper.
+"""Feature construction for the paper's hedge-capacity extension.
 
 compute_vrp        — re-exported from vrp (moved there for the appendix)
 compute_hedgeability_score — H score and tercile assignments per ticker
@@ -656,7 +656,7 @@ def add_latest_duration_exposure_to_panel(
     ticker_col: str = "ticker",
     exposure_cols: list[str] | None = None,
 ) -> pd.DataFrame:
-    """Attach latest prior quarterly duration-exposure metrics to a panel."""
+    """Attach latest prior snapshot duration-exposure metrics to a panel."""
     required_panel = [ticker_col, panel_date_col]
     missing_panel = [col for col in required_panel if col not in panel_df.columns]
     if missing_panel:

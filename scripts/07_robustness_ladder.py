@@ -2,7 +2,7 @@
 
 Canonical producer of the 18-row ladder previously computed in notebook 05
 Section 10 (the notebook now displays this file). Also writes the side-level
-capacity table consumed by scripts/07_paper_artifacts.py.
+capacity table consumed by scripts/08_paper_artifacts.py.
 
 Specs: baseline date FE; ticker / ticker+date / bucket FE; Mundlak
 within-between; drop-influential; winsorized; log; capacity-age controls;
@@ -10,7 +10,7 @@ snapshot-week subsample; call/put side capacity horse race.
 
 Usage
 -----
-    python scripts/06_robustness_ladder.py
+    python scripts/07_robustness_ladder.py
 """
 from __future__ import annotations
 

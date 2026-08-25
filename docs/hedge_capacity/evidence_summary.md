@@ -1,4 +1,4 @@
-# Options Paper Analysis Readiness
+# Hedge-Capacity Evidence Summary
 
 ## Bottom Line
 
@@ -11,10 +11,10 @@ The defensible contribution is a market-structure decomposition:
 > capacity and subsequent drawdowns is a between-fund composition effect, not a
 > within-fund protective effect.
 
-The paper should be framed as an “appearance of hedgeability without substance”
-result. Funds with the most rate risk attract the deepest option markets, but
+In the unified paper, this evidence is the market-completeness extension rather
+than a standalone manuscript. Funds with the most rate risk attract the deepest option markets, but
 changes in their measured capacity did not predict smaller drawdowns during
-2020–2025. Put-side capacity—the side most directly associated with downside
+2016–2026. Put-side capacity—the side most directly associated with downside
 insurance—is generally too small to explain protection outside TLT.
 
 ## Core Empirical Findings
@@ -25,7 +25,7 @@ The date-fixed-effect baseline estimates:
 
 ```text
 fwd_maxdd_12w ~ hedge_capacity_ratio + date FE
-β = −0.268, p = 0.004
+β = −0.338, p = 0.0004
 ```
 
 Since forward maximum drawdown is negative, a protective effect would require a
@@ -38,11 +38,11 @@ The baseline disappears under controls for persistent fund characteristics:
 
 | Specification | Coefficient | p-value |
 |---|---:|---:|
-| Ticker FE | −0.009 | 0.969 |
-| Ticker + date FE | 0.075 | 0.350 |
-| Duration-bucket + date FE | −0.032 | 0.773 |
-| Mundlak within component | 0.065 | 0.320 |
-| Mundlak between component | −0.436 | 0.0007 |
+| Ticker FE | −0.228 | 0.140 |
+| Ticker + date FE | −0.022 | 0.653 |
+| Duration-bucket + date FE | −0.073 | 0.467 |
+| Mundlak within component | −0.046 | 0.393 |
+| Mundlak between component | −0.507 | <0.0001 |
 
 The meaningful coefficient is the between-ticker component. Funds that are
 structurally different—especially funds carrying large duration exposure—also
@@ -55,8 +55,8 @@ The side-specific horse race estimates:
 
 | Side | Coefficient | p-value |
 |---|---:|---:|
-| Call capacity | −0.308 | 0.0001 |
-| Put capacity | −0.053 | 0.795 |
+| Call capacity | −0.487 | <0.0001 |
+| Put capacity | −0.046 | 0.769 |
 
 This is inconsistent with a downside-insurance interpretation. The observed
 depth is better described as call-side positioning—such as covered-call or
@@ -65,7 +65,7 @@ yield-enhancement demand—concentrated in funds with substantial rate exposure.
 ### 4. Timing checks provide no protective evidence
 
 The coefficient is insignificant when capacity is no more than 30 days old and
-when the sample is restricted to quarterly snapshot weeks. Capacity-age controls
+when the sample is restricted to monthly snapshot weeks. Capacity-age controls
 do not rescue a within-fund interpretation. Winsorized and logged estimates retain
 the pooled negative association, confirming that the between-fund pattern is not
 solely an outlier artifact.
@@ -107,7 +107,7 @@ TLT puts are the only clear institutional-scale ETF-option hedging venue in this
 sample. Using them to hedge other bond ETFs introduces duration, credit, and
 convexity basis risk, which the rate-space framework can quantify.
 
-## What the Paper Should Claim
+## What Unified Section 6 Should Claim
 
 The main results section should make four claims:
 
@@ -118,16 +118,16 @@ The main results section should make four claims:
    across funds, not protective changes within funds.
 4. The relation is call-driven; put-side depth does not predict drawdown protection.
 
-The paper should not say:
+The unified paper should not say:
 
 - “higher hedge capacity reduces future drawdowns”;
 - “option depth provides resilience”;
 - “vega capacity is a protective predictor” without immediately presenting the
   fixed-effect and call/put decomposition.
 
-## Recommended Empirical Structure
+## Integrated Empirical Structure
 
-### Main text
+### Unified paper, Section 6
 
 1. Universe, quality screen, and rate-space construction.
 2. Economic scale of total, call, and put capacity.
@@ -158,26 +158,23 @@ Similarly, `H_dur` remains a descriptive market-structure metric. IVRVG, `H`, an
 
 ## Data and Reproducibility Status
 
-- Quarterly chain data: 80,521 contracts, 36 tickers.
-- Screen summary: 680 ticker-snapshot observations.
-- Weekly options panel: 18,058 rows, 36 tickers.
-- Weekly valid combined IV: 5,886 rows.
-- Hedge-capacity coverage: 8,995 weekly rows across 32 tickers.
+- Monthly chain data: 339,220 contracts, 36 tickers, 114 observed snapshots.
+- Screen summary: 3,046 ticker-snapshot observations.
+- Weekly options panel: 18,056 rows, 36 tickers.
+- Weekly valid combined IV: 7,157 rows.
+- Hedge-capacity coverage: 12,599 weekly rows across 33 tickers.
 - Robustness table: `tables/robustness_spec0.csv` with 18 coefficient rows.
-- Tests: 146 passed, 1 live ThetaData test skipped at the last committed audit.
+- Tests: see the current `pytest tests -q` result in `REPRODUCING.md`.
 
 The notebook writes all regression and robustness tables automatically. The
-remaining work is paper drafting and presentation, not specification search.
+core evidence is integrated into `docs/draft.md`; this file remains the detailed
+interpretive audit behind Section 6.
 
 ## Submission Checklist
 
 Before submission:
 
-1. Rewrite the abstract, introduction, and conclusion around concentration,
-   composition, and call-side depth.
-2. Present absolute DV01 and realistic participation assumptions alongside the
-   ratio-to-AUM measure.
-3. Quantify basis risk from using TLT puts to hedge non-TLT exposures.
-4. Refresh `ETF_METADATA` AUM and fact-sheet inputs with dated sources.
-5. Rotate ThetaData and FRED credentials because they circulated outside the
+1. Quantify basis risk from using TLT puts to hedge non-TLT exposures.
+2. Refresh `ETF_METADATA` AUM and fact-sheet inputs with dated sources.
+3. Rotate ThetaData and FRED credentials because they circulated outside the
    repository, even though git history is clean.

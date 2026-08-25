@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-# The six components capture orthogonal dimensions of macro-financial stress:
+# The seven components capture orthogonal dimensions of macro-financial stress:
 #   d_ANFCI       — tightening financial conditions (broader than spreads)
 #   d_BAMLC0A0CM  — widening IG credit spreads
 #   d_MOVE        — rising bond market volatility
@@ -11,10 +11,11 @@ import pandas as pd
 #                   counterpart to d_VIX; 21-trading-day annualised RV)
 #   d_DXY         — dollar appreciation (global dollar-funding stress;
 #                   the composite's international leg)
-# All six increase during stress episodes, so the composite is a simple
+#   d_KCPRU       — policy-rate uncertainty (Kansas City Fed PRU index)
+# All seven increase during stress episodes, so the composite is a simple
 # equal-weighted average of their z-scores.  Full-sample standardisation is
 # appropriate for a retrospective research panel.
-_COMPONENTS = ["d_ANFCI", "d_BAMLC0A0CM", "d_MOVE", "d_VIX", "d_SPX_RV_21d", "d_DXY"]
+_COMPONENTS = ["d_ANFCI", "d_BAMLC0A0CM", "d_MOVE", "d_VIX", "d_SPX_RV_21d", "d_DXY", "d_KCPRU"]
 
 # A stress_index z-score above this threshold flags the week as a high-stress
 # regime.  1.0 corresponds roughly to the top ~16 % of weeks historically.

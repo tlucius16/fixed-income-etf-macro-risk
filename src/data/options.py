@@ -12,9 +12,8 @@ Two independent workflows share this module:
    snapshot dates, computes BSM Greeks for each contract, and applies
    dollar-normalised filters to identify tickers with liquid options.
 
-BSM primitives shared by both workflows:
-   ``compute_bs_iv``   — IV from option mid-price via Brent solver
-   ``compute_greeks``  — delta, gamma, vega, theta + dollar transforms + ratios
+Native Greeks & IV:
+   Fetched directly from ThetaData's native endpoints (no BSM solver required).
 
 Caches
 ------
@@ -44,9 +43,6 @@ from pathlib import Path
 
 import pandas as pd
 import yfinance as yf
-from scipy.optimize import brentq
-from scipy.stats import norm
-
 from src import config
 from src.data.options_universe import LIQUIDITY_SCORE_MIN
 
@@ -57,157 +53,10 @@ _MIN_OPTION_PRICE   = 0.01
 _IV_CACHE_DIR       = config.RAW_DIR / "options_screen"
 _SCREEN_CACHE_DIR   = config.RAW_DIR / "options_screen"
 
-_THETA_USERNAME = os.getenv("THETA_USERNAME")
-_THETA_PASSWORD = os.getenv("THETA_PASSWORD")
+_THETADATA_USERNAME = os.getenv("THETADATA_USERNAME")
+_THETADATA_PASSWORD = os.getenv("THETADATA_PASSWORD")
 
 _ANNUALISE_FACTOR: float = config.ANNUALISE_FACTOR
-
-
-# ---------------------------------------------------------------------------
-# Black-Scholes helpers
-# ---------------------------------------------------------------------------
-
-def _norm_cdf(x: float) -> float:
-    return float(norm.cdf(x))
-
-
-def _bs_call_price(
-    S: float, K: float, T: float, r: float, sigma: float, q: float
-) -> float:
-    """European call price under Black-Scholes-Merton with continuous dividend yield q."""
-    if T <= 0 or sigma <= 0:
-        return max(S * math.exp(-q * T) - K * math.exp(-r * T), 0.0)
-    d1 = (math.log(S / K) + (r - q + 0.5 * sigma ** 2) * T) / (sigma * math.sqrt(T))
-    d2 = d1 - sigma * math.sqrt(T)
-    return S * math.exp(-q * T) * _norm_cdf(d1) - K * math.exp(-r * T) * _norm_cdf(d2)
-
-
-def _bs_put_price(
-    S: float, K: float, T: float, r: float, sigma: float, q: float
-) -> float:
-    """European put price via put-call parity."""
-    return _bs_call_price(S, K, T, r, sigma, q) - S * math.exp(-q * T) + K * math.exp(-r * T)
-
-
-def compute_bs_iv(
-    option_price: float,
-    underlying:   float,
-    strike:       float,
-    days_to_expiry: int,
-    rf_annual:    float,
-    div_yield:    float = 0.0,
-    right:        str   = "C",
-) -> float:
-    """Return annualised Black-Scholes IV from an option mid-price.
-
-    Parameters
-    ----------
-    right : ``"C"`` for call (default) or ``"P"`` for put.
-
-    Returns NaN when inputs are invalid, price is at intrinsic, or the
-    solver fails to bracket a root.
-    """
-    T = days_to_expiry / 365.0
-    if T <= 0 or option_price <= _MIN_OPTION_PRICE or underlying <= 0 or strike <= 0:
-        return float("nan")
-
-    if right == "P":
-        pricer = lambda s: _bs_put_price(underlying, strike, T, rf_annual, s, div_yield) - option_price
-        intrinsic = max(strike * math.exp(-rf_annual * T) - underlying * math.exp(-div_yield * T), 0.0)
-    else:
-        pricer    = lambda s: _bs_call_price(underlying, strike, T, rf_annual, s, div_yield) - option_price
-        intrinsic = max(underlying * math.exp(-div_yield * T) - strike * math.exp(-rf_annual * T), 0.0)
-
-    if option_price <= intrinsic + 1e-6:
-        return float("nan")
-
-    try:
-        return brentq(pricer, *_IV_SEARCH_BOUNDS, xtol=1e-6, rtol=1e-6, maxiter=200)
-    except (ValueError, RuntimeError):
-        return float("nan")
-
-
-def compute_greeks(
-    underlying:     float,
-    strike:         float,
-    days_to_expiry: int,
-    rf_annual:      float,
-    sigma:          float,
-    div_yield:      float = 0.0,
-    right:          str   = "C",
-) -> dict:
-    """BSM Greeks for a European option, plus dollar-normalised transforms.
-
-    Parameters
-    ----------
-    underlying, strike : float   Spot price S and strike K (dollars).
-    days_to_expiry : int         Calendar days to expiration.
-    rf_annual : float            Annualised continuously-compounded risk-free rate.
-    sigma : float                Annualised implied (or assumed) volatility.
-    div_yield : float            Continuous annualised dividend yield q.
-    right : ``"C"`` for call (default) or ``"P"`` for put.
-
-    Returns
-    -------
-    dict with keys:
-        delta, gamma, vega, theta_daily  — raw BSM Greeks (per share).
-          For puts: delta ∈ (-1, 0), gamma/vega identical to call at same strike.
-        dollar_delta  — Δ·S  (negative for puts)
-        dollar_gamma  — 0.5·Γ·S²·0.01²  (always positive)
-        dollar_vega   — V·0.01  (always positive)
-    """
-    _nan = float("nan")
-    T = days_to_expiry / 365.0
-    if T <= 0 or sigma <= 0 or underlying <= 0 or strike <= 0:
-        return {k: _nan for k in [
-            "delta", "gamma", "vega", "theta_daily",
-            "dollar_delta", "dollar_gamma", "dollar_vega",
-        ]}
-
-    S, K, r, q = underlying, strike, rf_annual, div_yield
-    sqrtT = math.sqrt(T)
-    d1 = (math.log(S / K) + (r - q + 0.5 * sigma ** 2) * T) / (sigma * sqrtT)
-    d2 = d1 - sigma * sqrtT
-
-    nprime_d1 = float(norm.pdf(d1))
-    N_d1      = float(norm.cdf(d1))
-    N_d2      = float(norm.cdf(d2))
-    exp_qT    = math.exp(-q * T)
-    exp_rT    = math.exp(-r * T)
-
-    # ── Gamma and vega are identical for calls and puts ───────────────────────
-    gamma = exp_qT * nprime_d1 / (S * sigma * sqrtT)
-    vega  = S * exp_qT * nprime_d1 * sqrtT   # per unit σ
-
-    if right == "P":
-        delta = -exp_qT * (1.0 - N_d1)       # = exp(-qT) * (N(d1) - 1)
-        theta_annual = (
-            -(S * exp_qT * nprime_d1 * sigma / (2.0 * sqrtT))
-            + r * K * exp_rT * (1.0 - N_d2)
-            - q * S * exp_qT * (1.0 - N_d1)
-        )
-    else:
-        delta = exp_qT * N_d1
-        theta_annual = (
-            -(S * exp_qT * nprime_d1 * sigma / (2.0 * sqrtT))
-            - r * K * exp_rT * N_d2
-            + q * S * exp_qT * N_d1
-        )
-
-    theta_daily  = theta_annual / 365.0
-    dollar_delta = delta * S
-    dollar_gamma = 0.5 * gamma * S ** 2 * (0.01) ** 2
-    dollar_vega  = vega * 0.01
-
-    return {
-        "delta":       delta,
-        "gamma":       gamma,
-        "vega":        vega,
-        "theta_daily": theta_daily,
-        "dollar_delta": dollar_delta,
-        "dollar_gamma": dollar_gamma,
-        "dollar_vega":  dollar_vega,
-    }
 
 
 # ---------------------------------------------------------------------------
@@ -310,8 +159,8 @@ def _friday_dates_in_range(start: str, end: str) -> list[date]:
 def _make_client(username: str, password: str):
     if not username or not password:
         raise RuntimeError(
-            "ThetaData credentials not set. Export THETA_USERNAME and "
-            "THETA_PASSWORD in your environment before fetching."
+            "ThetaData credentials not set. Export THETADATA_USERNAME and "
+            "THETADATA_PASSWORD in your environment before fetching."
         )
     from thetadata import ThetaClient
     return ThetaClient(email=username, password=password, dataframe_type="pandas")
@@ -393,16 +242,26 @@ def _eod_detail_from_row(row: pd.Series) -> dict | None:
     bid   = float(row.get("bid",   0) or 0)
     ask   = float(row.get("ask",   0) or 0)
     close = float(row.get("close", 0) or 0)
+
+    detail = None
     if bid > 0 and ask > 0:
-        return {
+        detail = {
             "bid": bid, "ask": ask, "close": close,
             "option_price": (bid + ask) / 2.0, "price_type": "mid",
         }
-    if close >= _MIN_OPTION_PRICE:
-        return {
+    elif close >= _MIN_OPTION_PRICE:
+        detail = {
             "bid": bid, "ask": ask, "close": close,
             "option_price": close, "price_type": "close",
         }
+
+    if detail is not None:
+        detail["iv"] = float(row.get("implied_vol", float("nan")))
+        detail["delta"] = float(row.get("delta", float("nan")))
+        detail["gamma"] = float(row.get("gamma", float("nan")))
+        detail["vega"] = float(row.get("vega", float("nan")))
+        detail["theta_daily"] = float(row.get("theta", float("nan")))
+        return detail
     return None
 
 
@@ -427,7 +286,7 @@ def _fetch_bulk_eod(
     )
     try:
         df = _theta_call(
-            client.option_history_eod,
+            client.option_history_greeks_eod,
             start_date=snap,
             end_date=snap,
             symbol=ticker,
@@ -510,7 +369,7 @@ def _get_eod_detail(
     """Return raw EOD fields for an option contract: bid, ask, close, price_type, option_price."""
     try:
         df = _theta_call(
-            client.option_history_eod,
+            client.option_history_greeks_eod,
             start_date=snap, end_date=snap,
             symbol=ticker, expiration=exp,
             strike=str(strike), right=right,
@@ -642,10 +501,11 @@ def _atm_call_record(
     option_price = None
     used_strike  = None
     price_type   = None
+    iv = float("nan")
     for s in candidates:
         try:
             df_eod = _theta_call(
-                client.option_history_eod,
+                client.option_history_greeks_eod,
                 start_date=snap, end_date=snap,
                 symbol=ticker, expiration=expiry,
                 strike=str(s), right="C",
@@ -666,12 +526,10 @@ def _atm_call_record(
             price_type   = "close"
         if option_price is not None:
             used_strike = s
+            iv = float(row.get("implied_vol", float("nan")))
             break
 
-    iv = float("nan")
-    if option_price is not None:
-        iv = compute_bs_iv(option_price, underlying, used_strike, dte, r, q)
-    else:
+    if math.isnan(iv):
         logger.warning("%s %s exp=%s: no valid price near ATM.", ticker, snap, expiry)
 
     return {
@@ -712,8 +570,8 @@ def fetch_atm_iv_30d(
     """
     return _fetch_atm_iv_series(
         ticker, start_date, end_date, cache_dir,
-        theta_username or _THETA_USERNAME,
-        theta_password or _THETA_PASSWORD,
+        theta_username or _THETADATA_USERNAME,
+        theta_password or _THETADATA_PASSWORD,
         cache_path_fn=_iv_cache_path,
         record_fn=_atm_call_record,
         numeric_cols=("strike", "underlying_close", "option_price",
@@ -745,7 +603,7 @@ def _atm_call_put_record(
             rel_spread = (detail["ask"] - detail["bid"]) / mid
             if rel_spread < 0 or rel_spread > max_rel_spread:
                 continue
-            iv = compute_bs_iv(mid, underlying, strike, dte, r, q, right=right)
+            iv = detail.get("iv", float("nan"))
             if math.isfinite(iv):
                 side_values[label] = {
                     "iv": iv,
@@ -817,8 +675,8 @@ def fetch_atm_call_put_iv_30d(
     """
     return _fetch_atm_iv_series(
         ticker, start_date, end_date, cache_dir,
-        theta_username or _THETA_USERNAME,
-        theta_password or _THETA_PASSWORD,
+        theta_username or _THETADATA_USERNAME,
+        theta_password or _THETADATA_PASSWORD,
         cache_path_fn=_call_put_iv_cache_path,
         record_fn=partial(_atm_call_put_record, max_rel_spread=max_rel_spread),
         numeric_cols=("strike", "underlying_close", "days_to_expiry", "rf_annual",
@@ -1000,16 +858,18 @@ def fetch_full_chain(
             ]
 
         for strike, right, detail in contract_details:
-            price = detail["option_price"]
-            iv    = compute_bs_iv(
-                price, underlying, strike, dte, rf_annual, div_yield, right=right
-            )
+            iv = detail.get("iv", float("nan"))
             if math.isnan(iv):
                 continue
 
-            greeks = compute_greeks(
-                underlying, strike, dte, rf_annual, iv, div_yield, right=right
-            )
+            delta = detail.get("delta", float("nan"))
+            gamma = detail.get("gamma", float("nan"))
+            vega = detail.get("vega", float("nan"))
+            theta_daily = detail.get("theta_daily", float("nan"))
+
+            dollar_delta = delta * underlying
+            dollar_gamma = 0.5 * gamma * (underlying ** 2) * (0.01 ** 2)
+            dollar_vega  = vega * 0.01
 
             record: dict = {
                 "ticker":     ticker,
@@ -1022,8 +882,9 @@ def fetch_full_chain(
                 **detail,
                 "rf_annual":  rf_annual,
                 "div_yield":  div_yield,
-                "iv":         iv,
-                **greeks,
+                "dollar_delta": dollar_delta,
+                "dollar_gamma": dollar_gamma,
+                "dollar_vega":  dollar_vega,
             }
 
             oi = oi_map.get((float(strike), right))
@@ -1140,7 +1001,13 @@ def screen_chain(
         oi = pd.Series(0.0, index=passing.index)
     passing["oi_premium_notional"] = oi * 100.0 * passing["mid"]
 
+    if "theta_daily" in passing.columns:
+        passing["theta_notional"] = oi * 100.0 * passing["theta_daily"].abs()
+    else:
+        passing["theta_notional"] = 0.0
+
     notional      = passing.groupby(group_keys)["oi_premium_notional"].sum()
+    theta_not     = passing.groupby(group_keys)["theta_notional"].sum()
     side_notional = (
         passing.groupby(group_keys + ["right"])["oi_premium_notional"].sum()
         .unstack("right")
@@ -1155,6 +1022,8 @@ def screen_chain(
     liq = pd.DataFrame({
         "quality_oi_notional": notional,
         "sqrt_oi_notional":    notional.pow(0.5),
+        "theta_notional":      theta_not,
+        "sqrt_theta_notional": theta_not.pow(0.5),
         "book_balance":        balance,
         "median_quality_spread": spread_med,
     })
@@ -1218,8 +1087,8 @@ def run_screen(
     dict with keys ``"chains"``, ``"passing"``, ``"summary"``, ``"ticker_summary"``.
     ``"ticker_summary"`` has a ``liquid`` flag (``median_liq_score >= LIQUIDITY_SCORE_MIN``).
     """
-    username = theta_username or _THETA_USERNAME
-    password = theta_password or _THETA_PASSWORD
+    username = theta_username or _THETADATA_USERNAME
+    password = theta_password or _THETADATA_PASSWORD
     snaps    = [date.fromisoformat(d) for d in snap_dates]
 
     all_start = str(min(snaps) - timedelta(days=7))
@@ -1331,7 +1200,7 @@ def _build_ticker_summary(summary: pd.DataFrame) -> pd.DataFrame:
     for mc in ("median_dollar_vega", "median_dollar_gamma", "median_dollar_delta"):
         if mc in summary.columns:
             agg_cols[mc] = (mc, "median")
-    for lc in ("sqrt_oi_notional", "cost_adj_depth", "balanced_depth", "liq_score"):
+    for lc in ("sqrt_oi_notional", "sqrt_theta_notional", "cost_adj_depth", "balanced_depth", "liq_score"):
         if lc in summary.columns:
             agg_cols[f"median_{lc}"] = (lc, "median")
 

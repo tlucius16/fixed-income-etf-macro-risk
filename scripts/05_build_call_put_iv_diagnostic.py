@@ -1,4 +1,4 @@
-"""Build the quarterly call/put IV diagnostic from cached chain data."""
+"""Build the monthly call/put IV diagnostic from cached chain data."""
 from __future__ import annotations
 
 import sys
@@ -24,7 +24,7 @@ def main() -> None:
     paired = diagnostic["iv_side_count"].eq(2)
     print(
         f"Wrote {len(diagnostic):,} ticker-snapshot rows "
-        f"({paired.sum():,} paired call/put) → {cfg.CALL_PUT_IV_CSV}"
+        f"({paired.sum():,} paired call/put) -> {cfg.CALL_PUT_IV_CSV}"
     )
     if paired.any():
         gaps = diagnostic.loc[paired, "abs_call_put_iv_gap"]

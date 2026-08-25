@@ -6,7 +6,7 @@ liquidity screeners and the `liquid` gate) to data/processed/options_screen/.
 
 Usage
 -----
-    python scripts/02_concat_screen.py
+    python scripts/03_concat_screen.py
 """
 from __future__ import annotations
 

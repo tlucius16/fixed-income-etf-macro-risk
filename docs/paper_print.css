@@ -1,0 +1,161 @@
+@page {
+  size: letter;
+  margin: 0.55in 0.6in 0.6in;
+}
+
+html {
+  color: #111;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 10pt;
+  line-height: 1.2;
+}
+
+body {
+  column-count: 2;
+  column-gap: 0.25in;
+  margin: 0;
+}
+
+#title-block-header,
+.abstract {
+  column-span: all;
+}
+
+#title-block-header {
+  margin: 0 0 0.25in;
+  text-align: center;
+}
+
+h1.title {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 20pt;
+  line-height: 1.08;
+  margin: 0 0 0.12in;
+}
+
+.author,
+.date {
+  font-size: 10pt;
+  margin: 0.03in 0;
+}
+
+.abstract {
+  border-bottom: 0.5pt solid #777;
+  font-size: 9pt;
+  margin: 0 0 0.18in;
+  padding: 0 0.2in 0.14in;
+  text-align: justify;
+}
+
+.abstract-title {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10pt;
+  margin: 0 0 0.05in;
+  text-align: center;
+}
+
+h1,
+h2,
+h3 {
+  break-after: avoid;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.12;
+}
+
+h1 {
+  font-size: 13pt;
+  margin: 0.14in 0 0.05in;
+}
+
+h2 {
+  font-size: 10.5pt;
+  margin: 0.11in 0 0.04in;
+}
+
+h3 {
+  font-size: 10pt;
+  margin: 0.1in 0 0.03in;
+}
+
+p {
+  margin: 0 0 0.06in;
+  orphans: 3;
+  text-align: justify;
+  widows: 3;
+}
+
+p:has(+ table) {
+  break-after: avoid-page;
+}
+
+ul,
+ol {
+  margin: 0.04in 0 0.07in;
+  padding-left: 0.2in;
+}
+
+figure,
+table,
+.math.display {
+  break-inside: avoid;
+}
+
+figure {
+  margin: 0.08in 0 0.12in;
+}
+
+img {
+  height: auto;
+  max-width: 100%;
+}
+
+figcaption,
+caption {
+  font-size: 8pt;
+  line-height: 1.15;
+}
+
+table {
+  border-collapse: collapse;
+  font-size: 7.2pt;
+  line-height: 1.12;
+  margin: 0.08in 0 0.12in;
+  width: 100%;
+}
+
+caption {
+  font-weight: bold;
+  margin-bottom: 0.04in;
+}
+
+th,
+td {
+  border-bottom: 0.35pt solid #bbb;
+  padding: 0.025in 0.018in;
+  text-align: right;
+  vertical-align: top;
+}
+
+th:first-child,
+td:first-child {
+  text-align: left;
+}
+
+thead th {
+  border-bottom: 0.7pt solid #222;
+}
+
+a {
+  color: #0b3d91;
+  text-decoration: none;
+}
+
+code {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.9em;
+}
+
+hr {
+  border: 0;
+  border-top: 0.5pt solid #777;
+}

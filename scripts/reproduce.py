@@ -1,17 +1,18 @@
-"""One-command reproduction of every derived artifact from the raw caches.
+"""One-command reproduction of the unified paper from pinned inputs and caches.
 
 Runs the full pipeline in dependency order:
 
-  screen     scripts/02_concat_screen.py        chains/summary/ticker_summary.csv
-  iv         scripts/03_build_iv_panel.py       iv_panel_full.csv        [FRED_API_KEY]
+  screen     scripts/03_concat_screen.py        chains/summary/ticker_summary.csv
+  iv         scripts/04_build_iv_panel.py       iv_panel_full.csv        [FRED_API_KEY]
   cp-diag    scripts/05_build_call_put_iv_...   call_put_iv_diagnostic.csv
-  panel      scripts/04_build_options_panel.py  options_panel.csv
-  ladder     scripts/06_robustness_ladder.py    robustness_spec0.csv, side_capacity.csv
-  artifacts  scripts/07_paper_artifacts.py      paper tables + figures 24-26
-  jl-parity  julia parity_check.jl              (gate: must print PARITY OK)
+  panel      scripts/06_build_options_panel.py  options_panel.csv
+  ladder     scripts/07_robustness_ladder.py    robustness_spec0.csv, side_capacity.csv
+  artifacts  scripts/08_paper_artifacts.py      hedge-capacity tables + figures
+  h4-ref     scripts/09_fragility_h4.py         stress-interaction reference table
   jl-boot    julia robustness_boot.jl           robustness_boot.csv
   jl-amer    julia american_bias.jl             american_bias.csv
-  notebook   nbconvert --execute notebook 05    all remaining figures/tables
+  core-nb    nbconvert --execute notebooks 02-03 core fragility results
+  hedge-nb   nbconvert --execute notebook 05    hedge-capacity results
   tests      pytest -q
 
 Requires the raw ThetaData caches under data/raw/options_screen/ (see
@@ -40,7 +41,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 
-IV_END_DEFAULT = "2026-07-02"   # last Friday in the committed IV cache
+IV_END_DEFAULT = "2026-07-17"   # last Friday in the canonical IV cache
 
 
 def _load_dotenv() -> None:
@@ -83,18 +84,30 @@ def _checkpoints() -> None:
         print(f"  {'OK  ' if good else 'FAIL'} {label}: {actual} (expected {expected})")
 
     chains = pd.read_csv(cfg.CHAINS_CSV)
-    check("chains.csv rows", len(chains), 80521)
+    check("chains.csv rows", len(chains), 339220)
     ts = pd.read_csv(cfg.TICKER_SUMMARY_CSV)
-    check("liquid tickers", int(ts["liquid"].sum()), 8)
+    check("liquid tickers", int(ts["liquid"].sum()), 6)
+    liquid = sorted(ts.loc[ts["liquid"], "ticker"].astype(str).tolist())
+    check("liquid ticker set", liquid, ["EDV", "EMB", "IEF", "LQD", "TLT", "ZROZ"])
     panel = pd.read_csv(cfg.OPTIONS_PANEL_CSV)
-    check("options_panel.csv rows", len(panel), 18074)
+    check("options_panel.csv rows", len(panel), 18056)
+    funnel = pd.read_csv(cfg.TABLES_DIR / "sample_funnel.csv")
+    check("sample funnel ETF counts", funnel["etfs"].astype(int).tolist(), [352, 36, 33, 6])
     ladder = pd.read_csv(cfg.TABLES_DIR / "robustness_spec0.csv")
     s0 = ladder.loc[(ladder["spec"] == "S0 baseline (date FE)")
                     & (ladder["var"] == "hedge_capacity_ratio"), "coef"].iloc[0]
-    check("Spec 0 coefficient (4dp)", round(float(s0), 4), -0.2689)
+    check("Spec 0 coefficient (4dp)", round(float(s0), 4), -0.3377)
     boot = cfg.TABLES_DIR / "robustness_boot.csv"
-    print(f"  {'OK  ' if boot.exists() else 'note'} robustness_boot.csv "
-          f"{'present' if boot.exists() else 'absent (julia stages skipped?)'}")
+    if boot.exists():
+        boot_df = pd.read_csv(boot)
+        boot_s0 = boot_df.loc[
+            (boot_df["spec"] == "S0 baseline (date FE)")
+            & (boot_df["var"] == "hedge_capacity_ratio"),
+            "p_wildboot",
+        ].iloc[0]
+        check("Spec 0 wild-bootstrap p (4dp)", round(float(boot_s0), 4), 0.0953)
+    else:
+        print("  note robustness_boot.csv absent (Julia stages skipped?)")
     if not ok:
         sys.exit("Checkpoint mismatch — the run does not reproduce the reference state.")
     print("All checkpoints passed.")
@@ -118,19 +131,20 @@ def main() -> None:
     julia = shutil.which("julia")
 
     stages: list[tuple[str, list[str]]] = [
-        ("screen",    [py, "scripts/02_concat_screen.py"]),
-        ("iv",        [py, "scripts/03_build_iv_panel.py", "--end", args.iv_end]),
+        ("screen",    [py, "scripts/03_concat_screen.py"]),
+        ("iv",        [py, "scripts/04_build_iv_panel.py", "--end", args.iv_end]),
         ("cp-diag",   [py, "scripts/05_build_call_put_iv_diagnostic.py"]),
-        ("panel",     [py, "scripts/04_build_options_panel.py"]),
-        ("ladder",    [py, "scripts/06_robustness_ladder.py"]),
-        ("artifacts", [py, "scripts/07_paper_artifacts.py"]),
-        ("h4-ref",    [py, "scripts/08_fragility_h4.py"]),
-        ("jl-parity", ["julia", "--project=julia", "julia/scripts/parity_check.jl"]),
+        ("panel",     [py, "scripts/06_build_options_panel.py"]),
+        ("ladder",    [py, "scripts/07_robustness_ladder.py"]),
+        ("artifacts", [py, "scripts/08_paper_artifacts.py"]),
+        ("h4-ref",    [py, "scripts/09_fragility_h4.py"]),
         ("jl-boot",   ["julia", "--project=julia", "julia/scripts/robustness_boot.jl"]),
         ("jl-amer",   ["julia", "--project=julia", "-t", "auto",
                        "julia/scripts/american_bias.jl"]),
-        ("jl-h4boot", ["julia", "--project=julia", "julia/scripts/fragility_boot.jl"]),
-        ("notebook",  [py, "-m", "jupyter", "nbconvert", "--to", "notebook",
+        ("core-nb",    [py, "-m", "jupyter", "nbconvert", "--to", "notebook",
+                       "--execute", "--inplace", "notebooks/02_rolling_risk_metrics.ipynb",
+                       "notebooks/03_analysis.ipynb"]),
+        ("hedge-nb",   [py, "-m", "jupyter", "nbconvert", "--to", "notebook",
                        "--execute", "--inplace", "notebooks/05_options_analysis.ipynb"]),
         ("tests",     [py, "-m", "pytest", "tests/", "-q"]),
     ]
@@ -157,12 +171,10 @@ def main() -> None:
             if julia is None:
                 print(f"\n=== [{name}] skipped (julia not found)")
                 continue
-        if name == "notebook" and args.skip_notebook:
+        if name in {"core-nb", "hedge-nb"} and args.skip_notebook:
             print(f"\n=== [{name}] skipped (--skip-notebook)")
             continue
         out = _run(cmd, name)
-        if name == "jl-parity" and "PARITY OK" not in out:
-            sys.exit("jl-parity did not report PARITY OK — aborting.")
 
     if stop == len(stages):
         _checkpoints()

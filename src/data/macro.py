@@ -41,7 +41,13 @@ def fred_series(
     timeout: int = 30,
 ) -> pd.DataFrame:
     if not api_key:
-        raise ValueError("FRED_API_KEY is required for FRED API pulls.")
+        url = f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series_id}"
+        df = pd.read_csv(url)
+        date_col = "observation_date" if "observation_date" in df.columns else "DATE"
+        val_col = series_id if series_id in df.columns else df.columns[1]
+        df["Date"] = pd.to_datetime(df[date_col], errors="coerce")
+        df[series_id] = pd.to_numeric(df[val_col], errors="coerce")
+        return df[["Date", series_id]].dropna().sort_values("Date").reset_index(drop=True)
 
     session = session or make_fred_session()
     time.sleep(sleep_sec)
@@ -249,7 +255,7 @@ def build_weekly_macro_panel(
     for right in weekly_frames[1:]:
         macro_levels = pd.merge(macro_levels, right, on="Date", how="inner")
 
-    factor_cols = ["ANFCI", "BAMLC0A0CM", "DGS10", "T10Y2Y", "T5YIE", "VIX", "MOVE", "GPR"]
+    factor_cols = ["ANFCI", "BAMLC0A0CM", "DGS10", "T10Y2Y", "T5YIE", "KCPRU", "VIX", "MOVE", "GPR"]
     macro_weekly = add_weekly_changes(macro_levels, factor_cols)
 
     # S&P realized vol and DXY: merged after the dropna in add_weekly_changes

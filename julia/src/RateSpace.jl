@@ -1,7 +1,7 @@
 """
     RateSpace
 
-Quant layer for the fixed-income ETF options paper, mirroring the Python
+Quant layer for the unified paper's hedge-capacity extension, mirroring the Python
 reference implementation in `src/data/options.py` (BSM pricing, IV inversion)
 and `src/features/rate_space.py` (rate-space translation) — with two upgrades
 the language provides:

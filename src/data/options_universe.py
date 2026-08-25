@@ -1,4 +1,4 @@
-"""Universe and static metadata for the 36-ticker fixed-income ETF options paper.
+"""Universe and static metadata for the paper's hedge-capacity extension.
 
 UNIVERSE         : ticker → asset-class category
 DURATION_BUCKET  : category → duration bucket label
@@ -84,7 +84,7 @@ BUCKET_ORDER = ["short", "intermediate", "long", "credit", "other"]
 # Liquidity gate: median composite liquidity score across snap dates,
 #   liq_score = √(quality OI premium notional) × (1 − median spread) × book balance.
 # Monotone increasing in √notional by construction; units are √$ damped by two
-# factors in (0, 1]. Calibrated on the 2020-2025 quarterly chains (provisional —
+# factors in (0, 1]. Calibrated on the 2016-2026 monthly chains (provisional —
 # see the per-ticker distribution before finalizing).
 LIQUIDITY_SCORE_MIN = 100.0
 

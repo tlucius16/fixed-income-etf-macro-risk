@@ -67,6 +67,7 @@ def test_macro_panel_keeps_long_history_with_hybrid_baml(monkeypatch):
             "DGS10": [2.0, 2.1, 2.2, 2.3],
             "T10Y2Y": [3.0, 3.1, 3.2, 3.3],
             "T5YIE": [4.0, 4.1, 4.2, 4.3],
+            "KCPRU": [8.0, 8.1, 8.2, 8.3],
         }
         return frame(column_name, values_by_column[column_name])
 

@@ -32,8 +32,8 @@ ENV/
 # Generated paper artifacts
 /arxiv_submission/
 /docs/figures/
-/docs/options_paper/figures/
-/docs/options_paper/tables/
+/docs/hedge_capacity/figures/
+/docs/hedge_capacity/tables/
 
 # One-off notebook migration helpers
 /scripts/add_analyses_nb05.py

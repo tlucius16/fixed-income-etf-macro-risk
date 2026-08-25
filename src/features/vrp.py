@@ -1,4 +1,4 @@
-"""IV / VRP diagnostics for the options paper appendix.
+"""IV / VRP diagnostics for the unified paper appendix.
 
 These functions establish that option-implied pricing is uninformative as a
 predictor of forward drawdown severity, motivating the hedge-capacity focus.

@@ -1,16 +1,17 @@
-"""Paper tables and figures (Sections 2, 4, 5) -> docs/options_paper/.
+"""Hedge-capacity tables and figures for the unified paper.
 
 Canonical producer of the artifacts previously generated in notebook 05
 Section 11 (the notebook now displays these files):
 
+  docs/figures/fragility_deciles.png
   tables/capacity_accounting.csv     figures/24_missing_market.png
   tables/call_put_dv01_ratio.csv     figures/25_call_put_ratio.png
   tables/duration_validation.csv     figures/26_duration_validation.png
-  tables/universe.csv
+  tables/universe.csv                 tables/sample_funnel.csv
 
 Usage
 -----
-    python scripts/07_paper_artifacts.py
+    python scripts/08_paper_artifacts.py
 """
 from __future__ import annotations
 
@@ -35,6 +36,95 @@ from src.features.options_features import estimate_rolling_rate_duration
 
 COLORS = {"short": "#4C72B0", "intermediate": "#DD8452",
           "long": "#55A868", "credit": "#C44E52", "other": "#937860"}
+CAPACITY_SNAPSHOT = pd.Timestamp("2025-04-01")
+CORE_FIGURES_DIR = Path(__file__).resolve().parents[1] / "docs" / "figures"
+
+
+def build_fragility_decile_figure(core: pd.DataFrame) -> None:
+    """Export the unified paper's broad-sample fragility sort."""
+    deciles = core.dropna(subset=["vol_12w", "fwd_maxdd_12w"]).copy()
+    deciles = deciles[deciles["category_bucket"] != "Other"]
+    deciles["frag_decile"] = deciles.groupby("date")["vol_12w"].transform(
+        lambda values: pd.qcut(values, 10, labels=False, duplicates="drop") + 1
+    )
+    summary = deciles.groupby("frag_decile")[[
+        "fwd_maxdd_12w", "fwd_vol_12w", "fwd_ret_4w"
+    ]].mean()
+
+    fig, axes = plt.subplots(1, 3, figsize=(10.5, 3.25))
+    panels = [
+        ("fwd_maxdd_12w", "12-week maximum drawdown", "#C44E52"),
+        ("fwd_vol_12w", "12-week realized volatility", "#DD8452"),
+        ("fwd_ret_4w", "4-week return", "#4C72B0"),
+    ]
+    for ax, (column, title, color) in zip(axes, panels):
+        ax.bar(summary.index, summary[column] * 100, color=color, width=0.75)
+        ax.axhline(0, color="0.25", linewidth=0.7)
+        ax.set_title(title, fontsize=10)
+        ax.set_xlabel("Fragility decile")
+        ax.set_xticks([1, 3, 5, 7, 10])
+        ax.set_ylabel("Percent")
+        ax.grid(axis="y", linewidth=0.35, color="0.88")
+    sns.despine()
+    fig.suptitle("Forward outcomes by trailing 12-week fragility", fontsize=12)
+    fig.tight_layout()
+    CORE_FIGURES_DIR.mkdir(parents=True, exist_ok=True)
+    fig.savefig(
+        CORE_FIGURES_DIR / "fragility_deciles.png",
+        dpi=180,
+        bbox_inches="tight",
+    )
+    plt.close(fig)
+
+
+def build_sample_funnel(core: pd.DataFrame) -> pd.DataFrame:
+    """Summarize selection from the broad ETF panel into hedge-capacity samples."""
+    options_panel = pd.read_csv(cfg.OPTIONS_PANEL_CSV)
+    ticker_summary = pd.read_csv(cfg.TICKER_SUMMARY_CSV)
+
+    liquid_flag = ticker_summary["liquid"]
+    if liquid_flag.dtype != bool:
+        liquid_flag = liquid_flag.astype(str).str.lower().eq("true")
+
+    samples = [
+        ("Full ETF universe", set(core["ticker"])),
+        ("Option-chain universe", set(UNIVERSE)),
+        (
+            "Capacity-covered universe",
+            set(options_panel.loc[
+                options_panel["hedge_capacity_ratio"].notna(), "ticker"
+            ].astype(str)),
+        ),
+        (
+            "Liquid-options universe",
+            set(ticker_summary.loc[liquid_flag, "ticker"].astype(str)),
+        ),
+    ]
+
+    available = set(core["ticker"].astype(str))
+    latest = core.sort_values("date").groupby("ticker", as_index=False).tail(1)
+    latest = latest.set_index("ticker")
+    fund_vol = core.groupby("ticker")["vol_12w"].mean()
+
+    rows = []
+    for sample, members in samples:
+        tickers = sorted(members & available)
+        current = latest.loc[tickers]
+        categories = current["category_bucket"]
+        rows.append({
+            "sample": sample,
+            "etfs": len(tickers),
+            "etf_week_obs": int(core["ticker"].isin(tickers).sum()),
+            "median_aum_bn": current["Assets_clean"].median() / 1e9,
+            "median_age_years": current["age_years"].median(),
+            "median_expense_bps": current["ER_clean"].median() * 1e4,
+            "median_weekly_vol_pct": fund_vol.loc[tickers].median() * 100,
+            "treasury_share_pct": categories.eq("Treasury / Government").mean() * 100,
+            "ig_corporate_share_pct": (
+                categories.eq("Investment Grade Corporate").mean() * 100
+            ),
+        })
+    return pd.DataFrame(rows)
 
 
 def main() -> None:
@@ -44,8 +134,11 @@ def main() -> None:
     chains = pd.read_csv(cfg.CHAINS_CSV, parse_dates=["snap_date"])
     core = pd.read_csv(cfg.CORE_PANEL_CSV, parse_dates=["Date"]).rename(
         columns={"Date": "date", "Symbol": "ticker"})
+    build_fragility_decile_figure(core)
     cap_r, passing_r, dmap_r = build_side_capacity(chains, core)
-    SNAP_LATEST = cap_r["snap_date"].max()
+    if CAPACITY_SNAPSHOT not in set(cap_r["snap_date"]):
+        raise ValueError(f"Pinned capacity snapshot missing: {CAPACITY_SNAPSHOT.date()}")
+    snapshot = CAPACITY_SNAPSHOT
 
     # ── Table: capacity accounting ───────────────────────────────────────────
     def _side_at(t, side, col, snap=None):
@@ -55,7 +148,7 @@ def main() -> None:
         v = g[col]
         return float(v.iloc[0]) if len(v) else np.nan
 
-    pq = passing_r[passing_r["snap_date"] == SNAP_LATEST].copy()
+    pq = passing_r[passing_r["snap_date"] == snapshot].copy()
     pq["rel_spread"] = (pq["ask"] - pq["bid"]) / ((pq["ask"] + pq["bid"]) / 2)
     spread_latest = pq.groupby("ticker")["rel_spread"].median()
     put_hist = (cap_r[cap_r["side"] == "put"].groupby("ticker")["chain_rate_dv01"]
@@ -64,24 +157,24 @@ def main() -> None:
     rows = []
     for t in sorted(cap_r["ticker"].unique()):
         D = dmap_r.get(t, np.nan)
-        put_dv01 = _side_at(t, "put", "chain_rate_dv01", SNAP_LATEST)
-        fund_dv01 = _side_at(t, "total", "fund_dv01", SNAP_LATEST)
+        put_dv01 = _side_at(t, "put", "chain_rate_dv01", snapshot)
+        fund_dv01 = _side_at(t, "total", "fund_dv01", snapshot)
         pos = put_dv01 / (D * 1e-4) / 1e6 if np.isfinite(put_dv01) and np.isfinite(D) and D > 0 else np.nan
         rows.append({
             "ticker": t, "bucket": ticker_bucket(t), "D_i": D,
             "put_dv01": put_dv01,
-            "call_dv01": _side_at(t, "call", "chain_rate_dv01", SNAP_LATEST),
+            "call_dv01": _side_at(t, "call", "chain_rate_dv01", snapshot),
             "fund_dv01": fund_dv01,
             "put_capacity_ratio": put_dv01 / fund_dv01 if np.isfinite(put_dv01) and np.isfinite(fund_dv01) else np.nan,
             "hedgeable_pos_100pct_musd": pos,
             "hedgeable_pos_10pct_musd": pos * 0.10 if np.isfinite(pos) else np.nan,
             "median_rel_spread": spread_latest.get(t, np.nan),
-            "quality_contracts": _side_at(t, "total", "quality_contracts", SNAP_LATEST),
+            "quality_contracts": _side_at(t, "total", "quality_contracts", snapshot),
         })
     acct = (pd.DataFrame(rows).merge(put_hist, on="ticker", how="left")
             .sort_values("fund_dv01", ascending=False))
     acct.to_csv(cfg.TABLES_DIR / "capacity_accounting.csv", index=False)
-    print(f"capacity_accounting.csv: {len(acct)} tickers (snapshot {SNAP_LATEST.date()})")
+    print(f"capacity_accounting.csv: {len(acct)} tickers (snapshot {snapshot.date()})")
 
     # ── Figure 24: missing market ────────────────────────────────────────────
     mm = acct.copy()
@@ -104,7 +197,7 @@ def main() -> None:
     ax.set_xscale("log"); ax.set_yscale("log"); ax.set_xlim(0.2, 400)
     ax.set_xlabel("Fund AUM ($B, log)")
     ax.set_ylabel("Position hedgeable by entire put book ($M, log)")
-    ax.set_title(f"The Missing Hedge Market: Put-Side Capacity vs. Fund Size ({SNAP_LATEST.date()})")
+    ax.set_title(f"The Missing Hedge Market: Put-Side Capacity vs. Fund Size ({snapshot.date()})")
     handles = [plt.Line2D([], [], marker="o", ls="", color=COLORS[b], label=b)
                for b in BUCKET_ORDER if b in plot_df["bucket"].values]
     ax.legend(handles=handles, loc="upper left", fontsize=8,
@@ -139,7 +232,7 @@ def main() -> None:
                     textcoords="offset points", va="center")
     ax.set_xscale("log")
     ax.set_xlabel("Call ÷ put chain DV01 (log scale)")
-    ax.set_title(f"A Call-Sided Book: Standing DV01 by Side ({SNAP_LATEST.date()})")
+    ax.set_title(f"A Call-Sided Book: Standing DV01 by Side ({snapshot.date()})")
     handles = [plt.Line2D([], [], marker="s", ls="", color=COLORS[b], label=b)
                for b in BUCKET_ORDER if b in plot_cp["bucket"].values]
     ax.legend(handles=handles, loc="center right", fontsize=8,
@@ -210,6 +303,11 @@ def main() -> None:
     ]).sort_values(["duration_bucket", "published_duration"], ascending=[True, False])
     uni.to_csv(cfg.TABLES_DIR / "universe.csv", index=False)
     print(f"universe.csv: {len(uni)} tickers")
+
+    funnel = build_sample_funnel(core)
+    funnel.to_csv(cfg.TABLES_DIR / "sample_funnel.csv", index=False)
+    print("sample_funnel.csv:")
+    print(funnel.round(2).to_string(index=False))
 
 
 if __name__ == "__main__":

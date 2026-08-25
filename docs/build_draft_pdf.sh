@@ -5,6 +5,11 @@ ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 SRC="$ROOT_DIR/docs/draft.md"
 TMP_MD="${TMPDIR:-/tmp}/draft_formatted.md"
 
+if [[ ! -f "$ROOT_DIR/docs/figures/fragility_deciles.png" ]]; then
+  echo "Missing generated paper figure. Run: python scripts/08_paper_artifacts.py" >&2
+  exit 1
+fi
+
 {
   printf '%s\n' '---'
   printf 'title: "%s"\n' "$(sed -n '1s/^# //p' "$SRC")"
@@ -28,6 +33,7 @@ pandoc "$TMP_MD" \
   -o "$ROOT_DIR/docs/draft.pdf" \
   --template "$ROOT_DIR/docs/arxiv_like.latex" \
   --pdf-engine=xelatex \
+  --resource-path "$ROOT_DIR" \
   --shift-heading-level-by=-1
 
 echo "OK -> $ROOT_DIR/docs/draft.pdf"

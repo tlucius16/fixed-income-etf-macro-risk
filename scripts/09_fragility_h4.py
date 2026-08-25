@@ -9,12 +9,12 @@ under three SE treatments:
               so this is the binding dimension — Moulton)
   se_cgm    : CGM (2011) two-way Symbol x Date
 
-Writes data/exports/tables/fragility_h4_reference.csv, the parity gate for
-julia/scripts/fragility_boot.jl (wild-cluster bootstrap).
+Writes data/exports/tables/fragility_h4_reference.csv for the paper's
+one-way and two-way clustered inference comparison.
 
 Usage
 -----
-    python scripts/08_fragility_h4.py
+    python scripts/09_fragility_h4.py
 """
 from __future__ import annotations
 

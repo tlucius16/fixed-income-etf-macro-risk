@@ -53,7 +53,7 @@ TICKER_SUMMARY_CSV     = OPTIONS_SCREEN_DIR / "ticker_summary.csv"
 CHAINS_CSV             = OPTIONS_SCREEN_DIR / "chains.csv"
 SCREEN_SUMMARY_CSV     = OPTIONS_SCREEN_DIR / "summary.csv"
 
-PAPER_DIR   = PROJECT_ROOT / "docs" / "options_paper"
+PAPER_DIR   = PROJECT_ROOT / "docs" / "hedge_capacity"
 FIGURES_DIR = PAPER_DIR / "figures"
 TABLES_DIR  = PAPER_DIR / "tables"
 
@@ -120,6 +120,7 @@ MACRO_SERIES_IDS = {
     "DGS10": "DGS10",
     "T10Y2Y": "T10Y2Y",
     "T5YIE": "T5YIE",
+    "KCPRU": "KCPRU",
 }
 
 RISK_FREE_SERIES_ID = "DTB3"

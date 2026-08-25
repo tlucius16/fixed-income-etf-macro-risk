@@ -1,11 +1,11 @@
-"""Build the hedge-capacity options panel (steps 2–7 of the pipeline).
+"""Build the hedge-capacity options panel (steps 3–7 of the pipeline).
 
 Public entry point
 ------------------
     build_options_panel(core_panel, *, chains_df=None, write_csv=True)
 
 Step 1 (chain fetching / repull) is intentionally excluded here — it requires
-ThetaData credentials and is handled by scripts/04_build_options_panel.py.
+ThetaData credentials and is handled by scripts/02_fetch_chains.py.
 """
 from __future__ import annotations
 
@@ -53,8 +53,8 @@ def build_options_panel(
     if chains_df is None:
         if not cfg.CHAINS_CSV.exists():
             logger.error(
-                "chains.csv not found at %s. Run scripts/04_build_options_panel.py "
-                "with --repull first.",
+                "chains.csv not found at %s. Run scripts/02_fetch_chains.py "
+                "followed by scripts/03_concat_screen.py first.",
                 cfg.CHAINS_CSV,
             )
             sys.exit(1)

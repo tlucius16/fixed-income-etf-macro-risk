@@ -10,8 +10,8 @@ Columns: date, ticker, vol_12w, vol_12w_annualized, iv_30d,
 
 Usage
 -----
-    python scripts/03_build_iv_panel.py
-    python scripts/03_build_iv_panel.py --start 2022-01-07 --end 2025-12-31
+    python scripts/04_build_iv_panel.py
+    python scripts/04_build_iv_panel.py --start 2022-01-07 --end 2025-12-31
 """
 from __future__ import annotations
 
@@ -32,7 +32,7 @@ from src.data.options import (
 )
 from src.data.options_universe import UNIVERSE
 
-_DEFAULT_START = "2020-01-03"
+_DEFAULT_START = "2016-01-01"
 _TICKER_SUMMARY = config.PROCESSED_DIR / "options_screen" / "ticker_summary.csv"
 _OUT_PATH       = config.PROCESSED_DIR / "options_screen" / "iv_panel_full.csv"
 
@@ -40,7 +40,7 @@ _OUT_PATH       = config.PROCESSED_DIR / "options_screen" / "iv_panel_full.csv"
 def main() -> None:
     p = argparse.ArgumentParser(description="Build IV panel for liquid tickers.")
     p.add_argument("--start", default=_DEFAULT_START,
-                   help="Start date for IV fetch (default: 2020-01-03).")
+                   help=f"Start date for IV fetch (default: {_DEFAULT_START}).")
     p.add_argument("--end", default=date.today().isoformat(),
                    help="End date for IV fetch (default: today).")
     p.add_argument("--ticker-summary", default=str(_TICKER_SUMMARY),
@@ -65,24 +65,27 @@ def main() -> None:
         ts_path = Path(args.ticker_summary)
         if not ts_path.exists():
             print(f"ticker_summary.csv not found at {ts_path}.")
-            print("Run the screen first (notebook 05 Step 1, or "
-                  "scripts/04_build_options_panel.py --repull).")
+            print("Run the screen first with scripts/03_concat_screen.py.")
             sys.exit(1)
         ts      = pd.read_csv(ts_path)
         tickers = ts[ts["liquid"] == True]["ticker"].tolist()
     else:
         tickers = list(UNIVERSE)
+
     start   = args.start
-    print(f"Fetching IV for {len(tickers)} tickers: {start} → {args.end}")
+    print(f"Fetching IV for {len(tickers)} tickers: {start} -> {args.end}")
     iv_frames: list[pd.DataFrame] = []
     fetch_iv = fetch_atm_iv_30d if args.call_only else fetch_atm_call_put_iv_30d
 
-    for i, ticker in enumerate(tickers, 1):
-        print(f"[{i}/{len(tickers)}] {ticker} ...")
-        df    = fetch_iv(ticker, start, args.end)
-        n_ok  = df["iv_30d"].notna().sum()
-        n_tot = len(df)
-        print(f"    {n_ok}/{n_tot} Fridays with valid IV")
+    for idx, ticker in enumerate(tickers, 1):
+        print(f"[{idx}/{len(tickers)}] {ticker} ...")
+        try:
+            df = fetch_iv(ticker, start, args.end)
+        except Exception as exc:
+            print(f"Failed to fetch IV for {ticker}: {exc}")
+            continue
+        n_ok = df["iv_30d"].notna().sum()
+        print(f"    {ticker}: {n_ok}/{len(df)} Fridays with valid IV")
         iv_frames.append(df)
 
     if not iv_frames:
@@ -100,7 +103,7 @@ def main() -> None:
     panel.to_csv(_OUT_PATH, index=False)
 
     rows_with_iv = panel["iv_30d"].notna().sum()
-    print(f"Wrote {len(panel):,} rows ({rows_with_iv:,} with iv_30d) → {_OUT_PATH}")
+    print(f"Wrote {len(panel):,} rows ({rows_with_iv:,} with iv_30d) -> {_OUT_PATH}")
 
 
 if __name__ == "__main__":

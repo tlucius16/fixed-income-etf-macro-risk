@@ -1,16 +1,16 @@
-# Macro Stress, Liquidity, and the Cross-Section of Bond ETF Fragility
+# Observable Fragility, Limited Hedge Capacity, and Tail Risk in Bond ETFs
 
 **Travon Lucius**<br>
 tlucius16@gmail.com<br>
-April 2026
+August 2026
 
 
 ## Abstract
 
-Fixed-income ETFs offer daily exchange liquidity on portfolios whose underlying bonds often trade in over-the-counter or primary auction markets. This paper studies cross-sectional risk differences inside the fixed-income ETF universe. Using a panel of 347 U.S. fixed-income ETFs over 521 weeks from April 2016 to April 2026, we show that broad categories hide economically meaningful macro sensitivity dispersion: within High Yield, for example, the P10/P90 credit-spread beta range implies nearly a 2:1 difference between the least and most credit-sensitive funds. We then measure ETF-level fragility as trailing 12-week volatility of weekly excess returns. Fragility predicts forward downside outcomes, but part of that signal reflects duration exposure during high rate-volatility regimes: ETFs in the highest fragility decile experience average 12-week forward maximum drawdowns of −4.79%, compared with −0.22% for the lowest decile. The same high-fragility ETFs do not earn meaningfully higher 4-week forward returns, suggesting that recent fragility is weakly compensated relative to its downside exposure. The most useful stress evidence comes from a simple portfolio screen: excluding the top fragility quartile reduces maximum drawdown by 467 basis points during high-stress weeks, with no statistically reliable cost during calm periods. The evidence supports a practical risk management interpretation: publicly observable ETF return dynamics contain information about forward tail risk that broad fixed-income categories miss.
+Fixed-income ETFs offer daily exchange liquidity on portfolios whose underlying bonds often trade in over-the-counter markets. This paper asks whether fragility is observable before tail losses occur and whether listed options provide enough capacity to hedge it. Using 159,216 ETF-week observations for 352 U.S. fixed-income ETFs from August 2016 to July 2026, we measure fragility as trailing 12-week volatility of weekly excess returns. ETFs in the highest fragility decile experience average 12-week forward maximum drawdowns of −4.75%, compared with −0.22% for the lowest decile, without a commensurate 4-week return premium. A simple screen that excludes the highest fragility quartile reduces maximum drawdown by 468 basis points during 19 high-stress weeks, with no statistically reliable cost during calm periods. We then study the available risk-transfer channel using 339,220 option contracts for a predetermined 36-fund option-chain universe. Capacity is measurable for 33 funds, but only six pass a strict open-interest, spread, and book-balance liquidity gate. The liquid subset is older, larger, and disproportionately concentrated in Treasury funds, so the broad fragility results and narrow options results are estimated on explicitly separate samples. Listed put capacity is negligible outside TLT, while standing depth is predominantly call-sided. The pooled relation between hedge capacity and subsequent drawdowns disappears with fund and date fixed effects; its between-fund component does not survive wild-cluster inference, and put capacity is null. Fragility is therefore broadly observable, but exchange-listed protection is narrow, selected, and provides no robust evidence of within-fund downside protection.
 
 **JEL codes:** G11, G12, G23  
-**Keywords:** fixed-income ETFs, fragility, bond market liquidity, macro stress, cross-sectional returns, risk management
+**Keywords:** fixed-income ETFs, fragility, hedge capacity, listed options, macro stress, tail risk
 
 ---
 
@@ -18,19 +18,19 @@ Fixed-income ETFs offer daily exchange liquidity on portfolios whose underlying 
 
 Fixed-income ETFs have grown rapidly as they make bond exposure cheap, transparent, and easy to trade for investors without access to the primary market in which they originate. Their structure also creates a tension: ETF shares trade continuously on exchanges, while many underlying bonds trade infrequently through dealers and can become difficult to price during stress. Authorized participants normally arbitrage ETF prices back toward net asset value, but that mechanism can weaken when balance sheet capacity is scarce, bond quotes are stale, or creation/redemption baskets become costly to assemble. The result is an ETF specific form of fragility: secondary market prices can begin to reveal liquidity and arbitrage stress before the underlying portfolio fully reprices.
 
-This paper asks whether that fragility is visible in public return data and whether investors are compensated for bearing it. We define fragility as trailing 12-week volatility of weekly excess returns. The measure is intentionally simple. It is not a structural estimate of liquidity, duration, or credit risk; rather, it is a transparent signal of recent instability in the ETF price itself. We validate the measure with downside volatility and drawdown variants.
+This paper asks whether that fragility is visible in public return data, whether investors are compensated for bearing it, and whether the listed-options market can transfer the resulting tail risk. We define fragility as trailing 12-week volatility of weekly excess returns. The measure is intentionally simple. It is not a structural estimate of liquidity, duration, or credit risk; rather, it is a transparent signal of recent instability in the ETF price itself. We validate the measure with downside volatility and drawdown variants, then compare the scale of observed fragility with the exchange-listed hedge capacity available to investors.
 
-Four findings organize the analysis. First, macro sensitivity varies substantially within fixed-income ETF categories, so category labels alone miss important fund-level risk differences. Second, fund characteristics such as size, age, and expense ratio add information beyond category membership. Third, recent fragility predicts forward drawdowns and realized volatility, but not meaningfully higher forward returns; duration and rate-volatility exposure explain part of this relation. Fourth, fragility screens are most valuable during macro stress, when avoiding the most fragile quartile materially reduces drawdowns with little evidence of a calm period cost.
+Four findings organize the analysis. First, recent fragility predicts forward drawdowns and realized volatility, but not meaningfully higher forward returns; macro-beta dispersion and fund characteristics show why broad category labels are insufficient controls. Second, fragility screens are most useful during macro stress, when avoiding the most fragile quartile materially reduces drawdowns with little evidence of a calm-period cost. Third, the apparent hedge set narrows sharply from 352 ETFs to 36 option-chain candidates, 33 funds with measurable capacity, and six funds that pass a strict liquidity gate. Fourth, the depth that remains is concentrated and call-sided: within-fund changes in capacity do not predict smaller drawdowns, and put-side capacity is null.
 
-The contribution is therefore practical and empirical. Prior work studies ETF fragility in equity markets, bond mutual fund flow fragility, and the effect of ETF ownership on bond liquidity. This paper focuses on the cross-section of fixed-income ETFs and shows that a publicly observable price-based signal contains useful information about future tail risk. The results are consistent with weak compensation for fragility risk, though they do not by themselves prove mispricing or investor irrationality. Fragility may also proxy for duration, credit beta, convexity, carry, or unobserved portfolio liquidity; the empirical tests below are designed to narrow those alternative interpretations, not to identify a single mechanism.
+The contribution is therefore practical and empirical. Prior work studies ETF fragility, bond mutual fund flow fragility, and the effect of ETF ownership on bond liquidity. We connect the detection of bond ETF tail risk to the capacity of the most direct exchange-listed hedge. The resulting asymmetry is economically important: fragility is observable across a broad cross-section, while basis-specific, limited-loss protection is available only in a selected corner of that market. The results do not prove mispricing or investor irrationality. Fragility may proxy for duration, credit beta, convexity, carry, or unobserved portfolio liquidity, and open interest is an optimistic stock measure rather than executable depth. The tests below narrow those interpretations without claiming a single causal mechanism.
 
-The rest of the paper proceeds as follows. Section 2 describes the data and variables. Section 3 defines the fragility measures and stress index. Section 4 presents the empirical design and limitations. Section 5 reports the main results. Section 6 summarizes robustness checks. Section 7 concludes.
+The rest of the paper proceeds as follows. Section 2 describes the broad ETF panel and nested options samples. Section 3 defines fragility and stress. Section 4 presents the empirical design. Section 5 reports the broad fragility results. Section 6 measures listed-option hedge capacity. Section 7 summarizes robustness checks, and Section 8 concludes.
 
 ## 2. Data
 
 ### 2.1 ETF Universe
 
-The sample begins with U.S. exchange listed fixed-income ETFs from the ETFDB screener. We require at least five years of continuous price history, yielding 347 ETFs observed weekly from April 2016 to April 2026. Funds are grouped into broad research categories including Investment Grade Corporate, High Yield, Treasury/Government, Core/Aggregate, EM Debt, TIPS, Muni, Mortgage/Securitized, Preferred/Hybrid, and Other. Leveraged and inverse products are assigned to Other and excluded from the main portfolio tests.
+The sample begins with U.S. exchange listed fixed-income ETFs from the ETFDB screener. We require at least five years of continuous price history, yielding 352 ETFs observed weekly from August 2016 to July 2026. Funds are grouped into broad research categories including Investment Grade Corporate, High Yield, Treasury/Government, Core/Aggregate, EM Debt, TIPS, Muni, Mortgage/Securitized, Preferred/Hybrid, and Other. Leveraged and inverse products are assigned to Other and excluded from the main portfolio tests.
 
 The universe is survivorship-biased because it is based on funds present in the ETFDB screener as of April 2026. This likely understates fragility among the riskiest funds, since liquidated or merged ETFs are omitted. We therefore report a robustness check restricted to the 183 ETFs with full history from 2016.
 
@@ -60,11 +60,18 @@ We also construct downside volatility and trailing maximum drawdown over the sam
 
 ### 2.6 Composite Macro Stress Index
 
-To classify stress weeks, we average standardized changes in financial conditions, credit spreads, bond market volatility, and equity market volatility:
+To classify stress weeks, we average standardized changes in financial conditions, credit spreads, bond and equity volatility, dollar strength, and policy-rate uncertainty:
 
-$$\text{SI}_t = \frac{1}{4}\left(z[\Delta\text{ANFCI}_t] + z[\Delta\text{CS}_t] + z[\Delta\text{MOVE}_t] + z[\Delta\text{VIX}_t]\right)$$
+$$
+\begin{aligned}
+\text{SI}_t = \frac{1}{7}\big(&z[\Delta\text{ANFCI}_t] + z[\Delta\text{CS}_t]
+  + z[\Delta\text{MOVE}_t] + z[\Delta\text{VIX}_t] \\
+ &+ z[\Delta\text{SPX RV}_t] + z[\Delta\text{DXY}_t]
+  + z[\Delta\text{KCPRU}_t]\big)
+\end{aligned}
+$$
 
-where $z[\cdot]$ denotes full sample standardization. The high-stress indicator equals one when $\text{SI}_t > 1.0$, identifying 21 weeks concentrated in the COVID-19 shock and the 2022 rate-hike cycle. Because a full sample standardization is not a real time signal, Section 6 checks an expanding window version.
+where $z[\cdot]$ denotes full sample standardization and SPX RV is 21-day realized equity volatility. The high-stress indicator equals one when $\text{SI}_t > 1.0$, identifying 19 weeks concentrated in the COVID-19 shock and the 2022 rate-hike cycle. Because full sample standardization is not a real-time signal, Section 7 checks an expanding-window version.
 
 ### 2.7 Forward Outcome Variables
 
@@ -76,59 +83,59 @@ The predictive tests use three forward outcomes:
 
 All outcomes begin at $t+1$, so the trailing fragility window and forward outcome window do not overlap.
 
-### 2.8 Panel Summary
+### 2.8 Broad Panel Summary
 
-The final unbalanced panel contains roughly 157,000 ETF week observations, with exact counts varying by variable because of rolling-window and forward-outcome availability. The main predictive regressions use 121,541 observations after requiring complete fragility measures, controls, and forward outcomes. Table 2 reports descriptive statistics. Table 3 summarizes the cross-sectional category structure and shows that fragility dispersion remains meaningful inside broad categories.
+The final unbalanced panel contains 159,216 ETF-week observations, with exact counts varying by variable because of rolling-window and forward-outcome availability. The main predictive drawdown and volatility regressions use 123,793 observations after requiring complete fragility measures, controls, and forward outcomes; the 4-week return regression uses 148,753 observations. Table 2 reports descriptive statistics. Table 3 summarizes the cross-sectional category structure and shows that fragility dispersion remains meaningful inside broad categories.
 
-**Data sources.** ETF universe and fund metadata come from the ETFDB screener as of April 2026. Prices are Yahoo Finance adjusted closes, aggregated to Friday weekly frequency. The risk-free rate and macro variables are from FRED where available, with VIX and MOVE observed through Yahoo Finance tickers and geopolitical risk from Iacoviello's daily GPR index. All macro series are converted to weekly frequency and merged to the ETF panel by calendar week.
+**Data sources.** ETF universe and fund metadata come from the ETFDB screener as of April 2026. Prices are Yahoo Finance adjusted closes, aggregated to Friday weekly frequency. The risk-free rate and macro variables are from FRED where available, with VIX and MOVE observed through Yahoo Finance tickers and geopolitical risk from Iacoviello's daily GPR index. Option chains, native Greeks, implied volatility, and open interest come from ThetaData. All macro series are converted to weekly frequency and merged to the ETF panel by calendar week.
 
-\setcounter{table}{1}
-\begin{table}[H]
-\centering
-\scriptsize
-\caption{Descriptive statistics. Returns, volatility, drawdowns, and expense ratios are in percent.}
-\begin{tabular}{lrrrr}
-\toprule
-Variable & N & Mean & Median & P75 \\
-\midrule
-Weekly return & 157,171 & 0.05 & 0.07 & 0.38 \\
-Weekly excess ret. & 157,171 & 0.01 & 0.02 & 0.34 \\
-vol\_12w & 154,735 & 0.80 & 0.52 & 0.94 \\
-fwd\_ret\_4w & 155,779 & 0.21 & 0.27 & 0.96 \\
-fwd\_maxdd\_12w & 152,995 & -2.31 & -1.16 & -0.43 \\
-fwd\_vol\_12w & 152,995 & 0.80 & 0.53 & 0.94 \\
-Expense ratio & 157,171 & 0.33 & 0.23 & 0.41 \\
-Age & 157,171 & 7.80 & 7.19 & 11.29 \\
-\bottomrule
-\end{tabular}
-\end{table}
+Table: **Table 2. Descriptive statistics.** Returns, volatility, drawdowns, and expense ratios are in percent.
 
-\begin{table}[H]
-\centering
-\scriptsize
-\caption{Category counts and fragility dispersion.}
-\begin{tabularx}{\columnwidth}{Xrrr}
-\toprule
-Category & ETFs & Med. vol & P10--P90 vol \\
-\midrule
-Core/Aggregate & 81 & 0.62 & 0.14--0.89 \\
-IG Corporate & 68 & 0.71 & 0.18--0.99 \\
-High Yield & 49 & 0.85 & 0.57--1.02 \\
-Muni & 46 & 0.60 & 0.27--0.86 \\
-Treasury/Govt & 37 & 0.54 & 0.03--1.85 \\
-TIPS & 16 & 0.66 & 0.29--1.28 \\
-EM Debt & 15 & 1.11 & 0.70--1.33 \\
-Mortgage/Sec. & 14 & 0.56 & 0.18--0.82 \\
-DM Debt & 5 & 0.88 & 0.65--1.05 \\
-Preferred/Hybrid & 3 & 1.80 & 1.77--1.84 \\
-Short Duration & 1 & 0.16 & 0.16--0.16 \\
-\bottomrule
-\end{tabularx}
-\vspace{0.2em}
-\begin{minipage}{0.98\columnwidth}
-\scriptsize Notes: Volatility entries are ETF-level averages of vol\_12w, reported in percent. P10--P90 is the within-category dispersion across ETFs.
-\end{minipage}
-\end{table}
+| Variable | N | Mean | Median | P75 |
+|:--|--:|--:|--:|--:|
+| Weekly return | 159,216 | 0.05 | 0.06 | 0.38 |
+| Weekly excess ret. | 159,216 | 0.00 | 0.02 | 0.33 |
+| vol\_12w | 156,752 | 0.80 | 0.53 | 0.94 |
+| fwd\_ret\_4w | 157,808 | 0.20 | 0.27 | 0.94 |
+| fwd\_maxdd\_12w | 154,992 | -2.31 | -1.18 | -0.44 |
+| fwd\_vol\_12w | 154,992 | 0.80 | 0.53 | 0.94 |
+| Expense ratio | 159,216 | 0.33 | 0.22 | 0.41 |
+| Age | 159,216 | 7.87 | 7.25 | 11.41 |
+
+Table: **Table 3. Category counts and fragility dispersion.**
+
+| Category | ETFs | Med. vol | P10--P90 vol |
+|:--|--:|--:|--:|
+| Core/Aggregate | 82 | 0.61 | 0.15--0.88 |
+| IG Corporate | 69 | 0.71 | 0.18--0.98 |
+| High Yield | 49 | 0.86 | 0.57--1.01 |
+| Muni | 47 | 0.60 | 0.27--0.86 |
+| Treasury/Govt | 37 | 0.54 | 0.03--1.84 |
+| TIPS | 16 | 0.66 | 0.28--1.27 |
+| Mortgage/Sec. | 15 | 0.57 | 0.19--0.83 |
+| EM Debt | 14 | 1.11 | 0.81--1.32 |
+| DM Debt | 5 | 0.88 | 0.65--1.05 |
+| Preferred/Hybrid | 4 | 1.81 | 1.13--1.85 |
+| Short Duration/Cash-like | 1 | 0.15 | 0.15--0.15 |
+
+*Notes: Volatility entries are ETF-level averages of vol\_12w, reported in percent. P10--P90 is the within-category dispersion across ETFs.*
+
+### 2.9 Option Chains and Nested Samples
+
+The hedge-capacity analysis begins with a predetermined 36-ETF universe spanning Treasury, aggregate, investment-grade credit, high-yield, inflation-linked, emerging-market, mortgage, and short-duration funds. Monthly business-start option-chain snapshots cover February 2016 through August 2026 and contain 339,220 call and put contract observations across 114 observed snapshot dates. A contract enters the capacity calculation when its relative bid-ask spread is at most 0.35, days to expiration are between 14 and 90, absolute delta is between 0.10 and 0.90, and its dollar delta, gamma, and vega exceed fixed economic-significance floors. Capacity is measurable for 33 funds. A stricter ticker-level gate based on open-interest premium notional, spread, and call-put book balance identifies six liquid funds: EDV, EMB, IEF, LQD, TLT, and ZROZ.
+
+Table 4 documents the selection induced by this narrowing. The option-chain universe is much larger and older than the broad sample. The six liquid funds have median AUM of $22.9 billion, twice the broad universe's median weekly volatility, and a 66.7% Treasury share. The options results therefore describe the available hedge market rather than a representative cross-section of bond ETFs. Broad fragility claims continue to use all 352 funds; capacity tests use the 33 covered funds, and tradeability statements emphasize the six-fund liquid subset.
+
+Table: **Table 4. Nested analysis samples and selection into listed-option capacity.**
+
+| Sample | ETFs | ETF-weeks | Med. AUM | Med. age | Med. vol | Treasury share |
+|:--|--:|--:|--:|--:|--:|--:|
+| Full ETF universe | 352 | 159,216 | \$0.91B | 10.7 | 0.67% | 10.5% |
+| Option-chain universe | 36 | 18,056 | \$12.53B | 18.6 | 0.68% | 27.8% |
+| Capacity-covered universe | 33 | 16,830 | \$13.84B | 18.6 | 0.68% | 27.3% |
+| Liquid-options universe | 6 | 3,108 | \$22.92B | 21.3 | 1.47% | 66.7% |
+
+*Notes: Fund characteristics use the latest observation in the canonical core panel; volatility is the median across fund-level averages of weekly vol\_12w. The option-chain universe is predetermined rather than selected by the liquidity gate. Capacity-covered funds have at least one non-missing hedge-capacity observation. The liquid-options universe passes the fixed composite liquidity threshold.*
 
 ## 3. Fragility Measurement
 
@@ -148,7 +155,7 @@ Fragility is persistent within funds but can move sharply during market stress. 
 
 ### 3.4 Composite Stress Index: Construction and Validation
 
-The stress index SI$_t$ aggregates weekly changes in ANFCI, credit spreads, MOVE, and VIX. It is designed to capture co-occurring stress across funding, credit, rates, and equity volatility channels. High-stress weeks account for 4.0% of the sample and cluster in the COVID-19 shock and the 2022 rate hike cycle. The baseline uses a binary high-stress indicator for interpretability and checks the continuous index and expanding-window standardization in robustness tests.
+The stress index SI$_t$ aggregates weekly changes in ANFCI, credit spreads, MOVE, VIX, 21-day S\&P 500 realized volatility, DXY, and policy-rate uncertainty. It is designed to capture co-occurring stress across funding, credit, rates, equity volatility, dollar-funding, and policy-uncertainty channels. High-stress weeks account for 3.7% of the sample and cluster in the COVID-19 shock and the 2022 rate-hike cycle. The baseline uses a binary high-stress indicator for interpretability and checks the continuous index and expanding-window standardization in robustness tests.
 
 ## 4. Empirical Strategy
 
@@ -177,7 +184,7 @@ where $y_{i,t+h}$ is forward 12-week maximum drawdown, forward 12-week volatilit
 
 **Decile sort.** As a nonparametric complement to the regression, we sort ETFs into deciles by vol\_12w each week and compute equal-weighted average forward outcomes within each decile. The D1–D10 spread provides an economically interpretable summary of the fragility-downside relationship that is free of functional form assumptions.
 
-### 4.4 Stress Regime Amplification (H4): Model M3
+### 4.4 Fragility During Stress Regimes (H4): Model M3
 
 To test stress dependence, we augment M2 with a stress interaction:
 
@@ -194,7 +201,7 @@ $$
 \tag{M3}
 $$
 
-where $\text{SI}_t$ is either the continuous stress index or the binary high-stress indicator. H4 is supported if $\beta_3 < 0$: conditional on fragility, stress weeks are associated with deeper forward drawdowns. We interpret this interaction alongside stress conditional decile sorts and the portfolio tilt below, rather than relying on any single specification.
+where $\text{SI}_t$ is either the continuous stress index or the binary high-stress indicator. A negative $\beta_3$ indicates that stress is associated with a more adverse conditional fragility gradient. We interpret this interaction alongside split-sample slopes, stress-conditional decile sorts, and the portfolio tilt below. These diagnostics distinguish a broad stress-period level shift from literal amplification of the fragility slope.
 
 **Portfolio tilt.** As a practical test of H4, we compare two weekly equal-weighted portfolios, excluding the Other category:
 
@@ -203,158 +210,184 @@ where $\text{SI}_t$ is either the continuous stress index or the binary high-str
 
 The key question is whether the tilt reduces losses during stress without imposing a reliable cost during calm periods.
 
-### 4.5 Identification and Limitations
+### 4.5 Listed-Option Hedge Capacity (H5)
 
-The analysis is reduced-form. The macro regressions describe co-movement, not causal transmission. The predictive regressions avoid mechanical look-ahead because fragility uses returns through $t$ and forward outcomes begin at $t+1$, but persistence in volatility means past and future risk are naturally related. The stress index uses full sample standardization in the baseline, which is appropriate for retrospective classification but not for real time trading; an expanding-window version addresses this concern in Section 6. High-stress weeks cluster in the COVID-19 shock and the 2022 rate-hike cycle, so the stress evidence should be read as evidence from those episodes rather than from a broad sample of independent crises. Portfolio tests are gross of transaction costs, so the weekly tilt should be interpreted as a risk-management screen rather than a directly netted trading strategy. Finally, overlapping 12-week forward windows and multiple forward outcomes can inflate apparent precision, so we rely on two-way clustering, Fama-MacBeth rank correlations, and cross-sectional decile tests as robustness checks.
+We translate option Greeks into the same rate-risk units as the underlying ETF. If ETF $i$ has empirical rate duration $D_i$, underlying price $S_{it}$, contract delta $\Delta_c$, and open interest $OI_c$, the chain's rate DV01 is the quality-screened sum of per-contract exposure. Dividing by fund DV01 gives:
+
+$$
+\begin{aligned}
+\text{HCR}_{it}
+&= \frac{\sum_c D_i S_{it}|\Delta_c|(0.0001)(100)OI_c}
+{D_i\,\text{AUM}_{it}(0.0001)} \\
+&= \frac{100S_{it}\sum_c|\Delta_c|OI_c}{\text{AUM}_{it}}.
+\end{aligned}
+$$
+
+The duration estimate cancels from the hedge-capacity ratio, although it remains necessary for absolute DV01 and convexity accounting. HCR is an optimistic upper bound: open interest is a stock rather than an executable quote, all qualifying positions are treated as potentially available, and price impact is ignored. Call and put capacity are therefore reported separately, with put capacity providing the more direct test of downside insurance.
+
+The descriptive baseline relates forward drawdown to the latest prior monthly capacity snapshot with date fixed effects:
+
+$$
+\text{fwd\_maxdd}_{i,t}^{12w} = \alpha_t + \beta\,\text{HCR}_{i,t} + \varepsilon_{i,t}. \tag{M4}
+$$
+
+Because drawdowns are negative, a protective relation requires $\beta>0$. H5 predicts economically meaningful put-side capacity and a positive within-fund capacity coefficient. We test that prediction with ticker and date fixed effects, a Mundlak decomposition into within- and between-fund capacity, call-put horse races, fresh-snapshot restrictions, and wild-cluster bootstrap inference at the ticker level.
+
+### 4.6 Identification and Limitations
+
+The analysis is reduced-form. The macro regressions describe co-movement, not causal transmission. The predictive regressions avoid mechanical look-ahead because fragility uses returns through $t$ and forward outcomes begin at $t+1$, but persistence in volatility means past and future risk are naturally related. The stress index uses full sample standardization in the baseline, which is appropriate for retrospective classification but not for real-time trading; an expanding-window version addresses this concern in Section 7. High-stress weeks cluster in the COVID-19 shock and the 2022 rate-hike cycle, so the stress evidence should be read as evidence from those episodes rather than from a broad sample of independent crises. Portfolio tests are gross of transaction costs, so the weekly tilt should be interpreted as a risk-management screen rather than a directly netted trading strategy.
+
+The options extension has separate limitations. The 36-fund universe is predetermined but not representative of all bond ETFs, capacity is available for only 33 funds, and six pass the strict liquidity gate. Effective cross-sectional sample size is therefore the number of funds rather than the number of ETF-week rows. Open interest does not identify signed demand, and the call-sided interpretation is an inference from book composition rather than transaction direction. Finally, overlapping forward windows and multiple outcomes can inflate apparent precision, so the broad panel relies on two-way clustering and weekly rank tests, while the capacity analysis adds ticker-cluster wild-bootstrap inference.
 
 ## 5. Results
 
 ### 5.1 Macro Sensitivity and Structural Heterogeneity (H1 and H2)
 
-Table 4 shows that weekly bond ETF returns load heavily on common macro shocks, especially credit spread and Treasury rate changes. The macro block explains 41.2% of weekly return variation, while category controls add little incremental explanatory power in the contemporaneous return regression. This is unsurprising: macro shocks arrive at the same calendar time for all funds, so their largest effect is common.
+Table 5 shows that weekly bond ETF returns load heavily on common macro shocks, especially credit spread and Treasury rate changes. The macro block explains 41.2% of weekly return variation, while category controls add little incremental explanatory power in the contemporaneous return regression. This is unsurprising: macro shocks arrive at the same calendar time for all funds, so their largest effect is common.
 
 The more important H1 result is cross-sectional. Per-fund credit spread betas vary significantly within all nontrivial categories, and the Bartlett test rejects equality of within category variance (χ² = 62.9, p < 0.001). Within High Yield, for example, the interdecile spread in credit spread betas implies nearly a 2:1 difference between the least and most credit-sensitive funds. Category labels therefore summarize broad exposure but do not fully describe fund level macro sensitivity.
 
 Fund characteristics are jointly significant (F = 7.68, p < 0.001), though their contribution to contemporaneous return R² is modest. Their larger role appears in the forward-outcome regressions, where fund size, expense ratio, and age help explain differences in subsequent drawdown risk.
 
-\begin{table}[H]
-\centering
-\scriptsize
-\caption{Macro sensitivity and within-category heterogeneity.}
-\begin{tabular}{lr}
-\toprule
-Statistic & Value \\
-\midrule
-Macro block R-squared & 41.2\% \\
-Credit spread coefficient & -0.051 \\
-10-year Treasury coefficient & -0.046 \\
-HY credit beta P10/P90 & -0.102 / -0.048 \\
-Bartlett test & $\chi^2 = 62.9$, $p < 0.001$ \\
-\bottomrule
-\end{tabular}
-\end{table}
+Table: **Table 5. Macro sensitivity and within-category heterogeneity.**
+
+| Statistic | Value |
+|:--|--:|
+| Macro block R-squared | 41.2% |
+| Credit spread coefficient | -0.051 |
+| 10-year Treasury coefficient | -0.046 |
+| HY credit beta P10/P90 | -0.102 / -0.048 |
+| Bartlett test | $\chi^2 = 62.9$, $p < 0.001$ |
 
 ### 5.2 Fragility Predicts Forward Downside Without a Return Premium (H3)
 
-Table 5 shows that recent fragility predicts future downside in the full specification with category and fund-characteristic controls. The result is not limited to the symmetric volatility measure: downside volatility and trailing maximum drawdown also predict worse forward drawdowns.
+Table 6 shows that recent fragility predicts future downside in the full specification with category and fund-characteristic controls. The result is not limited to the symmetric volatility measure: downside volatility and trailing maximum drawdown also predict worse forward drawdowns.
 
 The key economic result is the contrast between downside and returns. A one standard deviation increase in vol\_12w predicts deeper forward drawdowns and higher forward realized volatility, but it does not predict a commensurate return premium. In the full specification, the coefficient on 4-week forward returns is positive (β = +0.41), while the decile sort shows D10 earning 0.23% versus 0.19% for D1 over the same horizon. The return relation is therefore positive on average but non-monotonic in the tails: mean forward returns peak around D8 and then flatten, while drawdowns continue to worsen through D10. This divergence is why the paper emphasizes weak compensation relative to downside exposure rather than a negative expected-return effect.
 
-Figure 3 makes the magnitude clear. The lowest fragility decile has an average 12-week forward maximum drawdown of −0.22%, while the highest fragility decile has −4.79%, a 457-basis-point spread. The evidence therefore supports the narrower claim that fragility is weakly compensated relative to its forward downside risk.
+Figure 3 makes the magnitude clear. The lowest fragility decile has an average 12-week forward maximum drawdown of −0.22%, while the highest fragility decile has −4.75%, a 453-basis-point spread between the average decile endpoints. The evidence therefore supports the narrower claim that fragility is weakly compensated relative to its forward downside risk.
 
-\begin{table}[H]
-\centering
-\scriptsize
-\caption{Fragility and forward outcomes (H3).}
-\begin{tabular}{lrrr}
-\toprule
-Outcome / sort & Estimate & t-stat & N \\
-\midrule
-fwd\_maxdd\_12w & -0.695 & -3.23 & 121,541 \\
-fwd\_vol\_12w & 0.313 & 7.62 & 121,541 \\
-fwd\_ret\_4w & 0.413 & 11.55 & 121,541 \\
-D10 - D1 max drawdown & -4.57 pp & -- & -- \\
-D10 - D1 return & 0.04 pp & -- & -- \\
-\bottomrule
-\end{tabular}
-\vspace{0.2em}
-\begin{minipage}{0.98\columnwidth}
-\scriptsize Notes: Regression rows report the coefficient on vol\_12w from the full M2 specification. t-statistics use two-way clustered standard errors by ETF and calendar week. Decile rows report equal-weighted high-minus-low fragility decile spreads.
-\end{minipage}
-\end{table}
+Table: **Table 6. Fragility and forward outcomes (H3).**
 
-\setcounter{figure}{2}
-\begin{figure}[H]
-\centering
-\includegraphics[width=\columnwidth]{docs/figures/fragility_deciles.png}
-\caption{Forward outcomes by fragility decile. Bars show 12-week forward maximum drawdown; line shows 4-week forward return.}
-\end{figure}
+| Outcome / sort | Estimate | t-stat | N |
+|:--|--:|--:|--:|
+| fwd\_maxdd\_12w | -0.681 | -3.20 | 123,793 |
+| fwd\_vol\_12w | 0.312 | 4.74 | 123,793 |
+| fwd\_ret\_4w | 0.419 | 3.51 | 148,753 |
+| D10 - D1 max drawdown | -4.53 pp | -- | -- |
+| D10 - D1 return | 0.04 pp | -- | -- |
 
-### 5.3 Stress Regime Amplification (H4)
+*Notes: Regression rows report the coefficient on vol\_12w from the full M2 specification. t-statistics use two-way clustered standard errors by ETF and calendar week. Decile rows report equal-weighted high-minus-low fragility decile spreads.*
 
-Table 7 provides the clearest H4 evidence. Excluding the top fragility quartile each week produces nearly the same full sample annualized return as the naive equal-weight portfolio, while reducing full sample maximum drawdown from 14.76% to 12.30%. During the 20 high-stress portfolio weeks with complete returns, the tilt portfolio's cumulative return is −10.57%, compared with −15.91% for the naive portfolio, and its maximum drawdown is 467 basis points shallower. The stress index identifies 21 high-stress weeks, but one week drops from the portfolio test because complete portfolio returns are unavailable. The paired weekly return difference during stress is statistically significant (t = 2.51, p = 0.021). During calm weeks, the return cost is not statistically reliable.
+![Figure 3. Forward outcomes by fragility decile. Bars show 12-week forward maximum drawdown; line shows 4-week forward return.](docs/figures/fragility_deciles.png)
 
-Table 6 gives supporting regression and decile-sort evidence. Stress weeks are unconditionally worse for ETF drawdowns, and the fragility stress interaction is negative in both binary and continuous stress specifications. The split sample coefficients are similar across stress and non-stress weeks, so the interaction should be read cautiously: the evidence is strongest for stress-conditional portfolio usefulness, not for a clean structural amplification parameter. During high-stress weeks, the D1–D10 forward drawdown spread widens from 457 basis points in the full sample to 628 basis points. Stress hurts the entire universe, but the most fragile ETFs remain the deepest source of tail exposure.
+### 5.3 Fragility During Stress Regimes (H4)
 
-This asymmetry is the most practical evidence for H4. The interaction estimates are useful diagnostics, but the portfolio test is the main stress-regime result. The tilt's stress-period outperformance partly reflects an implicit reduction in long-duration and lower-quality credit exposure, consistent with the duration-beta robustness evidence in Section 6.5.
+Table 8 provides the clearest H4 evidence. Excluding the top fragility quartile each week produces nearly the same full sample annualized return as the naive equal-weight portfolio, while reducing full sample maximum drawdown from 14.85% to 12.42%. Across the 19 high-stress weeks, the tilt portfolio's cumulative return is −12.53%, compared with −18.25% for the naive portfolio, and its maximum drawdown is 468 basis points shallower. The paired weekly return difference during stress is statistically significant (t = 3.00, p = 0.0078). During calm weeks, the return cost is not statistically reliable.
 
-\begin{table}[H]
-\centering
-\scriptsize
-\caption{Stress-regime evidence (H4).}
-\begin{tabular}{lr}
-\toprule
-Statistic & Estimate \\
-\midrule
-High-stress indicator & -0.005 \\
-vol\_12w $\times$ high\_stress & -0.218 \\
-vol\_12w $\times$ stress\_index & -0.224 \\
-High-stress D10 - D1 drawdown & -6.28 pp \\
-\bottomrule
-\end{tabular}
-\vspace{0.2em}
-\begin{minipage}{0.98\columnwidth}
-\scriptsize Notes: Estimates are from M3 specifications with two-way clustered standard errors by ETF and calendar week. Decile spread is the high-minus-low fragility decile difference during high-stress weeks.
-\end{minipage}
-\end{table}
+Table 7 gives supporting regression and decile-sort evidence. Stress weeks are worse for ETF drawdowns, and the fragility-stress interaction is negative in both binary and continuous specifications. The separate vol\_12w slope is nevertheless smaller in absolute value during stress (−1.23 versus −1.73 outside stress), a ratio of 0.71. Thus, the interaction evidence should not be described as unambiguous slope amplification: stress shifts the full cross-section toward worse outcomes while the most fragile ETFs remain the deepest source of tail exposure. The mean weekly D10−D1 forward-drawdown spread is 4.36 percentage points in the full sample and 6.67 percentage points during stress.
 
-\begin{table}[H]
-\centering
-\scriptsize
-\caption{Portfolio tilt performance.}
-\begin{tabular}{llrrr}
-\toprule
-Regime & Portfolio/test & Ret. & Max DD & t-stat \\
-\midrule
-Full sample & Naive EW & 2.74\% & -14.76\% & -- \\
-Full sample & Tilt EW & 2.75\% & -12.30\% & -- \\
-High stress & Naive EW & -15.91\% & -17.70\% & -- \\
-High stress & Tilt EW & -10.57\% & -13.03\% & -- \\
-High stress & Tilt - Naive & +0.30 pp/wk & -- & 2.51 \\
-Calm weeks & Tilt - Naive & -0.01 pp/wk & -- & -1.52 \\
-\bottomrule
-\end{tabular}
-\vspace{0.2em}
-\begin{minipage}{0.98\columnwidth}
-\scriptsize Notes: Full sample returns are annualized. High-stress returns are cumulative over the 20 high-stress portfolio weeks with complete returns; the stress index identifies 21 high-stress weeks, but one week lacks complete portfolio returns. Tilt - Naive rows report average weekly return differences and paired t-statistics. Naive EW equal-weights all eligible bond ETFs each week, excluding the Other category; Tilt EW excludes the highest fragility quartile each week.
-\end{minipage}
-\end{table}
+This asymmetry is the most practical evidence for H4. The interaction estimates are useful diagnostics, but the portfolio test is the main stress-regime result. The tilt's stress-period outperformance partly reflects an implicit reduction in long-duration and lower-quality credit exposure, consistent with the duration-beta robustness evidence in Section 7.5.
 
-## 6. Robustness
+Table: **Table 7. Stress-regime evidence (H4).**
 
-### 6.1 Two-Way Clustered Standard Errors
+| Statistic | Estimate |
+|:--|--:|
+| vol\_12w $\times$ high\_stress | -0.678 |
+| vol\_12w $\times$ stress\_index | -0.267 |
+| Low-stress vol\_12w slope | -1.730 |
+| High-stress vol\_12w slope | -1.234 |
+| High-stress D10 - D1 drawdown | -6.67 pp |
 
-Overlapping 12-week forward outcomes create serial dependence. Two-way clustering inflates the standard error on the main vol\_12w coefficient from 0.139 to 0.215, but the coefficient remains statistically significant (t = −3.23). The main conclusions do not rely on one-way fund clustering.
+*Notes: Interaction and split-slope estimates are from M3 specifications that also control for trailing downside volatility and maximum drawdown, with standard errors clustered by ETF. The decile spread is the mean weekly high-minus-low fragility-decile difference during high-stress weeks.*
 
-### 6.2 Fama-MacBeth Spearman Rank Correlations
+Table: **Table 8. Portfolio tilt performance.**
+
+| Regime | Portfolio/test | Ret. | Max DD | t-stat |
+|:--|:--|--:|--:|--:|
+| Full sample | Naive EW | 2.54% | -14.85% | -- |
+| Full sample | Tilt EW | 2.63% | -12.42% | -- |
+| High stress | Naive EW | -18.25% | -18.37% | -- |
+| High stress | Tilt EW | -12.53% | -13.69% | -- |
+| High stress | Tilt - Naive | +0.35 pp/wk | -- | 3.00 |
+| Calm weeks | Tilt - Naive | -0.01 pp/wk | -- | -1.48 |
+
+*Notes: Full sample returns are annualized. High-stress returns are cumulative over 19 weeks. Tilt - Naive rows report average weekly return differences and paired t-statistics. Naive EW equal-weights all eligible bond ETFs each week, excluding the Other category; Tilt EW excludes the highest fragility quartile each week.*
+
+## 6. Listed-Option Hedge Capacity
+
+### 6.1 A Narrow and Selected Hedge Set
+
+The sample funnel in Table 4 is the first hedge-capacity result. Listed option data are available for a deliberately broad set of 36 candidate funds, but three never produce measurable capacity and only six pass the strict liquidity gate. This narrowing is economically selected rather than random: the liquid group is older, larger, more volatile, and dominated by Treasury exposure. Restricting the macro-risk analysis to these funds would therefore confound general bond ETF fragility with the characteristics that attract an options market. We instead preserve the broad sample for H1–H4 and limit H5 to the hedge-capacity universe.
+
+Empirical rate durations validate the rate-space bridge: the latest quality estimates correlate 0.98 with published effective durations. More importantly, duration cancels algebraically from the headline ratio. The capacity measure is therefore not mechanically larger for a fund merely because its estimated duration is large; absolute DV01 and convexity measures retain that dependence.
+
+### 6.2 Capacity Is Sparse and Call-Sided
+
+The fund-by-fund accounting shows that TLT is the only clear institutional-scale listed-option venue. At the representative 2025-04-01 snapshot, the full quality-screened TLT put book supplies approximately $2.93 million of DV01 per basis point, equivalent to roughly 3.5% of the fund's own rate DV01. Even that is an upper bound. A 5–10% participation assumption supports approximately $100–200 million of hedgeable notional against a fund with tens of billions of dollars in AUM. IEF and TIP put capacity is closer to retail or small-account scale, while LQD, AGG, BND, and EMB have approximately zero quality-screened put capacity at the same snapshot.
+
+The standing book is also oriented away from downside insurance. TLT call-side DV01 exceeds put-side DV01 by approximately 2.6 to one, and MBB is more heavily call-dominated. No fund with a meaningful two-sided book is robustly put-dominant. Because open interest is unsigned, this composition cannot identify investor motives, but it is more consistent with covered-call and yield-enhancement activity than with a deep market for protective puts.
+
+### 6.3 Capacity Does Not Predict Protection
+
+Table 9 reports the identification sequence. The pooled date-fixed-effect coefficient is negative, the opposite of protection, and conventionally significant under asymptotic CGM inference. That result does not survive inference at the effective fund level: its wild-cluster p-value is 0.095. Ticker-plus-date fixed effects remove the association, and the Mundlak decomposition places it in persistent between-fund differences rather than within-fund changes. The between component also fails the wild bootstrap. In the call-put horse race, calls retain a negative association while puts remain null. Thus, the one coefficient that survives is attached to the side of the book least consistent with downside insurance.
+
+Table: **Table 9. Hedge capacity and forward drawdowns (H5).**
+
+| Specification / component | Estimate | CGM $p$ | Wild-bootstrap $p$ |
+|:--|--:|--:|--:|
+| Pooled capacity, date FE | -0.338 | 0.0004 | 0.095 |
+| Ticker + date FE | -0.022 | 0.653 | -- |
+| Mundlak within-fund capacity | -0.046 | 0.393 | 0.374 |
+| Mundlak between-fund capacity | -0.507 | $<0.0001$ | 0.116 |
+| Call capacity, joint horse race | -0.487 | $<0.0001$ | 0.030 |
+| Put capacity, joint horse race | -0.046 | 0.769 | 0.786 |
+
+*Notes: The dependent variable is 12-week forward maximum drawdown, so a protective relation requires a positive coefficient. CGM standard errors cluster by ticker and date. Wild-bootstrap p-values use 9,999 Rademacher replications clustered by ticker; the capacity-covered sample contains 33 funds.*
+
+### 6.4 Option Prices Provide No Substitute Signal
+
+The implied-volatility diagnostics reach the same conclusion. Near-30-day ATM IV combines call and put estimates at a common strike, validated on 784 matched monthly pairs with median absolute IV disagreement of 0.0078. Neither IV levels nor the ex-ante implied-minus-trailing-realized variance gap robustly predicts forward drawdowns, 4-week returns, or forward realized volatility. Fresh-capacity-only and monthly-snapshot-only samples are likewise null. These are informative nulls: neither the price nor the measured quantity of listed-option exposure provides evidence of a simple protective channel.
+
+## 7. Robustness
+
+### 7.1 Two-Way Clustered Standard Errors
+
+Overlapping 12-week forward outcomes create serial dependence. Two-way clustering inflates the standard error on the main vol\_12w coefficient from 0.138 to 0.212, but the coefficient remains statistically significant (t = −3.20). The main conclusions do not rely on one-way fund clustering.
+
+### 7.2 Fama-MacBeth Spearman Rank Correlations
 
 As a nonparametric check, we compute weekly cross-sectional Spearman correlations between vol\_12w and each forward outcome, then test the time-series mean. The average rank correlation is strongly negative for forward drawdowns and strongly positive for forward volatility. The forward return correlation is small and positive, and it becomes statistically insignificant during high-stress weeks. This confirms that the main result is not driven by a linear panel specification.
 
-Weekly decile-spread tests tell the same story. The average D10-D1 forward drawdown spread is −4.44 percentage points across weeks (t = −36.3), while the average D10-D1 forward return spread is only 0.08 percentage points and is not statistically different from zero (t = 0.63). The decile evidence therefore supports monotonic downside prediction, not a monotonic return premium.
+Weekly decile-spread tests tell the same story. The average D10-D1 forward drawdown spread is −4.36 percentage points across weeks (t = −36.3), while the average D10-D1 forward return spread is only 0.08 percentage points and is not statistically different from zero (t = 0.68). The decile evidence therefore supports monotonic downside prediction, not a monotonic return premium.
 
 The drawdown result is not sensitive to multiple-testing concerns across the three forward outcomes: the weekly decile-spread t-statistic for drawdowns is large enough that standard family-wise adjustments do not alter the inference. The forward-return result is treated more cautiously because the decile spread is small and statistically indistinguishable from zero.
 
-### 6.3 Subsample and Survivorship Robustness
+### 7.3 Subsample and Survivorship Robustness
 
 The fragility drawdown relationship is stable across available within-sample splits, and the main results also hold when restricting to the 183 ETFs with full history from 2016 and when excluding small or specialized categories. These checks reduce, but do not eliminate, concerns about survivorship and category composition.
 
-As a simple out-of-sample screen, we estimate the top-quartile fragility cutoff using 2016--2021 data and apply that fixed threshold to 2022--2026. The tilt portfolio earns an 8.8% cumulative return versus 7.1% for the naive portfolio and reduces maximum drawdown from 13.2% to 7.4%, though the weekly return difference is not statistically reliable (t = 0.22). This supports the drawdown-control interpretation but not an alpha claim.
+As a simple out-of-sample screen, we estimate the top-quartile fragility cutoff using 2016--2021 data and apply that fixed threshold to 2022--2026. The tilt portfolio earns an 8.96% cumulative return versus 7.08% for the naive portfolio and reduces maximum drawdown from 13.29% to 7.56%, though the weekly return difference is not statistically reliable (t = 0.23, p = 0.82). This supports the drawdown-control interpretation but not an alpha claim.
 
-### 6.4 Expanding-Window Stress Index
+### 7.4 Expanding-Window Stress Index
 
-Replacing the full sample stress index with an expanding-window version produces nearly identical H4 results. The COVID-19 and 2022 rate-hike episodes are identified under both methods, so the stress-regime findings are not an artifact of ex post standardization.
+Replacing the full sample stress index with an expanding-window version identifies 36 stress weeks, with 96.3% week-level agreement between the two classifications. The interaction remains negative (−0.290 versus −0.325 under full sample standardization), so the stress-regime findings are not an artifact of ex post standardization.
 
-### 6.5 Duration-Beta Robustness
+### 7.5 Duration-Beta Robustness
 
-To separate ETF-level fragility from duration exposure, we estimate each fund's rate beta from weekly excess returns on changes in the 10-year Treasury yield and add that beta to the M2 drawdown regression. This robustness check uses a common category/characteristic control set across all three specifications, without year fixed effects, so that rate-volatility regime variation is not absorbed. Under this common specification, the baseline vol\_12w coefficient is −0.957 (t = −4.68). The coefficient remains negative and statistically reliable after controlling for static rate beta (β = −0.371, t = −2.30). A stricter specification that also includes the interaction of rate beta with MOVE attenuates the coefficient further and leaves it below conventional significance thresholds (β = −0.229, t = −1.57). This check shows that recent ETF volatility contains drawdown information beyond static category labels, but not that it is independent of time-varying duration exposure. A substantial component of the fragility signal is therefore interpretable as dynamic duration risk during high rate-volatility regimes.
+To separate ETF-level fragility from duration exposure, we estimate each fund's rate beta from weekly excess returns on changes in the 10-year Treasury yield and add that beta to the M2 drawdown regression. This robustness check uses a common category/characteristic control set across all three specifications, without year fixed effects, so that rate-volatility regime variation is not absorbed. Under this common specification, the baseline vol\_12w coefficient is −0.956 (t = −4.73). The coefficient remains negative and statistically reliable after controlling for static rate beta (β = −0.389, t = −2.40). A stricter specification that also includes the interaction of rate beta with MOVE attenuates the coefficient further and leaves it below conventional significance thresholds (β = −0.247, t = −1.68). This check shows that recent ETF volatility contains drawdown information beyond static category labels, but not that it is independent of time-varying duration exposure. A substantial component of the fragility signal is therefore interpretable as dynamic duration risk during high rate-volatility regimes.
 
-## 7. Conclusion
+### 7.6 Hedge-Capacity Robustness
 
-Fixed-income ETF risk is not fully summarized by broad category labels. The clearest cross-sectional result is that macro sensitivity varies materially inside categories, including large within-category differences in credit-spread betas. Using a simple price-based fragility measure, this paper also shows that ETFs with elevated recent volatility face substantially worse forward drawdowns and higher realized volatility. The return compensation for that fragility is small relative to the downside gap: the highest fragility decile experiences 457 basis points more forward maximum drawdown than the lowest fragility decile, while earning nearly the same 4-week forward return. Duration and rate-volatility exposure explain a meaningful part of this relation, so the evidence should be read as a practical risk-screen result rather than proof of a standalone fragility factor independent of rates.
+The capacity conclusions survive alternative timing, transformation, and pricing assumptions. Restricting capacity to observations no more than 30 days old or to monthly snapshot weeks does not produce a protective coefficient. Winsorized and log-capacity specifications retain the pooled negative sign but do not restore a within-fund channel. Dropping TLT, LQD, and IEF removes the pooled precision, confirming that a few developed markets drive the cross-sectional result. Finally, repricing the option chains with a 751-step American CRR model produces approximately zero median IV bias across ticker, right, and moneyness buckets; stale deep-in-the-money quotes account for the apparent tail cases. These checks reinforce the interpretation of limited and selected capacity rather than a hidden protective effect.
 
-The stress results make the finding practically relevant. A weekly screen that excludes the top fragility quartile reduces drawdowns during high-stress weeks and does not impose a statistically reliable cost during calm periods. This does not prove that bond ETF fragility is mispriced; the tested duration result suggests that part of the signal reflects rate exposure, while credit beta, carry, convexity, and unobserved portfolio liquidity remain plausible additional channels. It does show, however, that a public and easily replicable ETF price signal contains information about future tail risk that investors using category level analysis alone would miss.
+## 8. Conclusion
 
-The most conservative interpretation is therefore risk management rather than alpha. Recent fragility identifies ETFs whose downside exposure is large relative to observed forward return compensation, especially in macro stress regimes. For investors allocating across fixed-income ETFs, that signal is useful precisely because it is simple, transparent, and available before the forward drawdown is realized.
+Fixed-income ETF risk is not fully summarized by broad category labels. A simple price-based fragility measure identifies funds with materially worse forward drawdowns and higher realized volatility. The highest fragility decile experiences 453 basis points more average forward maximum drawdown than the lowest decile while earning nearly the same 4-week forward return. During high-stress weeks, excluding the most fragile quartile reduces portfolio drawdown without a statistically reliable calm-period cost. Duration and rate volatility explain a meaningful part of the relation, so the result is best understood as a practical risk screen rather than a standalone alpha factor.
+
+The options evidence completes that risk-management interpretation. The direct exchange-listed hedge is available for only a selected subset of the market, and practically liquid capacity is narrower still. TLT is the only clear institutional-scale put venue; credit and aggregate ETF put capacity is generally negligible. The pooled capacity-drawdown association is a between-fund composition effect, not evidence that increasing hedge supply protects a fund over time, and put-side capacity does not predict smaller drawdowns. The depth that remains is predominantly call-sided, consistent with yield enhancement rather than broad downside-risk transfer.
+
+The central conclusion is therefore asymmetric: bond ETF fragility is easier to observe than to hedge with listed options. This does not establish mispricing, nor does it rule out futures, swaps, credit derivatives, or OTC options as alternative hedges. It does show that investors relying on exchange-listed, basis-specific protection face a narrow and selected market precisely when the broad ETF cross-section contains substantial tail-risk dispersion. Recent fragility is useful because it is transparent and available before the drawdown; the options evidence shows why identifying that risk cannot be assumed to make it readily transferable.
 
 ## Disclaimer
 
@@ -364,7 +397,11 @@ This research was conducted independently and does not represent the views, opin
 
 Ben-David, Itzhak, Francesco Franzoni, and Rabih Moussawi. 2018. "Do ETFs Increase Volatility?" *Journal of Finance* 73 (6): 2471-2535.
 
+Bollerslev, Tim, George Tauchen, and Hao Zhou. 2009. "Expected Stock Returns and Variance Risk Premia." *Review of Financial Studies* 22 (11): 4463-4492.
+
 Cameron, A. Colin, Jonah B. Gelbach, and Douglas L. Miller. 2011. "Robust Inference With Multiway Clustering." *Journal of Business & Economic Statistics* 29 (2): 238-249.
+
+Carr, Peter, and Liuren Wu. 2009. "Variance Risk Premiums." *Review of Financial Studies* 22 (3): 1311-1341.
 
 Chen, Qi, Itay Goldstein, and Wei Jiang. 2010. "Payoff Complementarities and Financial Fragility: Evidence from Mutual Fund Outflows." *Journal of Financial Economics* 97 (2): 239-262.
 

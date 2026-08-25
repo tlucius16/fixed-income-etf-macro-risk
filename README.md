@@ -1,12 +1,17 @@
-# Fixed-Income ETF Macro-Risk Research
+# Observable Fragility, Limited Hedge Capacity, and Tail Risk in Bond ETFs
 
-Two related working papers built on a shared weekly fixed-income ETF panel:
+One paper built from two linked empirical layers. The broad panel asks whether
+publicly observable bond ETF fragility predicts forward tail risk. The
+hedge-capacity extension then asks whether listed options provide a practical
+risk-transfer channel for that exposure.
 
-1. **Macro Stress, Liquidity, and the Cross-Section of Bond ETF Fragility** — do backward-looking fragility signals (rolling volatility, downside vol, max drawdown) predict forward tail outcomes, and is that risk compensated in expected returns?
-2. **Hedge Capacity and Rate-Duration Risk in Fixed-Income ETF Options Markets** — how much listed-option depth exists relative to each ETF's rate exposure (DV01-scaled hedge capacity), where does it concentrate, and does it relate to forward drawdowns?
+- Core panel: **352 ETFs · 518 weeks · August 2016–July 2026 · 159,216 ETF-week observations**
+- Option-chain universe: **36 ETFs · 339,220 contracts · 114 monthly snapshots**
+- Capacity-covered universe: **33 ETFs · 12,599 ETF-week capacity observations**
+- Strict liquid-options universe: **6 ETFs — EDV, EMB, IEF, LQD, TLT, ZROZ**
 
-Fragility panel: **347 ETFs · 521 weeks · April 2016 – April 2026 · 156,588 ETF-week observations**
-Options panel: **36-ticker options universe · quarterly chain snapshots 2020 Q1 – 2025 Q2 · weekly ATM IV 2020 → present**
+The nested samples are intentional. Broad fragility claims use all 352 ETFs;
+option-market claims are limited to the selected hedge-capacity samples.
 
 ---
 
@@ -20,20 +25,20 @@ Options panel: **36-ticker options universe · quarterly chain snapshots 2020 Q1
 │   │   ├── options_screen/               # ThetaData chain + IV caches (gitignored)
 │   │   └── live/                         # live raw intermediates
 │   ├── processed/
-│   │   ├── offline/                      # fragility paper's fixed snapshot (default)
+│   │   ├── offline/                      # paper's fixed core-panel snapshot (default)
 │   │   ├── live/                         # fresh-pull outputs
 │   │   └── options_screen/               # chains.csv, options_panel.csv, iv_panel_full.csv (gitignored)
 │   └── exports/
 │       ├── legacy_csv_exports/           # cached raw outputs from original prototype
 │       └── tables/                       # exported result tables
 ├── notebooks/
-│   ├── 02_rolling_risk_metrics.ipynb     # fragility paper: motivating figures
-│   ├── 03_analysis.ipynb                 # fragility paper: full H1–H4 analysis
-│   ├── 05_options_analysis.ipynb         # options paper: 10-section analysis
+│   ├── 02_rolling_risk_metrics.ipynb     # core fragility figures
+│   ├── 03_analysis.ipynb                 # macro, fragility, stress, robustness
+│   ├── 05_options_analysis.ipynb         # hedge-capacity extension
 │   └── archive/                          # retired notebooks
 ├── docs/
-│   ├── draft.md                          # fragility paper draft
-│   ├── options_paper/                    # options paper: methodology, provenance
+│   ├── draft.md                          # unified paper draft
+│   ├── hedge_capacity/                   # extension methodology and evidence notes
 │   │   ├── figures/                      # generated (gitignored)
 │   │   └── tables/                       # generated (gitignored)
 │   ├── data_provenance.md
@@ -41,34 +46,35 @@ Options panel: **36-ticker options universe · quarterly chain snapshots 2020 Q1
 ├── scripts/
 │   ├── reproduce.py                      # ★ one-command pipeline (see REPRODUCING.md)
 │   ├── 01_download_prices.py             # batch EOD close download (yfinance)
-│   ├── 02_concat_screen.py               # screen CSVs from the chain cache
-│   ├── 03_build_iv_panel.py              # weekly ATM call/put IV panel (ThetaData)
-│   ├── 04_build_options_panel.py         # chain repull + hedge-capacity panel build
-│   ├── 05_build_call_put_iv_diagnostic.py# quarterly call/put IV gap table
-│   ├── 06_robustness_ladder.py           # Spec 0 CGM robustness ladder
-│   ├── 07_paper_artifacts.py             # paper tables + figures 24-26
-│   └── rebuild_panel_from_legacy.py      # fragility panel rebuild (no API needed)
-├── julia/                                # RateSpace.jl: AD Greeks, bootstrap, American pricer
+│   ├── 02_fetch_chains.py                # raw chain repull (ThetaData API)
+│   ├── 03_concat_screen.py               # screen CSVs from the chain cache
+│   ├── 04_build_iv_panel.py              # weekly ATM call/put IV panel
+│   ├── 05_build_call_put_iv_diagnostic.py# monthly call/put IV gap table
+│   ├── 06_build_options_panel.py         # hedge-capacity panel build
+│   ├── 07_robustness_ladder.py           # Spec 0 CGM robustness ladder
+│   ├── 08_paper_artifacts.py             # paper tables + figures 24-26
+│   └── 09_fragility_h4.py                # fragility H4 clustered-inference reference
+├── julia/                                # robustness bootstrap and American pricer
 ├── src/
 │   ├── config.py                         # paths + options quality thresholds (single source of truth)
 │   ├── analysis/
 │   │   └── regression_utils.py           # CGM (2011) two-way cluster SEs
 │   ├── data/
-│   │   ├── macro.py, prices.py, risk_free.py, universe.py   # fragility panel inputs
+│   │   ├── macro.py, prices.py, risk_free.py, universe.py   # core-panel inputs
 │   │   ├── options.py                    # ThetaData chains, IV series, liquidity screen
 │   │   ├── options_panel.py              # build_options_panel() steps 2–7
 │   │   └── options_universe.py           # 36-ticker universe, buckets, ETF metadata
 │   ├── features/
 │   │   ├── category.py, forward_outcomes.py, rolling_risk.py,
-│   │   ├── stress_index.py, structural.py                    # fragility features
+│   │   ├── stress_index.py, structural.py                    # core fragility features
 │   │   ├── rate_space.py                 # dollar-Greeks → rate-space (D_i bridge, DV01)
 │   │   ├── hedge_capacity.py             # OI-weighted chain capacity by side (C/P/total)
-│   │   ├── call_put_iv.py                # quarterly call/put IV diagnostic
+│   │   ├── call_put_iv.py                # monthly call/put IV diagnostic
 │   │   ├── options_features.py           # empirical duration, hedgeability scores
 │   │   └── vrp.py                        # IVRVG appendix diagnostics
 │   └── pipelines/
-│       └── build_core_panel.py           # fragility panel end-to-end (FRED key required)
-└── tests/                                # pytest suite (146 tests)
+│       └── build_core_panel.py           # core panel end-to-end (FRED key required)
+└── tests/                                # pytest suite
 ```
 
 ---
@@ -87,17 +93,18 @@ All keys are read from the environment — nothing is hardcoded. Put them in a `
 in the repo root (gitignored) or export them in your shell:
 
 ```bash
-FRED_API_KEY=...        # fragility macro series + risk-free rate (free: fred.stlouisfed.org)
-THETA_USERNAME=...      # options data only (ThetaData subscription)
-THETA_PASSWORD=...
+FRED_API_KEY=...            # macro series + risk-free rate (free: fred.stlouisfed.org)
+THETADATA_USERNAME=...      # options data only (ThetaData subscription)
+THETADATA_PASSWORD=...
 ```
 
-The fragility paper needs only `FRED_API_KEY` (or no key at all with the legacy rebuild).
-The options pipeline needs all three.
+The committed offline core snapshot and cached options pipeline need no
+credentials. Refreshing the core panel needs `FRED_API_KEY`; repulling or
+extending options data also needs the two `THETADATA_*` credentials.
 
 ---
 
-## Paper 1 — Fragility (notebooks 02–03)
+## Core Fragility Analysis (notebooks 02–03)
 
 ### Panel modes
 
@@ -115,15 +122,12 @@ panel = pd.read_csv(config.core_panel_csv(PANEL_MODE), ...)
 
 > **BAML credit spread note:** FRED now exposes only a rolling 3-year window for `BAMLC0A0CM`. The live pipeline automatically merges the legacy cached `baml_w.csv` (1997–2026) with the fresh FRED pull.
 
-### Option 1 — Rebuild from cached legacy files (no API key required)
+### Canonical offline snapshot
 
-```bash
-python scripts/rebuild_panel_from_legacy.py
-```
+`data/processed/offline/core_panel.csv` is the committed paper snapshot:
+159,216 rows across 352 ETFs. It can be used directly without credentials.
 
-Output: `data/processed/offline/core_panel.csv` — 156,588 rows, 347 ETFs.
-
-### Option 2 — Full pipeline rebuild (FRED key + internet)
+### Refresh the panel (FRED key + internet)
 
 ```bash
 python -m src.pipelines.build_core_panel                       # writes to live/
@@ -139,7 +143,7 @@ python -m src.pipelines.build_core_panel --panel-mode offline  # overwrite the s
 
 ---
 
-## Paper 2 — Options / Hedge Capacity
+## Hedge-Capacity Extension (notebook 05)
 
 One command reproduces every derived artifact from the raw ThetaData caches:
 
@@ -157,7 +161,7 @@ repulling raw data), and what a successful run looks like.
 prepared data and renders results, requires no credentials, and never fetches
 or builds anything. Every artifact has exactly one canonical producer script.
 
-Key design points (details in `docs/options_paper/methodology.md`):
+Key design points (details in `docs/hedge_capacity/methodology.md`):
 
 - **ThetaData is strictly serial** — one session per account; concurrent requests are
   rejected with `RESOURCE_EXHAUSTED`. All API calls go through a retry wrapper; do not
@@ -178,22 +182,22 @@ Key design points (details in `docs/options_paper/methodology.md`):
 .venv/bin/python -m pytest tests/ -q
 ```
 
-146 tests cover BSM pricing/IV inversion, screen filters, cache behavior, rate-space
+129 passing tests cover BSM pricing/IV inversion, screen filters, cache behavior, rate-space
 identities, hedge-capacity known values, panel construction, and the CGM regression
 utilities. `tests/test_theta_chain.py` is a live ThetaData diagnostic that exits
 unless credentials are set.
 
 ---
 
-## Key Variables (fragility panel)
+## Key Variables (core panel)
 
 | Variable | Description |
 |----------|-------------|
 | `vol_12w` | 12-week rolling std of weekly excess returns — primary fragility measure |
 | `downside_vol_12w` | Semi-deviation (negative returns only) over 12 weeks |
 | `maxdd_12w` | Worst peak-to-trough drawdown over trailing 12 weeks |
-| `stress_index` | Equal-weighted z-score composite of Δ ANFCI, Δ CS, Δ MOVE, Δ VIX |
-| `high_stress` | Binary: 1 if `stress_index > 1.0` (~top 4% of weeks in sample) |
+| `stress_index` | Equal-weighted z-score composite of Δ ANFCI, Δ credit spreads, Δ MOVE, Δ VIX, Δ SPX realized volatility, Δ DXY, and Δ policy-rate uncertainty |
+| `high_stress` | Binary: 1 if `stress_index > 1.0` (19 of 518 weeks; 3.7%) |
 | `fwd_maxdd_12w` | Forward 12-week maximum drawdown (outcome variable) |
 | `fwd_vol_12w` | Forward 12-week return volatility |
 | `fwd_ret_4w` | Forward 4-week compound return |

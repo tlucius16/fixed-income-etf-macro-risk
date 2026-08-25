@@ -10,7 +10,7 @@ class BulkClient:
         self.eod_calls = []
         self.oi_calls = []
 
-    def option_history_eod(self, **kwargs):
+    def option_history_greeks_eod(self, **kwargs):
         self.eod_calls.append(kwargs)
         return pd.DataFrame(
             [
@@ -20,6 +20,11 @@ class BulkClient:
                     "bid": 4.9,
                     "ask": 5.1,
                     "close": 5.0,
+                    "implied_vol": 0.15,
+                    "delta": 0.5,
+                    "gamma": 0.05,
+                    "vega": 0.1,
+                    "theta": -0.05,
                 },
                 {
                     "strike": 100.0,
@@ -27,6 +32,11 @@ class BulkClient:
                     "bid": 4.4,
                     "ask": 4.6,
                     "close": 4.5,
+                    "implied_vol": 0.16,
+                    "delta": -0.5,
+                    "gamma": 0.05,
+                    "vega": 0.1,
+                    "theta": -0.04,
                 },
                 {
                     "strike": 110.0,
@@ -34,6 +44,11 @@ class BulkClient:
                     "bid": 0.0,
                     "ask": 0.0,
                     "close": 0.0,
+                    "implied_vol": 0.0,
+                    "delta": 0.0,
+                    "gamma": 0.0,
+                    "vega": 0.0,
+                    "theta": 0.0,
                 },
             ]
         )
@@ -66,6 +81,11 @@ def test_fetch_bulk_eod_normalizes_and_filters_requested_rights():
             "close": 4.5,
             "option_price": 4.5,
             "price_type": "mid",
+            "iv": 0.16,
+            "delta": -0.5,
+            "gamma": 0.05,
+            "vega": 0.1,
+            "theta_daily": -0.04,
         }
     }
     assert client.eod_calls[0]["strike"] == "*"
@@ -95,3 +115,10 @@ def test_fetch_full_chain_uses_one_bulk_eod_call_per_expiry(tmp_path):
     assert len(client.oi_calls) == 1
     assert set(chain["right"]) == {"C", "P"}
     assert dict(zip(chain["right"], chain["open_interest"])) == {"C": 20, "P": 30}
+
+    c_row = chain[chain["right"] == "C"].iloc[0]
+    assert c_row["dollar_delta"] == 50.0
+    assert c_row["dollar_vega"] == 0.001
+
+    p_row = chain[chain["right"] == "P"].iloc[0]
+    assert p_row["dollar_delta"] == -50.0

@@ -85,7 +85,7 @@ For bond ETFs, institutional investors (pension funds, insurers) may systematica
 2. Does it predict future vol or returns at 4w/12w horizons?
 3. Does it co-move with macro uncertainty proxies (VIX, MOVE index, rate vol)?
 
-**Verdict:** Novel angle with an economic story. Requires extracting `theta_vega` from the quarterly screen cache (not the weekly IV panel), so coverage is 22 snap dates not 338 Fridays — limits time-series power. Best framed as a cross-sectional or regime study rather than a predictive regression.
+**Verdict:** Novel angle with an economic story. Requires extracting `theta_vega` from the monthly screen cache (not the weekly IV panel). Best framed as a cross-sectional or regime study rather than a predictive regression.
 
 ---
 
@@ -107,7 +107,7 @@ Bond convexity is one of the most important but underappreciated risk factors in
 
 **Data gap**
 
-Dollar-gamma from the options screen is quarterly (22 dates). Bond-level convexity requires supplementary data (e.g., effective duration and convexity from ETF fact sheets or TRACE). This angle requires the most additional data collection.
+Dollar-gamma from the options screen is monthly (114 observed dates). Bond-level convexity requires supplementary data (e.g., effective duration and convexity from ETF fact sheets or TRACE). This angle requires the most additional data collection.
 
 **Verdict:** Most theoretically compelling but requires supplementary bond convexity data to close the loop. Better suited as a follow-on paper or robustness exercise once the VRP angle is developed.
 
@@ -138,7 +138,7 @@ Currently only one expiration (nearest to 30 days) is stored in the IV panel. Ex
 | Angle | Novelty | Data Ready | Effort | Verdict |
 |---|---|---|---|---|
 | 1. VRP across yield curve | Medium | Yes | Low | **Do this first** |
-| 2. Theta/vega spread | High | Partial (quarterly only) | Medium | Good secondary |
+| 2. Theta/vega spread | High | Partial (monthly only) | Medium | Good secondary |
 | 3. Dollar-gamma vs. bond convexity | High | Partial (needs bond data) | High | Follow-on |
 | 4. Vol term structure | Medium | No (pipeline change) | High | Later |
 
@@ -150,4 +150,4 @@ Currently only one expiration (nearest to 30 days) is stored in the IV panel. Ex
 2. Group tickers by duration bucket (short/intermediate/long/credit)
 3. Run the same CGM panel regression with VRP as predictor, check cross-sectional slope by bucket
 4. Add macro regime dummies (pre-hike / hike cycle / post-hike) to test whether VRP premium concentrates in stress periods
-5. If VRP shows structure, add the theta/vega spread from the quarterly screen as a robustness check
+5. If VRP shows structure, add the theta/vega spread from the monthly screen as a robustness check

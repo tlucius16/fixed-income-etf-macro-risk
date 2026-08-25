@@ -17,7 +17,7 @@ ends with a checkpoint table that must match the reference values below.
 |---|---|---|---|
 | **Raw caches** (ThetaData chains + IV quotes, one JSON per ticker/date) | `data/raw/options_screen/` | no (license-encumbered) | from the authors, or repull with a ThetaData subscription (see below) |
 | **Derived data** (chains.csv, IV panel, options panel, side capacity) | `data/processed/options_screen/` | no | `scripts/reproduce.py` stages `screen`…`panel` |
-| **Paper artifacts** (tables, figures, robustness ladders) | `docs/options_paper/{tables,figures}/` | no | stages `ladder`…`notebook` |
+| **Paper artifacts** (tables, figures, sample funnel, robustness ladders) | `docs/hedge_capacity/{tables,figures}/` | no | stages `ladder`…`hedge-nb` |
 
 **The raw caches are the source of truth.** Given them, every downstream file
 regenerates deterministically. Never delete them to "start fresh" — that
@@ -29,12 +29,12 @@ fetched, so refetched inputs are not bit-identical).
 
 - Python venv: `pip install -r requirements.txt`
 - Julia ≥ 1.12 (optional — the `jl-*` stages are skipped with a warning if
-  absent; the repo reproduces fully without them minus the bootstrap and
+  absent; the repo reproduces fully without the robustness-bootstrap and
   American-bias tables). First run: deps auto-resolve from the pinned
   `julia/Manifest.toml`.
 - Credentials, via environment or a `.env` in the repo root (gitignored):
   - `FRED_API_KEY` — required by the `iv` stage only.
-  - `THETA_USERNAME` / `THETA_PASSWORD` — **not** required for reproduction
+  - `THETADATA_USERNAME` / `THETADATA_PASSWORD` — **not** required for reproduction
     from caches; only for repulling raw data or extending the IV panel past
     the cached end date.
 
@@ -42,22 +42,35 @@ fetched, so refetched inputs are not bit-identical).
 
 | Stage | Command (run individually if preferred) | Produces |
 |---|---|---|
-| screen | `scripts/02_concat_screen.py` | chains.csv, summary.csv, ticker_summary.csv (√-notional liquidity gate) |
-| iv | `scripts/03_build_iv_panel.py --end 2026-07-02` | iv_panel_full.csv (cache-backed; pinned end date ⇒ no API calls) |
+| fetch | `scripts/02_fetch_chains.py` | (Optional) raw ThetaData JSON caches (requires ThetaData credentials) |
+| screen | `scripts/03_concat_screen.py` | chains.csv, summary.csv, ticker_summary.csv (√-notional liquidity gate) |
+| iv | `scripts/04_build_iv_panel.py --end 2026-07-17` | iv_panel_full.csv (cache-backed; pinned end date ⇒ no ThetaData calls) |
 | cp-diag | `scripts/05_build_call_put_iv_diagnostic.py` | call_put_iv_diagnostic.csv |
-| panel | `scripts/04_build_options_panel.py` | options_panel.csv |
-| ladder | `scripts/06_robustness_ladder.py` | robustness_spec0.csv, side_capacity.csv |
-| artifacts | `scripts/07_paper_artifacts.py` | capacity accounting, call/put ratio, duration validation, universe tables; figures 24–26 |
-| h4-ref | `scripts/08_fragility_h4.py` | fragility H4 reference (Symbol/Date/CGM SEs) |
-| jl-parity | `julia --project=julia julia/scripts/parity_check.jl` | gate: Julia vs Python quant layer on all 80,521 contracts |
+| panel | `scripts/06_build_options_panel.py` | options_panel.csv |
+| ladder | `scripts/07_robustness_ladder.py` | robustness_spec0.csv, side_capacity.csv |
+| artifacts | `scripts/08_paper_artifacts.py` | sample funnel, capacity accounting, call/put ratio, duration validation, universe tables; core fragility figure and hedge-capacity figures 24–26 |
+| h4-ref | `scripts/09_fragility_h4.py` | fragility H4 reference (Symbol/Date/CGM SEs) |
 | jl-boot | `julia .../robustness_boot.jl` | robustness_boot.csv (wild-cluster bootstrap, seeded) |
 | jl-amer | `julia -t auto .../american_bias.jl` | american_bias.csv (CRR American repricing) |
-| jl-h4boot | `julia .../fragility_boot.jl` | fragility_boot.csv (H4 wild bootstrap by Date/Symbol) |
-| notebook | `jupyter nbconvert --execute notebooks/05_options_analysis.ipynb` | remaining figures/tables; **credential-free** — the notebook only reads prepared data |
-| tests | `pytest tests/ -q` | 152 passed (Julia/live-API tests opt-in via `RUN_JULIA_*`, `RUN_THETA_*`) |
+| core-nb | `jupyter nbconvert --execute notebooks/02_rolling_risk_metrics.ipynb notebooks/03_analysis.ipynb` | core fragility, stress, and robustness outputs; **credential-free** |
+| hedge-nb | `jupyter nbconvert --execute notebooks/05_options_analysis.ipynb` | hedge-capacity figures/tables; **credential-free** — the notebook only reads prepared data |
+| tests | `pytest tests/ -q` | 129 passed, 3 skipped (opt-in Julia/live-API diagnostics) |
 
-Notebook 05 is illustrative/analysis only: it never fetches or builds data.
+The notebooks are illustrative/analysis only: they never fetch or build data.
 Every artifact has exactly one canonical producer, listed above.
+
+## Build the unified paper
+
+Run the `artifacts` stage first so the generated fragility figure is present,
+then build the tracked PDF from `docs/draft.md`:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File docs/build_draft_pdf.ps1
+```
+
+On a TeX-equipped Unix system, use `bash docs/build_draft_pdf.sh`. The Windows
+builder uses Pandoc and headless Microsoft Edge; the Unix builder uses Pandoc
+and XeLaTeX. Both write `docs/draft.pdf`.
 
 ## What success looks like
 
@@ -65,11 +78,12 @@ Every artifact has exactly one canonical producer, listed above.
 
 | Checkpoint | Value |
 |---|---|
-| chains.csv rows | 80,521 |
-| liquid tickers (√-notional gate) | 8 — TLT, LQD, IEF, EMB, TIP, EDV, ZROZ, VCLT |
-| options_panel.csv rows | 18,074 |
-| Spec 0 baseline coefficient | −0.2689 (CGM p 0.0042; wild-bootstrap ~0.25) |
-| jl-parity | `PARITY OK` (Greeks ≤1e-13, IV ≤6e-7 vs Python) |
+| chains.csv rows | 339,220 |
+| liquid tickers (√-notional gate) | 6 — EDV, EMB, IEF, LQD, TLT, ZROZ |
+| sample-funnel ETF counts | 352 → 36 → 33 → 6 |
+| options_panel.csv rows | 18,056 |
+| Spec 0 baseline coefficient | −0.3377 (CGM p 0.0004) |
+| Spec 0 wild-bootstrap p-value | 0.0953 (9,999 ticker-cluster replications) |
 
 ### Reproducibility philosophy: pinned inputs, not pinned pull dates
 
@@ -77,21 +91,20 @@ Reproduction means *the committed/cached inputs plus the code yield identical
 outputs* — it does not mean a fresh API pull today returns the same data
 (FRED revises series such as ANFCI; Yahoo lookback windows depend on the run
 date; FRED's BAMLC0A0CM now exposes only a rolling 3-year window, which is
-why the repo carries a full-history hybrid). The fixed inputs are: the legacy
-CSV exports (`data/exports/legacy_csv_exports/`), the cached S&P daily closes
-(`data/raw/spx_daily.csv`), and the ThetaData chain/IV caches. The fragility
-core panel is built from these by `scripts/rebuild_panel_from_legacy.py` —
-that output (156,588 rows, 2016-04-15 → 2026-04-03) is the canonical offline
-snapshot. The live pipeline (`src/pipelines/build_core_panel.py`) exists for
-fresh pulls and will legitimately differ (data vintage, window boundaries).
+why the repo carries a full-history hybrid). The fixed inputs are the committed
+offline core panel, the cached S&P daily closes, and the ThetaData chain/IV
+caches. The canonical offline snapshot contains 159,216 rows from 2016-08-19
+through 2026-07-17. The live pipeline (`src/pipelines/build_core_panel.py`)
+exists for fresh pulls and will legitimately differ by data vintage and window
+boundaries.
 
 ## Repulling raw data (authors / subscribers only)
 
 ```bash
-# chains (quarterly, C+P with OI) — hours; ThetaData is strictly serial
-python scripts/04_build_options_panel.py --repull
+# chains (monthly business-start snapshots from 2016, C+P with OI); strictly serial
+python scripts/02_fetch_chains.py
 # weekly IV — extend past the cached end date
-python scripts/03_build_iv_panel.py
+python scripts/04_build_iv_panel.py
 ```
 
 ThetaData allows one session per account and rejects concurrent requests
