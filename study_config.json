@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "robust_enabled": true,
+  "input_audit": "data/manifests/local-20260904-v2.json",
+  "pinned_inputs": {
+    "data/processed/options_screen/chains.csv": "b96555979744a3862cf614d1c6f20208037be5e26cc5aaa54b320d98d82e0d75",
+    "data/raw/prices.csv": "57a2101fa4584d2b9b94cdaa47f3eba12443f92ce751b7fa81220f5a79614b91"
+  },
+  "market_manifest": "data/manifests/yahoo-actions-through20250131-20260905.json",
+  "decision_date": "2025-01-02",
+  "expiration": "2025-01-31",
+  "date_selection": "latest_snapshot_with_all_three_quote_menus_under_audit_union_rule",
+  "portfolio": "LQD",
+  "tickers": [
+    "LQD",
+    "TLT",
+    "IEF"
+  ],
+  "position_usd": 100000000,
+  "budget_bps": 50,
+  "fee_per_contract_usd": 0.65,
+  "financing_rate_annual": 0.05,
+  "financing_convention": "simple_actual_365_assumed_not_estimated",
+  "lookback_years": 5,
+  "tail_levels": [
+    0.9,
+    0.95
+  ],
+  "oi_fractions": [
+    null,
+    0.01,
+    0.05,
+    0.1
+  ],
+  "frontier_budgets_bps": [
+    0,
+    10,
+    25,
+    50,
+    100,
+    200
+  ],
+  "scale_control_multipliers": [
+    0.1,
+    1,
+    10
+  ],
+  "optimizer": {
+    "method": "highs",
+    "formulation": "rockafellar_uryasev_cvar_lp",
+    "dollar_scale": 1000000,
+    "feasibility_tol_usd": 1,
+    "cvar_recompute_rtol": 0.000001
+  },
+  "held_out": {
+    "budget_bps": 50,
+    "tail_level": 0.9,
+    "oi_cap": 0.05,
+    "require_all_menus": true
+  },
+  "contract_terms": {
+    "status": "assumed_standard_not_contract_verified",
+    "multiplier": 100,
+    "deliverable_shares": 100,
+    "exercise": "American_held_to_expiration",
+    "settlement": "physical_delivery_economic_intrinsic_equivalent",
+    "source": "https://www.theocc.com/clearance-and-settlement/clearing/etf-options"
+  },
+  "max_spot_relative_gap": 0.0001,
+  "max_adjustment_gap_bps": 2,
+  "robust": {
+    "minimum_windows": 30,
+    "stress_mass": 0.5,
+    "rate_threshold": -0.02,
+    "tlt_loading": 0.5,
+    "relative_threshold": -0.01,
+    "dual_relative_step": 0.001,
+    "dual_tolerance_usd": 1,
+    "quote_rules": [
+      "baseline",
+      "tight_spread",
+      "zero_bid",
+      "matched_moneyness"
+    ]
+  }
+}

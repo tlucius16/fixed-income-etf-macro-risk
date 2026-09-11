@@ -9,6 +9,7 @@ __pycache__/
 .coverage
 htmlcov/
 .venv/
+.venv-research/
 venv/
 env/
 ENV/
@@ -27,13 +28,18 @@ ENV/
 /data/raw/options/
 /data/raw/options_screen/
 /data/raw/prices.csv
+/data/raw/hedge_design/
 /data/processed/options_screen/
+/data/processed/hedge_design/
+/results/hedge_design/
+/results/preservation/
+/results/hedge_paper/
 
 # Generated paper artifacts
-/arxiv_submission/
-/docs/figures/
-/docs/hedge_capacity/figures/
-/docs/hedge_capacity/tables/
+/legacy/unified/arxiv_submission/
+/legacy/unified/docs/figures/
+/legacy/unified/docs/hedge_capacity/figures/
+/legacy/unified/docs/hedge_capacity/tables/
 
 # One-off notebook migration helpers
 /scripts/add_analyses_nb05.py

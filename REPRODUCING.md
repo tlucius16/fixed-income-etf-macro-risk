@@ -1,113 +1,151 @@
-# Reproducing this repository
+# Reproduce the Study
 
-Everything derived in this repo is produced by **one command**:
+Run commands from the repository root. Market inputs must already be local and
+match the selected configuration; no command below silently refreshes data.
+
+## 1. Choose an Environment
+
+Use Python 3.12 and a separate virtual environment as appropriate:
+
+```bash
+python3.12 -m venv .venv-research
+source .venv-research/bin/activate
+python -m pip install -r requirements.txt
+```
+
+`requirements.txt` contains all Python dependencies for calculations, reporting,
+acquisition, legacy analysis and tests. Installing packages does not fetch market data.
+Existing run verification requires the dependency versions in that run's manifest.
+Paper builds made before dependency consolidation retain their old source hashes;
+verify those against their preserved source layout or create a new build ID.
+
+The locally verified reporting builds use a temporary, isolated dependency directory
+because some original environment components are cloud-only. If it still exists,
+prefix local reporting commands with `PYTHONPATH=/private/tmp/hedge-report-deps`.
+This is a validation workaround, not a durable environment. Package installation
+is explicit and separate from market-data reproduction.
+
+## 2. Identify the Inputs
+
+`study_config.json` pins the chain file
+`data/processed/options_screen/chains.csv`, unadjusted `data/raw/prices.csv`,
+the audit `data/manifests/local-20260904-v2.json`, and the price/action snapshot
+identified by `data/manifests/yahoo-actions-through20250131-20260905.json`.
+
+The scientific chain panel contains 80,521 rows, 36 ETFs and 22 quarterly
+snapshots. Licensed caches are not committed. Missing local inputs require a
+separate, authorized acquisition or transfer; rebuilding does not manufacture
+missing coverage. See [methodology](docs/methodology.md) for data conventions.
+
+## 3. Check or Build
+
+**Read-only audit plus active tests:**
 
 ```bash
 python scripts/reproduce.py
 ```
 
-That runs the full pipeline in dependency order, prints per-stage status, and
-ends with a checkpoint table that must match the reference values below.
-`python scripts/reproduce.py --list` shows the stages; `--from` / `--until` /
-`--skip-julia` / `--skip-notebook` subset them.
+Default stages are `audit` and `tests`. No credentials, experiments, legacy
+notebooks or figure generation are invoked. `--list` lists stages;
+`--dataset-id NAME` selects an existing audit. Exit `2` means unresolved audit
+contents; tests still run. Inventory agreement alone is not a complete input audit.
 
-## The three data layers
-
-| Layer | Location | In git? | How you get it |
-|---|---|---|---|
-| **Raw caches** (ThetaData chains + IV quotes, one JSON per ticker/date) | `data/raw/options_screen/` | no (license-encumbered) | from the authors, or repull with a ThetaData subscription (see below) |
-| **Derived data** (chains.csv, IV panel, options panel, side capacity) | `data/processed/options_screen/` | no | `scripts/reproduce.py` stages `screen`…`panel` |
-| **Paper artifacts** (tables, figures, sample funnel, robustness ladders) | `docs/hedge_capacity/{tables,figures}/` | no | stages `ladder`…`hedge-nb` |
-
-**The raw caches are the source of truth.** Given them, every downstream file
-regenerates deterministically. Never delete them to "start fresh" — that
-converts a 15-minute reproduction into a multi-hour ThetaData repull whose IVs
-drift by ~±0.1 vol pt (the trailing dividend yield depends on the price window
-fetched, so refetched inputs are not bit-identical).
-
-## Requirements
-
-- Python venv: `pip install -r requirements.txt`
-- Julia ≥ 1.12 (optional — the `jl-*` stages are skipped with a warning if
-  absent; the repo reproduces fully without the robustness-bootstrap and
-  American-bias tables). First run: deps auto-resolve from the pinned
-  `julia/Manifest.toml`.
-- Credentials, via environment or a `.env` in the repo root (gitignored):
-  - `FRED_API_KEY` — required by the `iv` stage only.
-  - `THETADATA_USERNAME` / `THETADATA_PASSWORD` — **not** required for reproduction
-    from caches; only for repulling raw data or extending the IV panel past
-    the cached end date.
-
-## Pipeline stages
-
-| Stage | Command (run individually if preferred) | Produces |
-|---|---|---|
-| fetch | `scripts/02_fetch_chains.py` | (Optional) raw ThetaData JSON caches (requires ThetaData credentials) |
-| screen | `scripts/03_concat_screen.py` | chains.csv, summary.csv, ticker_summary.csv (√-notional liquidity gate) |
-| iv | `scripts/04_build_iv_panel.py --end 2026-07-17` | iv_panel_full.csv (cache-backed; pinned end date ⇒ no ThetaData calls) |
-| cp-diag | `scripts/05_build_call_put_iv_diagnostic.py` | call_put_iv_diagnostic.csv |
-| panel | `scripts/06_build_options_panel.py` | options_panel.csv |
-| ladder | `scripts/07_robustness_ladder.py` | robustness_spec0.csv, side_capacity.csv |
-| artifacts | `scripts/08_paper_artifacts.py` | sample funnel, capacity accounting, call/put ratio, duration validation, universe tables; core fragility figure and hedge-capacity figures 24–26 |
-| h4-ref | `scripts/09_fragility_h4.py` | fragility H4 reference (Symbol/Date/CGM SEs) |
-| jl-boot | `julia .../robustness_boot.jl` | robustness_boot.csv (wild-cluster bootstrap, seeded) |
-| jl-amer | `julia -t auto .../american_bias.jl` | american_bias.csv (CRR American repricing) |
-| core-nb | `jupyter nbconvert --execute notebooks/02_rolling_risk_metrics.ipynb notebooks/03_analysis.ipynb` | core fragility, stress, and robustness outputs; **credential-free** |
-| hedge-nb | `jupyter nbconvert --execute notebooks/05_options_analysis.ipynb` | hedge-capacity figures/tables; **credential-free** — the notebook only reads prepared data |
-| tests | `pytest tests/ -q` | 129 passed, 3 skipped (opt-in Julia/live-API diagnostics) |
-
-The notebooks are illustrative/analysis only: they never fetch or build data.
-Every artifact has exactly one canonical producer, listed above.
-
-## Build the unified paper
-
-Run the `artifacts` stage first so the generated fragility figure is present,
-then build the tracked PDF from `docs/draft.md`:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File docs/build_draft_pdf.ps1
-```
-
-On a TeX-equipped Unix system, use `bash docs/build_draft_pdf.sh`. The Windows
-builder uses Pandoc and headless Microsoft Edge; the Unix builder uses Pandoc
-and XeLaTeX. Both write `docs/draft.pdf`.
-
-## What success looks like
-
-`reproduce.py` verifies these automatically:
-
-| Checkpoint | Value |
-|---|---|
-| chains.csv rows | 339,220 |
-| liquid tickers (√-notional gate) | 6 — EDV, EMB, IEF, LQD, TLT, ZROZ |
-| sample-funnel ETF counts | 352 → 36 → 33 → 6 |
-| options_panel.csv rows | 18,056 |
-| Spec 0 baseline coefficient | −0.3377 (CGM p 0.0004) |
-| Spec 0 wild-bootstrap p-value | 0.0953 (9,999 ticker-cluster replications) |
-
-### Reproducibility philosophy: pinned inputs, not pinned pull dates
-
-Reproduction means *the committed/cached inputs plus the code yield identical
-outputs* — it does not mean a fresh API pull today returns the same data
-(FRED revises series such as ANFCI; Yahoo lookback windows depend on the run
-date; FRED's BAMLC0A0CM now exposes only a rolling 3-year window, which is
-why the repo carries a full-history hybrid). The fixed inputs are the committed
-offline core panel, the cached S&P daily closes, and the ThetaData chain/IV
-caches. The canonical offline snapshot contains 159,216 rows from 2016-08-19
-through 2026-07-17. The live pipeline (`src/pipelines/build_core_panel.py`)
-exists for fresh pulls and will legitimately differ by data vintage and window
-boundaries.
-
-## Repulling raw data (authors / subscribers only)
+**One-command science, paper and executed notebook:**
 
 ```bash
-# chains (monthly business-start snapshots from 2016, C+P with OI); strictly serial
-python scripts/02_fetch_chains.py
-# weekly IV — extend past the cached end date
-python scripts/04_build_iv_panel.py
+python scripts/reproduce_hedge_paper.py --run-id my-science --build-id my-paper
+python scripts/reproduce_hedge_paper.py --build-id my-paper --verify
 ```
 
-ThetaData allows one session per account and rejects concurrent requests
-(`RESOURCE_EXHAUSTED`); do not parallelize. If a repull is interrupted, delete
-any *empty* `*_chain.json` files it left behind before rerunning — they are
-cache poison (they read as "no data" forever after).
+The runner uses pinned `study_config.json`, independently verified scientific results,
+and a write-once paper bundle under `results/hedge_paper/<build-id>/`. Open
+`missing_hedge_draft.md` or `review/06_hedge_frontiers.html` there. The bundle
+also contains 13 CSV views, six figures, metrics and linked manifests.
+Jupyter needs local kernel communication; it uses the runner's Python interpreter.
+
+**Reporting only, without re-solving:**
+
+```bash
+python scripts/reproduce_hedge_paper.py --run-id study-20260909 \
+  --reuse-run --build-id another-paper
+```
+
+Both IDs are immutable. If notebook execution fails, partial output is preserved;
+use a new build ID with `--reuse-run`. The template only supports the pinned
+configuration rather than silently mislabeling another experiment.
+
+**Science only:**
+
+```bash
+python scripts/run_hedge_design.py --config study_config.json --run-id my-robust
+python scripts/run_hedge_design.py --run-id my-robust --verify
+```
+
+Set `"robust_enabled": false` in `study_config.json` for the non-robust experiment;
+`true` (the default) includes robust analysis. The paper build requires `true`.
+Scientific outputs live in `results/hedge_design/<run-id>/`. Verification checks
+inputs, code, dependencies and outputs; fresh IDs reproduce computations.
+
+## 4. Inspect and Test
+
+`notebooks/06_hedge_frontiers.ipynb` reads a saved paper bundle, defaulting to
+`legacy-layout-20260909`. Set `HEDGE_PAPER_BUILD` or its build selector to inspect
+another. The tracked template and notebook 05 are never executed in place by
+the active pipeline. Notebook checks cover saved-output hashes; CLI verification
+also checks sources and dependencies.
+
+```bash
+python -m pytest tests/hedge_design tests/workflow -q
+RUN_THETA_LIVE_TEST=0 RUN_JULIA_AMERICAN=0 RUN_JULIA_BOOTSTRAP=0 \
+  python -m pytest tests/ legacy/unified/tests/ -q
+```
+
+The full suite needs the legacy dependencies. [Test groups](tests/README.md)
+separate active coverage from supporting and archived checks without deleting tests.
+
+## Legacy, Acquisition and Recovery
+
+Legacy analysis remains explicit: `python scripts/reproduce.py --profile legacy --list`.
+See [the legacy guide](legacy/unified/README.md) and
+[historical recovery instructions](legacy/unified/docs/archive/README.md).
+Legacy notebooks can fetch data and execute in place; they are not part of the
+new offline paper build. Reference checkpoints are not certified against the
+currently incomplete legacy cache.
+
+Price/action acquisition is a separate network operation:
+`python scripts/fetch_hedge_market.py --dataset-id NEW_ID --start 2010-01-01 --end 2025-02-01`.
+It never replaces an existing snapshot; adopting it requires a reviewed config.
+
+Before the directory cleanup, the 146-file dirty source tree was restored and
+hash-verified from `results/preservation/pre-streamline-20260907/`:
+
+```bash
+python scripts/preserve_research.py --snapshot-id pre-streamline-20260907 --verify
+python scripts/preserve_research.py --snapshot-id pre-streamline-20260907 --restore-to /tmp/NEW_DIRECTORY
+```
+
+Old paper builds retain their original source fingerprints, so they are verified
+against that restored source layout—not rewritten manifests. Supply the same
+pinned inputs/results separately at their recorded paths; the archive contains
+source and compact input manifests, not market data. Config consolidation changes
+source fingerprints: older scientific runs also require their original source
+and config paths, available in the pre-prune preservation snapshot.
+Use regular local files for this verification; the paper verifier rejects
+symlinked input paths.
+
+## Pruned Historical Artifacts
+
+The current scientific run is `study-20260909`; the relocated-reference paper
+build is `legacy-layout-20260909`. Earlier runs
+`lqd-paper-20260907` and its comparison reference
+`lqd-robust-20260907-v3` and the first accounting baseline
+`lqd-accounting-20260905-v2` remain available. Paper bundles retained in place are
+`streamlined-20260907` and the original `phase5-20260907` reference.
+
+Superseded runs, failed/redundant paper builds, development-stage notes and the
+old PDF/build assets were backed up and removed on 2026-09-08. The complete
+deletion inventory and exact contents are in the verified
+`results/preservation/pre-prune-20260908/` recovery bundle. Its generated results
+are included; raw/processed inputs are not. See [recovery](legacy/unified/docs/archive/README.md).
+Copy the local preservation directory to durable storage before discarding this
+checkout. The old cloud-only submission folder was intentionally retained.

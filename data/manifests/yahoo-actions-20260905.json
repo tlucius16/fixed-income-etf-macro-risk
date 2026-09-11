@@ -1,0 +1,29 @@
+{
+  "dataset_id": "yahoo-actions-20260905",
+  "provider": "Yahoo Finance via yfinance",
+  "retrieved_at_utc": "2026-09-05T16:00:17.313640+00:00",
+  "request": {
+    "tickers": [
+      "LQD",
+      "TLT",
+      "IEF"
+    ],
+    "start": "2010-01-01",
+    "end_exclusive": "2024-11-02",
+    "auto_adjust": false,
+    "actions": true
+  },
+  "yfinance_version": "1.4.1",
+  "source_url": "https://finance.yahoo.com/quote/LQD/history/",
+  "path": "data/raw/hedge_design/yahoo-actions-20260905.csv",
+  "sha256": "078b2ca68ebb6cf48e385f4193b56af767ea696092c5bfc9441c4c4d44f68146",
+  "rows": 11202,
+  "first_date": "2010-01-04",
+  "last_date": "2024-11-01",
+  "conventions": {
+    "prices": "Vendor Close; no splits allowed by pilot validator",
+    "distributions": "Vendor ex-date amounts, not payment dates; revised vintage",
+    "adj_close": "Internal diagnostic only; never an option settlement price",
+    "independent_issuer_verification": false
+  }
+}

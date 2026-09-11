@@ -11,3 +11,9 @@ scipy
 thetadata>=1.0.7
 seaborn
 pytest
+scikit-learn
+patsy
+nbformat
+nbclient
+nbconvert
+ipykernel
