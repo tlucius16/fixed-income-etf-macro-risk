@@ -10,6 +10,7 @@ __pycache__/
 htmlcov/
 .venv/
 .venv-research/
+.venv-theta-pull/
 venv/
 env/
 ENV/
@@ -31,6 +32,7 @@ ENV/
 /data/raw/hedge_design/
 /data/processed/options_screen/
 /data/processed/hedge_design/
+/data/processed/chain_panels/
 /results/hedge_design/
 /results/preservation/
 /results/hedge_paper/

@@ -7,8 +7,8 @@ import pandas as pd
 from src.data.hedge_inputs import quote_flags
 from src.hedge_design.benchmarks import duration_hedge_benchmark
 from src.hedge_design.experiment import (
-    FRONTIER_MENUS, _monotone_invariants, _oi_upper_bound, _scenario_payoffs, qualifying_dates,
-    require_verified_solution, selected_contracts, validate_candidate_spots,
+    FRONTIER_MENUS, _monotone_invariants, _oi_upper_bound, _put_chain_slice, _scenario_payoffs,
+    qualifying_dates, require_verified_solution, selected_contracts, validate_candidate_spots,
 )
 from src.hedge_design.market import historical_scenarios, holding_return
 from src.hedge_design.optimize import empirical_cvar, nominal_cvar_lp
@@ -30,10 +30,7 @@ def validate_robust_config(settings: dict) -> None:
 
 
 def quote_candidates(chains, decision, expiry, tickers, rule):
-    frame = chains.loc[chains.snap_date.eq(decision) & chains.expiry.eq(expiry)
-                       & chains.ticker.isin(tickers) & chains.right.eq("P")].copy()
-    for column in ("strike", "underlying", "bid", "ask", "open_interest"):
-        frame[column] = pd.to_numeric(frame[column], errors="coerce")
+    frame = _put_chain_slice(chains, decision, expiry, tickers)
     if rule not in {"baseline", "tight_spread", "zero_bid", "matched_moneyness"}:
         raise ValueError("Unknown quote rule")
     spread_limit = 0.20 if rule == "tight_spread" else 0.35

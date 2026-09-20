@@ -101,12 +101,19 @@ def load_config(path: Path) -> dict:
     return config
 
 
+def _put_chain_slice(chains: pd.DataFrame, decision: pd.Timestamp,
+                     expiry: pd.Timestamp, tickers: list[str]) -> pd.DataFrame:
+    """Puts for ``tickers`` at one snap/expiry, with quote columns coerced numeric."""
+    frame = chains.loc[chains.snap_date.eq(decision) & chains.expiry.eq(expiry)
+                       & chains.ticker.isin(tickers) & chains.right.eq("P")].copy()
+    for column in ("strike", "underlying", "bid", "ask", "open_interest"):
+        frame[column] = pd.to_numeric(frame[column], errors="coerce")
+    return frame
+
+
 def selected_contracts(chains: pd.DataFrame, decision: pd.Timestamp,
                        expiry: pd.Timestamp, tickers: list[str]) -> tuple[pd.DataFrame, pd.DataFrame]:
-    candidates = chains.loc[chains.snap_date.eq(decision) & chains.expiry.eq(expiry)
-                            & chains.ticker.isin(tickers) & chains.right.eq("P")].copy()
-    for column in ("strike", "underlying", "bid", "ask", "open_interest"):
-        candidates[column] = pd.to_numeric(candidates[column], errors="coerce")
+    candidates = _put_chain_slice(chains, decision, expiry, tickers)
     flags = quote_flags(candidates)
     diagnostics = pd.concat([candidates, flags], axis=1)
     eligible = candidates.loc[flags.quote_eligible].copy()
@@ -221,10 +228,7 @@ def candidate_puts(chains: pd.DataFrame, decision: pd.Timestamp, expiry: pd.Time
     non-crossed, relative spread <= 35%). No Greek floor, moneyness band, or OI
     requirement is applied; the optimizer chooses quantities across the surviving strikes.
     """
-    frame = chains.loc[chains.snap_date.eq(decision) & chains.expiry.eq(expiry)
-                       & chains.ticker.isin(tickers) & chains.right.eq("P")].copy()
-    for column in ("strike", "underlying", "bid", "ask", "open_interest"):
-        frame[column] = pd.to_numeric(frame[column], errors="coerce")
+    frame = _put_chain_slice(chains, decision, expiry, tickers)
     frame = frame.loc[quote_flags(frame)["quote_eligible"]]
     columns = ["ticker", "strike", "underlying", "bid", "ask", "open_interest"]
     return frame[columns].sort_values(["ticker", "strike"]).reset_index(drop=True)
